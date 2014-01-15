@@ -1,0 +1,28 @@
+<?php $gateway = Mage::getSingleton('billmateinvoice/gateway');
+
+$fieldname = array('firstname','lastname','street][','city','postcode');
+$groupname = array('billing','shipping');
+$address   = array_combine(
+				$fieldname,
+				array($gateway->firstname, $gateway->lastname, $gateway->street, $gateway->city, $gateway->postcode)
+			);
+
+ if($this->isMatched()):
+	echo 'if(typeof checkout.form != "undefined"  || typeof checkoutForm != "undefined"){',"\n";
+	foreach( $groupname as $group ){
+		foreach($fieldname as $row){
+			echo 'if($$(\'input[name="'.$group.'['.$row.']"]\').size() > 0 ){ $$(\'input[name="'.$group.'['.$row.']"]\')[0].value="'.$address[$row].'";}',"\n";
+		}
+		echo 'if($$(\'[name="'.$group.'[country_id]"]\').size()>0){ selectDropDown($$(\'[name="'.$group.'[country_id]"]\')[0],\''.$gateway->country.'\');}',"\n";
+	}
+	echo 'closefunc();modalWin.HideModalPopUp();',"\n";
+	echo '} else {
+			paymentSave();
+	}';
+ ?>
+
+<?php else: ?>
+
+$html='<span style="font-size: 1.3em;line-height: 1.4em;"><?php echo strlen($gateway->company)? $gateway->company : $gateway->firstname.' '.$gateway->lastname; ?><br><?php echo $gateway->street; ?><br><?php echo $gateway->postcode.' '.$gateway->city.'<br/>'.($gateway->country == 'se' ? '':$gateway->country_name); ?></span><div style="margin-top:1em"><input type="button" id="updateAddressYes" onclick="updateAddress()" value="<?php echo $this->__('Yes, make purchase with this address')?>" class="billmate_button button"/></div><div><a onclick="modalWin.HideModalPopUp();" class="linktag" ><?php echo $this->__('No, I want to specify a different number or change payment method')?></a></div>';
+ShowMessage($html,'<?php echo $this->__('Pay by invoice can be made only to the address listed in the National Register. Would you like to make the purchase with address:')?>');
+<?php endif; ?>
