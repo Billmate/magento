@@ -42,7 +42,9 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
     }
     
     public function getStandardCheckoutFormFields(){
-        
+
+		$session = Mage::getSingleton("core/session",  array("name"=>"frontend"));
+        $session->unsetData('bank_api_called');
         $orderIncrementId = $this->getCheckout()->getLastRealOrderId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
         /* @var $api Mage_Paypal_Model_Api_Standard */

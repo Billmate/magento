@@ -1,6 +1,6 @@
 <?php
 if(!function_exists('billmate_log_data')){
-	define('BILLMATE_VERSION',  "PHP:Magento:1.19.0" );
+	define('BILLMATE_VERSION',  "PHP:Magento:1.20.0" );
 
 	function getCountryID(){
 		return 209;

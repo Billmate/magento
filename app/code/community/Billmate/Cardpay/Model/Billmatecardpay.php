@@ -42,6 +42,9 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
     }
     
     public function getStandardCheckoutFormFields(){
+
+		$session = Mage::getSingleton("core/session",  array("name"=>"frontend"));
+        $session->unsetData('card_api_called');
         
         $orderIncrementId = $this->getCheckout()->getLastRealOrderId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);

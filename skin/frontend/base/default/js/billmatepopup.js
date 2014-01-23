@@ -255,7 +255,7 @@ function changeBillEvent(){
 //	}
 }
 function updateAddress(){
-	if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined'){
+	if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout.form != 'undefined'){
 		if( typeof checkout.form == 'undefined'){
 			params = Form.serialize(checkoutForm.form.id);
 		} else if(typeof checkout.form != 'undefined'){
@@ -293,7 +293,8 @@ function reviewstep(){
 String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
 
 function checkAddress(psn){
-
+	if( typeof FireCheckout != 'undefined' ) return false;
+	
 	var selectedGateway = $$('[name="payment[method]"]:checked')[0].value;
 	
 	if( selectedGateway != 'billmateinvoice' && selectedGateway!='partpayment'){
@@ -335,8 +336,11 @@ function paymentSave(){
 			}
 		};
 		payment.save();
+	}else{
+		if( typeof FireCheckout != 'undefined' ){
+			checkout.save();
+		}
 	}
-
 }
 function selectDropDown(mySelect, value){
 	var optCount      = mySelect.options.length;

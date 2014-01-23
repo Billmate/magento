@@ -35,7 +35,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 		}
 		$language = 138;
 		$encoding = 2;
-		$currency = 0;
+		$currency = 0;
 
 		switch ($iso3) {
 			// Sweden
@@ -98,14 +98,27 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
         $_weeeHelper = Mage::helper('weee');
 		$store = Mage::app()->getStore();
 		$_simplePricesTax = ($_taxHelper->displayPriceIncludingTax() || $_taxHelper->displayBothPrices());
-
-		foreach( $quote->getAllItems() as $_item){
+		
+		$products = $quote->getAllItems();
+		foreach( $products as $_item){
+		
             if( $_item->getParentItemId() ){
 				continue;
 			}
             $request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
             $taxclassid = $_item->getProduct()->getData('tax_class_id');
-            $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+			
+			if( $taxclassid == null && $_item->getProductType() == 'bundle'){
+				$options = $_item->getChildren();
+				$percent=0;
+				foreach($options as $option){
+					$taxclassid = $option->getProduct()->getData('tax_class_id');
+					$percent += Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+				}
+				$percent = $percent/sizeof($options);
+			} else {
+				$percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+			}
             $_product = $_item->getProduct();
 
 			$_price = $_taxHelper->getPrice($_product, $_product->getPrice()) ;
@@ -118,6 +131,13 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 				$price = $_directory->currencyConvert($_finalPrice,$baseCurrencyCode,$currentCurrencyCode);
 			}
 			
+			if( $_item->getProductType() == 'configurable' || $_item->getProductType() == 'bundle' ){
+				$price = $_item->getCalculationPriceOriginal();
+			}
+
+			if( $baseCurrencyCode != $currentCurrencyCode ){
+				$price = $_directory->currencyConvert($_finalPrice,$baseCurrencyCode,$currentCurrencyCode);
+			}
 			if($_product->isConfigurable()) // check if the product is configurable (u may check this in for loop of products)
 			{
 				//get associative (child) products
@@ -136,12 +156,11 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 				}
 				$price_array = array($childPriceLowest,$childPriceHighest); // array containing required values
 			}
-	
-		//Mage::throwException( 'error '.$baseCurrencyCode.'--'.$currentCurrencyCode );
+
 			$goods_list[] = array(
 				'qty'   => (int)$_item->getQty(),
 				'goods' => array(
-					'artno'    => $_item->getSKU(),
+					'artno'    => $_product->getSKU(),
 					'title'    => $_item->getName(),
 					'price'    => (int)round($price*100,0),
 					'vat'      => (float)$percent,
@@ -157,9 +176,9 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 			$goods_list[] = array(
 				'qty'   => (int)1,
 				'goods' => array(
-					'artno'    => 'discount',
+					'artno'    => '',
 					'title'    => Mage::helper('payment')->__('Discount'),
-					'price'    => round($totals['discount']->getValue()*0.8)*100,
+					'price'    => round(($totals['discount']->getValue()*0.8)*100),
 					'vat'      => (float)$percent,
 					'discount' => 0.0,
 					'flags'    => 0,
@@ -175,6 +194,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 		
        $rates = $quote->getShippingAddress()->getShippingRatesCollection();
        if(!empty($rates)){
+
 			$rate = round( $Shipping->getBaseShippingTaxAmount() / $Shipping->getBaseShippingAmount() * 100);
 		    $goods_list[] = array(
 			    'qty'   => 1,
@@ -197,6 +217,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 			//if(Mage::getStoreConfig('payment/billmateinvoice/tax_class')){
 				$feeinfo = Mage::helper('billmateinvoice')->getInvoiceFeeArray($invoiceFee, $Shipping, $quote->getCustomerTaxClassId());
 			//}
+
 			if( !empty( $invoiceFee) && $invoiceFee> 0){
                // $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
 			    $goods_list[] = array(
@@ -232,14 +253,14 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 		    'gender'=>'1',
 		    "shipInfo"=>array("delay_adjust"=>"1"),
 		    "travelInfo"=>array(),
-		    "incomeInfo"=>array(),
+		    "incomeInfo"=>array(),
 		    "bankInfo"=>array(),
 		    "sid"=>array("time"=>microtime(true)),
 		    "extraInfo"=>array(array("cust_no"=>(string)$customerId))
 	    );
-
+	   
 	    $result1 = $k->AddInvoice($pno,$ship_address,$bill_address,$goods_list,$transaction);
-	    
+
 		if( !is_array($result1)){
             Mage::throwException( utf8_encode( $result1 ));
         }else{
@@ -268,7 +289,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
         $quote = Mage::getSingleton('checkout/session')->getQuote();        
         $Billing= $quote->getBillingAddress();
         $Shipping= $quote->getShippingAddress();
-  
+		
         try{
             $addr = $k->GetAddress($payment[$methodname.'_pno']);
            
@@ -360,5 +381,5 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
         //    Mage::getSingleton('checkout/session')->clear();
             Mage::getModel('checkout/session')->loadCustomerQuote();
         }
-    }
+    }
 }

@@ -103,14 +103,26 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
             if( $_item->getParentItemId() ){
 				continue;
 			}
-           $request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
+
+			$request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
 			
 			$productId = $_item->getProductId();
 			$_product = Mage::getModel('catalog/product')->load($productId);
 			
             $taxclassid = $_product->getData('tax_class_id');
-            $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
-            
+			
+			if( $_item->getProductType() == 'bundle'){
+				$options = $_item->getChildrenItems();
+				$percent=0;
+				foreach($options as $option){
+					$taxclassid = $option->getProduct()->getData('tax_class_id');
+					$percent += Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+				}
+				$percent = $percent/sizeof($options);
+			} else {
+				$percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+			}
+			            
 			$_price = $_taxHelper->getPrice($_product, $_product->getPrice()) ;
 			$_regularPrice = $_taxHelper->getPrice($_product, $_product->getPrice(), $_simplePricesTax); 
 			$_finalPrice = $_taxHelper->getPrice($_product, $_product->getFinalPrice(), false) ;
@@ -118,11 +130,15 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
 			$_weeeDisplayType = $_weeeHelper->getPriceDisplayType(); 
 
 			$price = $_finalPrice;
+
+			if( $_item->getProductType() == 'configurable' || $_item->getProductType() == 'bundle' ){
+				$priceinc = $_item->getOriginalPrice();
+				$price = $_item->getOriginalPrice() / (1+$percent/100);
+			}
+
 			if( $baseCurrencyCode != $currentCurrencyCode ){
 				$price = $_directory->currencyConvert($_finalPrice,$baseCurrencyCode,$currentCurrencyCode);
 			}
-//			$price = $_directory->currencyConvert($_finalPrice,$baseCurrencyCode,$currentCurrencyCode);
-//			$price = $_directory->currencyConvert($_product->getFinalPrice(),$baseCurrencyCode,$currentCurrencyCode);
 
 			$goods_list[] = array(
 				'qty'   => (int)$_item->getQtyOrdered(),
@@ -137,6 +153,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
 			);
 			$discountAmount+= abs( $_item->getDiscountAmount() );
 	    }
+
 		$totals = Mage::getSingleton('checkout/session')->getQuote()->getTotals();
 		
 		//print_r($quote1['subtotal']->getData());
@@ -149,8 +166,8 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
 			$goods_list[] = array(
 				'qty'   => (int)1,
 				'goods' => array(
-					'artno'    => 'discount',
-					'title'    => Mage::helper('payment')->__('Discount'),
+					'artno'    => '',
+					'title'    => Mage::helper('payment')->__('Rabatt'),
 					'price'    => -round(($discountAmount*0.8)*100),
 					'vat'      => ($applyTax) ?$percent:0,
 					'discount' => 0.0,
@@ -203,17 +220,19 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
 	    );
 		$transaction["extraInfo"][0]["status"] = 'Paid';
 		$qt = Mage::getSingleton('checkout/session')->getQuote();
+		
 		if( $addorder ) {
 			$k->addOrder('',$bill_address,$ship_address,$goods_list,$transaction);
 			return;
 		}
+		$session = Mage::getSingleton("core/session",  array("name"=>"frontend"));
+		if( $session->getData('bank_api_called') == 1) return;
+
 	    $result1 = $k->AddInvoice('',$bill_address,$ship_address,$goods_list,$transaction);
         if( !is_array($result1)){
             Mage::throwException( utf8_encode( $result1));
         }else{
-			//$session = Mage::getSingleton("core/session",  array("name"=>"frontend"));
-			// set data
-			//$session->setData("billmateinvoice_id", $result1[0]);
+			$session->setData("bank_api_called", 1);
 		}
     }
 }

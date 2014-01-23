@@ -122,9 +122,25 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         $store = Mage::app()->getStore();
 	    foreach( $quote->getAllItems() as $_item){ 
             
+            if( $_item->getParentItemId() ){
+				continue;
+			}
+
             $request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
             $taxclassid = $_item->getProduct()->getData('tax_class_id');
-            $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+			
+			if( $taxclassid == null && $_item->getProductType() == 'bundle'){
+				$options = $_item->getChildren();
+				$percent=0;
+				foreach($options as $option){
+					$taxclassid = $option->getProduct()->getData('tax_class_id');
+					$percent += Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+				}
+				$percent = $percent/sizeof($options);
+			} else {
+				$percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+			}
+			
             $_product = $_item->getProduct();
 
 			$_price = $_taxHelper->getPrice($_product, $_product->getPrice()) ;
@@ -135,6 +151,11 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
 		
 			//$price = $_directory->currencyConvert($_finalPrice,$baseCurrencyCode,$currentCurrencyCode);
 			$price = $_finalPrice;
+
+			if( $_item->getProductType() == 'configurable' || $_item->getProductType() == 'bundle' ){
+				$price = $_item->getCalculationPriceOriginal();
+			}
+
 			if( $baseCurrencyCode != $currentCurrencyCode ){
 				$price = $_directory->currencyConvert($_finalPrice,$baseCurrencyCode,$currentCurrencyCode);
 			}
@@ -142,7 +163,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
 			$goods_list[] = array(
 				'qty'   => (int)$_item->getQty(),
 				'goods' => array(
-					'artno'    => $_item->getSKU(),
+					'artno'    => $_product->getSKU(),
 					'title'    => $_item->getName(),
 					'price'    => (int)round($price*100,0),
 					'vat'      => (float)$percent,

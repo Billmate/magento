@@ -10,6 +10,14 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
     {
         $session = Mage::getSingleton('checkout/session');
         $session->setPaypalStandardQuoteId($session->getQuoteId());
+        $orderIncrementId = $session->getPaypalStandardQuoteId();
+        $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
+		
+		$status = 'pending_payment';
+		$isCustomerNotified = false;
+		$order->setState('new', $status, '', $isCustomerNotified);
+		$order->save();
+
         $this->getResponse()->setBody($this->getLayout()->createBlock('billmatebankpay/bankpay_redirect')->toHtml());
         $session->unsQuoteId();
         $session->unsRedirectUrl();
@@ -61,6 +69,12 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $gateway =  Mage::getSingleton('billmatebankpay/gateway');
             $gateway->makePayment($order);
             
+			$status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
+			
+			$isCustomerNotified = false;
+			$order->setState('new', $status, '', $isCustomerNotified);
+			$order->save();
+
             $session->setQuoteId($session->getPaypalStandardQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
 			$order->sendNewOrderEmail(); 
