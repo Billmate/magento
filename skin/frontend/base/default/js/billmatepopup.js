@@ -293,7 +293,6 @@ function reviewstep(){
 String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
 
 function checkAddress(psn){
-	if( typeof FireCheckout != 'undefined' ) return false;
 	
 	var selectedGateway = $$('[name="payment[method]"]:checked')[0].value;
 	
