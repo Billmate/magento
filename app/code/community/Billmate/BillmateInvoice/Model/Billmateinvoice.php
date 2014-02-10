@@ -1,6 +1,4 @@
 <?php
-ini_set('display_errors', 1 );
-error_reporting(E_ALL);
 
 class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_Method_Abstract{
     protected $_code = 'billmateinvoice';
@@ -19,10 +17,8 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
 	
     public function isAvailable($quote = null)
     {
-    	if( Mage::getStoreConfig('payment/billmateinvoice/active') != 1 ){
-    		return false;
-    	}
         if($quote == null ) return false;
+        if( Mage::getStoreConfig('payment/billmateinvoice/active') != 1 ) return false;
         $countries = explode(',', Mage::getStoreConfig('payment/billmateinvoice/countries'));
         return in_array($quote->getBillingAddress()->getCountry(), $countries );
     }

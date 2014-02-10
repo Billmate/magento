@@ -4,6 +4,7 @@ class Billmate_BillmateInvoice_Model_Quote_TaxTotal extends Mage_Sales_Model_Quo
 {
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
+		parent::collect($address);
         $collection = $address->getQuote()->getPaymentsCollection();
         if ($collection->count() <= 0 || $address->getQuote()->getPayment()->getMethod() == null) {
             return $this;
@@ -82,13 +83,13 @@ class Billmate_BillmateInvoice_Model_Quote_TaxTotal extends Mage_Sales_Model_Quo
          * Modify subtotal
          */
 
-		 if (Mage::getSingleton('tax/config')->displayCartSubtotalBoth($store) ||
+         if (Mage::getSingleton('tax/config')->displayCartSubtotalBoth($store) ||
             Mage::getSingleton('tax/config')->displayCartSubtotalInclTax($store)) {
 
             if ($address->getSubtotalInclTax() > 0) {
                 $subtotalInclTax = $address->getSubtotalInclTax();
             } else {
-                $subtotalInclTax = $address->getSubtotal() + $address->getPaymentTaxAmount() -
+                $subtotalInclTax = $address->getSubtotal()+ $address->getTaxAmount() -
                     $address->getShippingTaxAmount() - $address->getPaymentTaxAmount();
             }            
 

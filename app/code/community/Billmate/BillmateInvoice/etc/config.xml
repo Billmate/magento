@@ -62,11 +62,12 @@
                         <!-- <after>subtotal,discount,shipping</after>
                         <before>tax,grand_total</before> -->
 						<before>shipping</before>
+						<after>tax</after>
                     </fee>
 					<billmate_tax>
                         <class>billmateinvoice/quote_taxTotal</class>
-                        <after>subtotal,discount,shipping,tax</after>
-                        <before>grand_total</before>
+                        <after>discount,shipping,subtotal</after>
+                        <before>tax,grand_total</before>
                     </billmate_tax>
                 </totals>
             </quote>

@@ -11,6 +11,7 @@ class Billmate_BillmateInvoice_Model_Quote_Total extends Mage_Sales_Model_Quote_
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
 
+		parent::collect($address);
         if ($address->getAddressType() != "shipping") {
             return $this;
         }

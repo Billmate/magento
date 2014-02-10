@@ -7,6 +7,7 @@ class Billmate_BillmateInvoice_Block_Order_Totals_Fee extends Mage_Sales_Block_O
     {
         
         parent::_initTotals();
+		
         $payment = $this->getOrder()->getPayment();
 
         if ($payment->getMethod() != "billmateinvoice") {

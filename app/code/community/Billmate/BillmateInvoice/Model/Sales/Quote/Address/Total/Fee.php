@@ -6,12 +6,26 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
         parent::collect($address);
- 
+
+		$page = $_SERVER['REQUEST_URI'];
+		$onepage = "checkout/cart";
+		$onepagecheck = strpos($page, $onepage);
+
+		if ($onepagecheck !== false) {
+			return $this;
+		}
+	
         $this->_setAmount(0);
         $this->_setBaseAmount(0);
+		
+		if(count($address->getAllItems()) == 0)
+        {
+            return $this;
+        }
 
         $quote = $address->getQuote();
         $payment = $quote->getPayment();
+		
         try{
             $method = $payment->getMethodInstance();
         }catch(Mage_Core_Exception $e){

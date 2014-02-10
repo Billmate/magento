@@ -1,9 +1,9 @@
 <?php
 
+
 class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Front_Action{
 
     function IndexAction(){
-
         $quote =  Mage::getSingleton('checkout/session')->getQuote();
                 
         if ($this->getRequest()->isPost()){
@@ -31,8 +31,6 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
     
     }
 	function getInfoAction(){
-	    var_dump( Mage::getStoreConfig('payment/billmateinvoice/secret', Mage::app()->getStore()->getWebsiteId()));
-		
 		$this->loadLayout();
 		$this->_initLayoutMessages('customer/session');
 		$this->renderLayout();
