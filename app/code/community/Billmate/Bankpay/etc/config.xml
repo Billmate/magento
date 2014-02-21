@@ -59,8 +59,6 @@
                 <countries>SE,DE,NL</countries>
                 <title>Billmate Bankpay</title>
 				<bank_error_page>home</bank_error_page>
-                <eid>7270</eid>
-                <secret>606250886062</secret>
                 <active>0</active>
                 <order_status>pending</order_status>
             </billmatebankpay>

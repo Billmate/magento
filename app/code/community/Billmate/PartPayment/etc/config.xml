@@ -82,8 +82,6 @@
                 <active>0</active>
                 <order_status>pending</order_status>
                 <countries>SE,NL,DE</countries>
-                <eid>7270</eid>
-                <secret>606250886062</secret>
                 <payment_action>authorize</payment_action>
             </partpayment>
         </payment>
