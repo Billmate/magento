@@ -356,7 +356,7 @@ function ShowMessage(content,wtitle){
 	if(matchMedia('(max-width: 800px)').matches){
 		modalWin.ShowMessage(content,370,250,wtitle);
 	}else if(matchMedia('(min-width: 800px)').matches){
-		modalWin.ShowMessage(content,260,500,wtitle);
+		modalWin.ShowMessage(content,240,500,wtitle);
 	}else{
 	}
 }
@@ -365,7 +365,7 @@ AddEvent(window,'resize',function(){
 		if(matchMedia('(max-width: 800px)').matches){
 			modalWin.ResizePopUp(370,250);
 		}else if(matchMedia('(min-width: 800px)').matches){
-			modalWin.ResizePopUp(260,500);
+			modalWin.ResizePopUp(240,500);
 		}
 	}
 });

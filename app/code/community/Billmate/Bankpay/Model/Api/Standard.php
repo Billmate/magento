@@ -116,8 +116,7 @@ class Billmate_Bankpay_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
 		$request['mac'] = $mac	;
 		
 		require_once Mage::getBaseDir('lib').'/Billmate/commonfunctions.php';
-		billmate_log_data(array($request), $request['merchant_id'],'Bankpay Hidden form');
-
+		
         // payer address
         return $request;
     }
