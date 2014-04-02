@@ -62,7 +62,9 @@
                 <eid>7270</eid>
                 <secret>606250886062</secret>
                 <active>0</active>
-                <order_status>pending</order_status>
+                <min_amount>0</min_amount>
+                <max_amount>99999</max_amount>
+               <order_status>pending</order_status>
             </billmatebankpay>
         </payment>
         <payment_action>authorize</payment_action>

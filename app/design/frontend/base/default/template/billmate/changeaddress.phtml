@@ -1,13 +1,21 @@
 <?php $gateway = Mage::getSingleton('billmateinvoice/gateway');
 
-$fieldname = array('firstname','lastname','street][','city','postcode');
+$fieldname = array(	'street][','city','postcode');
 $groupname = array('billing','shipping');
 $address   = array_combine(
 				$fieldname,
-				array($gateway->firstname, $gateway->lastname, $gateway->street, $gateway->city, $gateway->postcode)
+				array($gateway->street, $gateway->city, $gateway->postcode)
 			);
+if(strlen($gateway->firstname)>0){
+	$fieldname[] = 'firstname';
+	$address['firstname'] = $gateway->firstname;
+}
+if(strlen($gateway->lastname)>0){
+	$fieldname[] = 'lastname';
+	$address['lastname'] = $gateway->lastname;
+}
 
- if($this->isMatched()):
+if($this->isMatched()):
 	echo 'if(typeof checkout.form != "undefined"  || typeof checkoutForm != "undefined"){',"\n";
 	foreach( $groupname as $group ){
 		foreach($fieldname as $row){
@@ -22,6 +30,6 @@ paymentSave();';
 
 <?php else: ?>
 
-$html='<span style="line-height: 1.4em;"><?php echo strlen($gateway->company)? $gateway->company : $gateway->firstname.' '.$gateway->lastname; ?><br><?php echo $gateway->street; ?><br><?php echo $gateway->postcode.'<br/>'.$gateway->city.'<br/>'.($gateway->country == 'se' ? '':$gateway->country_name); ?></span><div style="margin-top:1em"><input type="button" id="updateAddressYes" onclick="updateAddress()" value="<?php echo $this->__('Yes, make purchase with this address')?>" class="billmate_button"/></div><div><a onclick="modalWin.HideModalPopUp();" class="linktag" ><?php echo $this->__('No, I want to specify a different number or change payment method')?></a></div>';
+$html='<span style="line-height: 1.4em;"><?php echo $gateway->firstname.' '.$gateway->lastname; ?><br><?php echo $gateway->street; ?><br><?php echo $gateway->postcode.'<br/>'.$gateway->city.'<br/>'.($gateway->country == 'se' ? '':$gateway->country_name); ?></span><div style="margin-top:1em"><input type="button" id="updateAddressYes" onclick="updateAddress()" value="<?php echo $this->__('Yes, make purchase with this address')?>" class="billmate_button"/></div><div><a onclick="modalWin.HideModalPopUp();" class="linktag" ><?php echo $this->__('No, I want to specify a different number or change payment method')?></a></div>';
 ShowMessage($html,'<?php echo $this->__('Pay by invoice can be made only to the address listed in the National Register. Would you like to make the purchase with address:')?>');
 <?php endif; ?>

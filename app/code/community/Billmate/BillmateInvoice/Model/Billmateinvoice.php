@@ -20,7 +20,15 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
         if($quote == null ) return false;
         if( Mage::getStoreConfig('payment/billmateinvoice/active') != 1 ) return false;
         $countries = explode(',', Mage::getStoreConfig('payment/billmateinvoice/countries'));
-        return in_array($quote->getBillingAddress()->getCountry(), $countries );
+
+        if( in_array($quote->getShippingAddress()->getCountry(), $countries ) ){
+			$data = $quote->getTotals();
+			$total = $data['subtotal']->getValue();
+			$min_total = Mage::getStoreConfig('payment/billmateinvoice/min_amount');
+			$max_total = Mage::getStoreConfig('payment/billmateinvoice/max_amount');
+			return $total >= $min_total && $total <= $max_total;
+		}
+		return false;
     }
     public function authorize(Varien_Object $payment, $amount)
     {

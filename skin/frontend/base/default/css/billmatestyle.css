@@ -29,6 +29,7 @@
 }
 #payment_form_partpayment , #payment_form_billmateinvoice {
 	width:100!important%;
+	display:block;
 }
 #payment_form_partpayment li, #payment_form_billmateinvoice  li{
 	width:100%!important;

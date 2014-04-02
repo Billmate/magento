@@ -9,14 +9,18 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
     public function redirectAction()
     {
         $session = Mage::getSingleton('checkout/session');
-        $session->setPaypalStandardQuoteId($session->getQuoteId());
-        $orderIncrementId = $session->getPaypalStandardQuoteId();
+        $session->getBillmateStandardQuoteId($session->getQuoteId());
+		
+        $orderIncrementId = $session->getBillmateStandardQuoteId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
 		
 		$status = 'pending_payment';
 		$isCustomerNotified = false;
 		$order->setState('new', $status, '', $isCustomerNotified);
 		$order->save();
+
+		$session->getQuote()->setIsActive(false)->save();
+		$session->clear();	
 
         $this->getResponse()->setBody($this->getLayout()->createBlock('billmatebankpay/bankpay_redirect')->toHtml());
         $session->unsQuoteId();
@@ -28,14 +32,49 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
     public function cancelAction()
     {
         $session = Mage::getSingleton('checkout/session');
-        $session->setQuoteId($session->getPaypalStandardQuoteId(true));
-        if ($session->getLastRealOrderId()) {
-            $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());
-            if ($order->getId()) {
-                $order->cancel()->save();
-            }
+        $order = Mage::getModel('sales/order');
+		$message = 'Order canceled by user';
+        $order_id = $session->getLastRealOrderId();
+        $order->loadByIncrementId($order_id);
+
+        if (!$order->isCanceled() && !$order->hasInvoices()) {
+            $order->cancel();
+            $order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, $message);
+            $order->save();
+
+            // Rollback stock
+           // Mage::helper('billmatecardpay')->rollbackStockItems($order);
         }
-        $this->_redirect('checkout/cart');
+		
+        //$session->setQuoteId($session->getBillmateQuoteId(true));
+        if ($quoteId = $session->getLastQuoteId()) {
+            $quote = Mage::getModel('sales/quote')->load($quoteId);
+            if ($quote->getId()) {
+                $quote->setIsActive(true)->save();
+                $session->setQuoteId($quoteId);
+            }
+			
+			$quoteItems = $quote->getAllItems();
+			if( sizeof( $quoteItems ) <=0 ){
+				$items = $order->getAllItems();
+				if( $items ){
+					foreach( $items as $item ){
+						$product1 = Mage::getModel('catalog/product')->load($item->getProductId());
+						$qty = $item->getQtyOrdered();
+						$quote->addProduct($product1, $qty);
+					}
+				}else{
+					$quote->setIsActive(false)->save();
+					$this->_redirect('/');
+				}
+				$quote->collectTotals()->save();
+			}
+        }
+		Mage::getSingleton('core/session')->setFailureMsg('order_failed');
+		Mage::getSingleton('checkout/session')->setFirstTimeChk('0');
+		Mage::dispatchEvent('sales_model_service_quote_submit_failure', array('order'=>$order, 'quote'=>$quote));
+        header('location:'. Mage::helper('checkout/url')->getCheckoutUrl());
+		exit;
     }
 
     /**

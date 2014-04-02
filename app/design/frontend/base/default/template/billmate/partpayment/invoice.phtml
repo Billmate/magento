@@ -36,7 +36,7 @@ $customerData['email'] = Mage::getSingleton('checkout/session')
     </li>
     <li>
 		<input type="checkbox" onchange="checkAddress(this)" checked="checked" id="<?php echo $_code ?>_phone" name="payment[<?php echo $_code;?>_phone]" title="<?php echo $this->__('Phone Number') ?>" class="required-entry" value="on" style="float:left;margin:3px;" />
-        <label for="<?php echo $_code ?>_phone" class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email <b>%1$s</b> is accurate and can be used for billing', $customerData['email'] ) ?></label>
+        <label for="<?php echo $_code ?>_phone" class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email <b>%1$s</b> is accurate and can be used for billing', $customerData['email'] ) ?> <a id="terms-delbetalning"><?php echo $this->__('K&#246;pvillkor'); ?></a></label>
     </li>
     <?php echo $this->getChildHtml() ?>
 	<input type="hidden" name="<?php echo $_code ?>_index" value="<?php echo Mage::getUrl('partpayment/index') ?>"/>
@@ -46,4 +46,7 @@ $customerData['email'] = Mage::getSingleton('checkout/session')
 var billmateindexurl = "<?php echo Mage::getUrl('billmateinvoice/index') ?>";
 var billmatesaveurl  = '<?php echo Mage::getUrl('billmateinvoice/index/updateAddress');?>';
 var skinurl = '<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) ?>';
+jQuery(document).ready(function(){
+	jQuery("#terms-delbetalning").Terms("villkor_delbetalning",{eid: "<?php echo Mage::getStoreConfig('payment/partpayment/eid'); ?>",effectiverate:34});
+});
 </script>

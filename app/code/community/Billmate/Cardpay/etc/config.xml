@@ -64,6 +64,8 @@
                 <prompt_name>0</prompt_name>
                 <do_3d_secure>1</do_3d_secure>
                 <active>0</active>
+                <min_amount>0</min_amount>
+                <max_amount>99999</max_amount>
                 <order_status>pending</order_status>
             </billmatecardpay>
         </payment>

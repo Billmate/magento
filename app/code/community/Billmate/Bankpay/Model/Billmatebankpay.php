@@ -21,7 +21,15 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
         if($quote == null ) return false;
 		if( Mage::getStoreConfig('payment/billmatebankpay/active') != 1 ) return false;
         $countries = explode(',', Mage::getStoreConfig('payment/billmatebankpay/countries'));
-        return in_array($quote->getShippingAddress()->getCountry(), $countries );
+
+        if( in_array($quote->getShippingAddress()->getCountry(), $countries ) ){
+			$data = $quote->getTotals();
+			$total = $data['subtotal']->getValue();
+			$min_total = Mage::getStoreConfig('payment/billmatebankpay/min_amount');
+			$max_total = Mage::getStoreConfig('payment/billmatebankpay/max_amount');
+			return $total >= $min_total && $total <= $max_total;
+		}
+		return false;
     }
 
     public function getConfig()
