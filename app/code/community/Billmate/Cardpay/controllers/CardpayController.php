@@ -10,6 +10,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
     {
         $session = Mage::getSingleton('checkout/session');
         $session->setBillmateQuoteId($session->getQuoteId());
+		$session->setBillmateCheckOutUrl($_SERVER['HTTP_REFERER']);
 
         $orderIncrementId = $session->getBillmateQuoteId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
@@ -70,10 +71,13 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 				$quote->collectTotals()->save();
 			}
         }
+		$checkouturl = $session->getBillmateCheckOutUrl();
+		$checkouturl = empty($checkouturl)?Mage::helper('checkout/url')->getCheckoutUrl():$checkouturl;
+
 		Mage::getSingleton('core/session')->setFailureMsg('order_failed');
 		Mage::getSingleton('checkout/session')->setFirstTimeChk('0');
 		Mage::dispatchEvent('sales_model_service_quote_submit_failure', array('order'=>$order, 'quote'=>$quote));
-        header('location:'. Mage::helper('checkout/url')->getCheckoutUrl());
+        header('location:'. $checkouturl);
 		exit;
     }
 
@@ -86,7 +90,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
     public function successAction()
     {
         $session = Mage::getSingleton('checkout/session');
-        $orderIncrementId = $session->getPaypalStandardQuoteId();
+        $orderIncrementId = $session->getBillmateQuoteId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
 		if(empty($_POST)) $_POST = $_GET;		
         
@@ -112,7 +116,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 			$isCustomerNotified = false;
 			$order->setState('new', $status, '', $isCustomerNotified);
 			$order->save();
-            $session->setQuoteId($session->getPaypalStandardQuoteId(true));
+            $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
 			$order->sendNewOrderEmail(); 
 

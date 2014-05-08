@@ -25,7 +25,7 @@
  *
  */
  class BillMate{
- 	var $SERVER = "0.5.8";
+ 	var $SERVER = "0.5.9";
  	var $CLIENT = "";
  	var $URL = "api.billmate.se";
  	var $URL_TEST = "apitest.billmate.se";
@@ -313,9 +313,13 @@
         return $result;
         
     }
-    protected function stat($type,$data, $response, $duration=0, $status=0) {
+    public function stat($type,$data, $response, $duration=0, $status=0) {
         $sock = @fsockopen('udp://'.$this->STAT, 51000, $errno, $errstr, 1500);
 
+		if(!isset($_SESSION["uniqueId"])){
+			$_SESSION["uniqueId"] = microtime(true)."-".rand(123456789, 987654321);
+		}
+		$uniqueId = $_SESSION["uniqueId"];
         if ($sock) {
         	$values = array(
         		"type"=>$type,
@@ -325,18 +329,19 @@
         		"duration"=>$duration,
         		"server"=>$_SERVER,
         		"eid"=>$this->eid,
-        		"client"=>$this->CLIENT
+        		"client"=>$this->CLIENT,
+				"uniqueId"=>$uniqueId
         	);
-                ob_start();
-                $writeflag = @fwrite($sock,json_encode($values));
-		ob_end_clean();
-                if($writeflag==0 && $type == 'add_invoice' ){
-                    $this->stat_post($data, $type,$response, $duration, $status);
-                }
-                @fclose($sock);
+			ob_start();
+			$writeflag = @fwrite($sock,json_encode($values));
+			ob_end_clean();
+			if($writeflag==0 && $type == 'add_invoice' ){
+				$this->stat_post($data, $type,$response, $duration, $status);
+			}
+			@fclose($sock);
         }
     }
-    protected function stat_post($data_rw,$type='', $response="", $duration=0, $status=0){
+    public function stat_post($data_rw,$type='', $response="", $duration=0, $status=0){
         $host = 'api.billmate.se/logs/index.php';
         $server = array('HTTP_USER_AGENT','SERVER_SOFTWARE','DOCUMENT_ROOT','SCRIPT_FILENAME','SERVER_PROTOCOL','REQUEST_METHOD','QUERY_STRING','REQUEST_TIME');
         $data['data'] = $data_rw;

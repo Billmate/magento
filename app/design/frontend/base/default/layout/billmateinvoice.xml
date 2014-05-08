@@ -3,17 +3,18 @@
     <default>
         <reference name="head">
 			<action method="addItem"><type>skin_js</type><name>js/billmatepopup.js?version=1.19</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/jquery.js?version=1.19</name></action>
 			<action method="addItem"><type>skin_css</type><name>css/billmatestyle.css</name></action>
 			<block type="core/text" name="billmate.inline.javascript">
 				<action method="setText">
 					<text>
 					<![CDATA[
-<script type="text/javascript" src="https://efinance.se/billmate/base_jquery.js"></script>
+<script type="text/javascript" src="https://efinance.se/billmate/base_jquery.js"></script>					
 <script type="text/javascript">
 var oldurl = null;
 </script>
 ]]>
-					</text>
+</text>
 				</action>
 			</block>
 			<block type="core/template" template="billmate/billmatescript.phtml" />
@@ -22,6 +23,9 @@ var oldurl = null;
     <billmateinvoice_index_index>
         <remove name="head"/>
         <remove name="footer"/>
+		<remove name="right"/>
+        <remove name="left"/>
+		
         <reference name="root">
             <action method="setTemplate">
                 <template>page/ajax.phtml</template>

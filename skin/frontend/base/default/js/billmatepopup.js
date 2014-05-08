@@ -246,7 +246,7 @@ function changeBillEvent(){
 		oldurl = payment.saveUrl;
 		payment.saveUrl = billmateindexurl;
 		payment.onComplete = function(res){
-			checkout.setLoadWaiting(false);
+			checkout.setLoadWaiting(Billmate.getStep());
 			eval(res.responseText);
 		}
 	}
@@ -255,13 +255,13 @@ function changeBillEvent(){
 //	}
 }
 function updateAddress(){
-	if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout.form != 'undefined'){
+	if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout.form != 'undefined' || typeof checkoutForm.form.id!= 'undefined'){
 		if( typeof checkout.form == 'undefined'){
 			params = Form.serialize(checkoutForm.form.id);
 		} else if(typeof checkout.form != 'undefined'){
 			params = Form.serialize(checkout.form);
 		}
-		checkout.setLoadWaiting(true);
+		checkout.setLoadWaiting(Billmate.getStep());
 		new Ajax.Request(billmatesaveurl, {
 			method: 'post',
 			parameters: params,
@@ -292,6 +292,14 @@ function reviewstep(){
 }
 String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
 
+var step = true;
+var Billmate = {
+	checkoutType: '',
+	step: true,
+	getStep: function(){
+		return this.step=='review' ? this.step : !this.step
+	}
+};
 function checkAddress(psn){
 	
 	var selectedGateway = $$('[name="payment[method]"]:checked')[0].value;
@@ -300,10 +308,19 @@ function checkAddress(psn){
 		afterSave();
 		return;
 	}
-	if(
-		( typeof checkout == 'undefined' || typeof checkout.form == 'undefined' )
-		&& ( typeof checkoutForm == 'undefined' || typeof checkoutForm.form.id == 'undefined' )
-	   ){
+	
+	isNotCheckout = typeof checkout == 'undefined' || typeof checkout.form == 'undefined';
+	isNotCheckoutForm = typeof checkoutForm == 'undefined' || typeof checkoutForm.form.id == 'undefined';
+	if( isNotCheckoutForm ){ // for only onestep checkout
+		Billmate.checkoutType = 'onestep'
+		checkoutForm = new VarienForm('onestep_form');
+		Billmate.step = 'review';
+	}else{
+		Billmate.step = true;
+	}
+	isNotCheckoutForm = typeof checkoutForm == 'undefined' || typeof checkoutForm.form.id == 'undefined';
+
+	if( isNotCheckout &&  isNotCheckoutForm ){
 	   	 return false;
 		}
 	if( typeof checkout.form == 'undefined'){
@@ -311,7 +328,7 @@ function checkAddress(psn){
 	} else if(typeof checkout.form != 'undefined'){
 		params = Form.serialize(checkout.form);
 	}
-	checkout.setLoadWaiting(true);
+	checkout.setLoadWaiting(Billmate.getStep());
 	new Ajax.Request(billmateindexurl, {
 		method: 'post',
 		parameters: params,
@@ -322,12 +339,14 @@ function checkAddress(psn){
 	});
 }
 function paymentSave(){
-
+	if( typeof checkout.LightcheckoutSubmit == 'function'){
+		return checkout.LightcheckoutSubmit();
+	}
 	if(typeof checkout.form == 'undefined'){
-		checkout.setLoadWaiting(false);
+		checkout.setLoadWaiting(Billmate.getStep());
 		payment.saveUrl = oldurl;
 		payment.onComplete = function(){
-			checkout.setLoadWaiting(false);
+			checkout.setLoadWaiting(Billmate.getStep());
 			payment.saveUrl = billmateindexurl;
 			payment.onComplete = function(res){
 				checkout.setLoadWaiting(false);
@@ -375,10 +394,15 @@ AddEvent(window, 'load', function(){
 	if(typeof checkout!= 'undefined' && typeof checkout.form == 'undefined'){
 		changeBillEvent();
 	}
+	jQuery.getScript('https://efinance.se/billmate/base_jquery.js', function() {
+		jQuery("#terms").Terms("villkor",{invoicefee:0});
+		jQuery("#terms-delbetalning").Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34});;
+	});
+
 	modalWin = new CreateModalPopUpObject();
 	if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
 		$checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
-		$$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ checkAddress(); };
+		$$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ checkAddress(); return false;};
 	}
 });
 function ShowDivInCenter(divId)

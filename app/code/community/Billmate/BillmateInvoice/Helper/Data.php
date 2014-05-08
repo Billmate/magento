@@ -10,14 +10,19 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
 	}
 
 	function convert2Decimal($amount){
+		if( empty( $amount)) {
+			return '';
+		}
 		$dotPosition = strpos($amount, '.');
 		$CommaPosition = strpos($amount, ',');
 		if( $dotPosition > $CommaPosition ){
 			return str_replace(',', '', $amount);
 		}else{
+			$data[1] = empty($data[1])?'':$data[1];
+			$data[0] = empty($data[0])?'':$data[0];
 			$data = explode(',', $amount);
-			$p    = str_replace( '.' ,'', $data[0]);
-			return $p.'.'.$data[1];	
+			$p = str_replace( '.' ,'', $data[0]);
+			return $p.'.'.$data[1];
 		}
 	}
 	

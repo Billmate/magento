@@ -122,15 +122,11 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
 				$percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
 			}
             
-			$priceinc = $_item->getOriginalPrice();
+			$priceinc = $_item->getPriceInclTax();
 			if( Mage::getStoreConfig("tax/calculation/price_includes_tax", $store->getId())){
-				$price = $_item->getOriginalPrice() / (1+$percent/100);
+				$price = $_item->getPriceInclTax() / (1+$percent/100);
 			}else{
-				$price = $_item->getOriginalPrice();
-			}
-
-			if( $baseCurrencyCode != $currentCurrencyCode ){
-				$price = $_directory->currencyConvert($_finalPrice,$baseCurrencyCode,$currentCurrencyCode);
+				$price = $_item->getPriceInclTax();
 			}
 
 			$goods_list[] = array(

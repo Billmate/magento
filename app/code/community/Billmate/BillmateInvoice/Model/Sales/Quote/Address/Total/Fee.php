@@ -44,7 +44,8 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
 			->replaceSeparator( 
 				Mage::getStoreConfig('payment/billmateinvoice/billmate_fee') 
 			);
- 
+		
+		
         $exist_amount = $quote->getFeeAmount();
 		
 		if(Mage::getStoreConfig('payment/billmateinvoice/tax_class')){
