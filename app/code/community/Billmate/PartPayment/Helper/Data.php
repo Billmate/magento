@@ -108,14 +108,13 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
         );
 
         $data = $billmate->FetchCampaigns($additionalinfo);
-        
+
         array_walk($data, array($this,'correct_lang_billmate'));
 
 //        $model = Mage::getModel('partpayment/pclass');
         foreach($data as $_row ){
             $_row['eid'] = $eid;
             $_row['country_code'] = (string)$countrycode ;
-            
             Mage::getModel('partpayment/pclass')
             ->addData($_row)
             ->save();
@@ -170,7 +169,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 			if ($pclass->getType() == 2) {
 				$monthly_cost = -1;
 			} else {
-				if ($total < $pclass->getMinamount()) {
+				if ($total < $pclass->getMinamount() || ($total > $pclass->getMaxamount() && $pclass->getMaxamount() > 0)) {
 					continue;
 				}
 	
@@ -282,7 +281,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 		return $title;
     }
     function correct_lang_billmate(&$item, $index){
-        $keys = array('pclassid', 'description','months', 'startfee','invoicefee','interestrate', 'minamount', 'country', 'type', 'expire' );
+        $keys = array('pclassid', 'description','months', 'startfee','invoicefee','interestrate', 'minamount', 'country', 'type', 'expire', 'maxamount' );
         $item[1] = utf8_encode($item[1]);
         if( !is_array($item ) ){
             Mage::log('Not and array');
@@ -293,5 +292,6 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
         $item['invoicefee'] = $item['invoicefee'] / 100;
         $item['interestrate'] = $item['interestrate'] / 100;
         $item['minamount'] = $item['minamount'] / 100;
+        $item['maxamount'] = $item['maxamount'] / 100;
     }
 }

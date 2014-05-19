@@ -11,6 +11,7 @@ $installer->run("CREATE TABLE IF NOT EXISTS `{$this->getTable('billmate_payment_
   `invoicefee` decimal(11,2) NOT NULL,
   `startfee` decimal(11,2) NOT NULL,
   `minamount` decimal(11,2) NOT NULL,
+  `maxamount` decimal(11,2) NOT NULL,  
   `country` int(11) NOT NULL,
   `expire` int(11) NOT NULL,
   `country_code` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
