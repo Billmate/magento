@@ -255,7 +255,7 @@ function changeBillEvent(){
 //	}
 }
 function updateAddress(){
-	if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout.form != 'undefined' || typeof checkoutForm.form.id!= 'undefined'){
+	if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout.form != 'undefined' || typeof checkoutForm!= 'undefined'){
 		if( typeof checkout.form == 'undefined'){
 			params = Form.serialize(checkoutForm.form.id);
 		} else if(typeof checkout.form != 'undefined'){
@@ -309,9 +309,10 @@ function checkAddress(psn){
 		return;
 	}
 	
+	
 	isNotCheckout = typeof checkout == 'undefined' || typeof checkout.form == 'undefined';
 	isNotCheckoutForm = typeof checkoutForm == 'undefined' || typeof checkoutForm.form.id == 'undefined';
-	if( isNotCheckoutForm ){ // for only onestep checkout
+	if( isNotCheckoutForm && isNotCheckout){ // for only onestep checkout
 		Billmate.checkoutType = 'onestep'
 		checkoutForm = new VarienForm('onestep_form');
 		Billmate.step = 'review';
@@ -355,7 +356,7 @@ function paymentSave(){
 		};
 		payment.save();
 	}else{
-		if( typeof FireCheckout != 'undefined' ){
+		if( typeof FireCheckout != 'undefined' || typeof OPC != 'undefined' ){
 			checkout.save();
 		}
 	}

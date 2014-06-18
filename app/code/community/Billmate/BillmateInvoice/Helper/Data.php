@@ -18,9 +18,9 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
 		if( $dotPosition > $CommaPosition ){
 			return str_replace(',', '', $amount);
 		}else{
+			$data = explode(',', $amount);
 			$data[1] = empty($data[1])?'':$data[1];
 			$data[0] = empty($data[0])?'':$data[0];
-			$data = explode(',', $amount);
 			$p = str_replace( '.' ,'', $data[0]);
 			return $p.'.'.$data[1];
 		}

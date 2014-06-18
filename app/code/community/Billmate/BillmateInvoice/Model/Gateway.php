@@ -151,7 +151,10 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 		
        $rates = $quote->getShippingAddress()->getShippingRatesCollection();
        if(!empty($rates)){
-			$rate = round( $Shipping->getBaseShippingTaxAmount() / $Shipping->getBaseShippingAmount() * 100);
+			if( $Shipping->getBaseShippingTaxAmount() > 0 )
+				$rate = round( $Shipping->getBaseShippingTaxAmount() / $Shipping->getBaseShippingAmount() * 100);
+			else
+				$rate = 0;
 		    $goods_list[] = array(
 			    'qty'   => 1,
 			    'goods' => array(
@@ -193,6 +196,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
         
 	    $transaction = array(
 		    "order1"=>(string)time(),
+		    "order2"=>'',			
 		    "comment"=>(string)'',
 		    "flags"=>0,
 		    "reference"=>"",
