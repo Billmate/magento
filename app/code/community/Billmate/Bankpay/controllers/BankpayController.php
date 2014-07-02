@@ -91,6 +91,10 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $orderIncrementId = $session->getBillmateStandardQuoteId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
         
+		$session->setLastSuccessQuoteId($session->getBillmateQuoteId());
+        $session->setLastQuoteId($session->getBillmateQuoteId());
+        $session->setLastOrderId($session->getLastOrderId());
+
 		if(empty($_POST)) $_POST = $_GET;
 		
         if( !empty($_POST['status']) && $_POST['status'] != 0 ){

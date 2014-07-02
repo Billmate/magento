@@ -92,6 +92,11 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         $session = Mage::getSingleton('checkout/session');
         $orderIncrementId = $session->getBillmateQuoteId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
+
+		$session->setLastSuccessQuoteId($session->getBillmateQuoteId());
+        $session->setLastQuoteId($session->getBillmateQuoteId());
+        $session->setLastOrderId($session->getLastOrderId());
+
 		if(empty($_POST)) $_POST = $_GET;		
         
         if( !empty($_POST['status']) && $_POST['status'] != 0 ){
