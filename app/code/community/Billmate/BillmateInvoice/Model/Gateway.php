@@ -111,7 +111,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 			$_finalPriceInclTax = $_taxHelper->getPrice($_product, $_product->getFinalPrice(), true) ;
 			$_weeeDisplayType = $_weeeHelper->getPriceDisplayType(); 
 
-			$price = $_directory->currencyConvert($_finalPrice,$baseCurrencyCode,$currentCurrencyCode);
+			$price = $_directory->currencyConvert($_item->getCalculationPrice(),$baseCurrencyCode,$currentCurrencyCode);
 		
 		//Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
 		
