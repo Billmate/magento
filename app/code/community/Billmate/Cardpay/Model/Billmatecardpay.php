@@ -68,7 +68,7 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
 			->setReturnMethod('GET')
 			->setPromptNameEntry($prompt_name)
 			->setDo3dSecure($do3dsecure)
-            ->setNotifyUrl('http://api.billmate.se/callback.php')
+            ->setNotifyUrl(Mage::getUrl('cardpay/cardpay/notify'))
             ->setReturnUrl(Mage::getUrl('cardpay/cardpay/success'))
             ->setCancelUrl(Mage::getUrl('cardpay/cardpay/cancel'));
             

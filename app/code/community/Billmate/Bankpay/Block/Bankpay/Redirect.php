@@ -17,8 +17,8 @@ class Billmate_Bankpay_Block_Bankpay_Redirect extends Mage_Core_Block_Abstract
             $form->addField($field, 'hidden', array('name'=>$field, 'value'=>$value));
         }
         $session = Mage::getSingleton('checkout/session');
-        $orderIncrementId = $session->getPaypalStandardQuoteId();
-        $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
+        $orderIncrementId = $session->getLastRealOrderId();
+        $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
 
 		$gateway =  Mage::getSingleton('billmatebankpay/gateway');
 		$gateway->makePayment($order, true);
