@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Billmate_BillmateInvoice>
-            <version>1.0.0</version>
+            <version>1.3.3</version>
         </Billmate_BillmateInvoice>
     </modules>
     <global>
@@ -15,7 +15,7 @@
             <billmateinvoice_setup>
                 <setup>
                     <module>Billmate_BillmateInvoice</module>
-                    <class>Mage_Eav_Model_Entity_Setup</class>
+                    <class>Mage_Sales_Model_Resource_Setup</class>
                 </setup>
                 <connection>
                     <use>core_setup</use>
@@ -46,6 +46,7 @@
                 <rewrite>
                     <sales_order_totals>Billmate_BillmateInvoice_Block_Adminhtml_Sales_Order_Totals</sales_order_totals>
                     <sales_order_invoice_totals>Billmate_BillmateInvoice_Block_Adminhtml_Sales_Order_Totals</sales_order_invoice_totals>
+                    <sales_order_creditmemo_totals>Billmate_BillmateInvoice_Block_Adminhtml_Sales_Creditmemo_Totals</sales_order_creditmemo_totals>
                 </rewrite>
             </adminhtml>
         </blocks>
@@ -59,10 +60,10 @@
                 <totals>
                     <fee>
                         <class>billmateinvoice/sales_quote_address_total_fee</class>
-                        <!-- <after>subtotal,discount,shipping</after>
-                        <before>tax,grand_total</before> -->
-						<before>shipping</before>
-						<after>tax</after>
+                        <after>subtotal,discount,shipping</after>
+                        <before>tax,grand_total</before>
+						<!--<before>shipping</before>
+						<after>tax</after>-->
                     </fee>
 					<billmate_tax>
                         <class>billmateinvoice/quote_taxTotal</class>
@@ -71,6 +72,24 @@
                     </billmate_tax>
                 </totals>
             </quote>
+            <order_invoice>
+                <totals>
+                    <fee>
+                        <class>billmateinvoice/order_invoice_total_fee</class>
+                        <after>subtotal,discount,shipping</after>
+                        <before>tax,grand_total</before>
+                    </fee>
+                </totals>
+            </order_invoice>
+            <order_creditmemo>
+                <totals>
+                    <fee>
+                        <class>billmateinvoice/order_creditmemo_total_fee</class>
+                        <after>discount,shipping,subtotal</after>
+                        <before>tax,grand_total</before>
+                    </fee>
+                </totals>
+            </order_creditmemo>
         </sales>
         <fieldsets>
             <sales_convert_quote_address>
@@ -97,6 +116,25 @@
                     </billmateinvoice>
                 </observers>
             </sales_order_payment_place_end>
+            <sales_order_invoice_save_after>
+                <observers>
+                    <billmateinvoice_fee_save>
+                        <type>singleton</type>
+                        <class>billmateinvoice/observer</class>
+                        <method>invoiceSaveInvoiceFee</method>
+                    </billmateinvoice_fee_save>
+                </observers>
+
+            </sales_order_invoice_save_after>
+            <sales_order_creditmemo_save_after>
+                <observers>
+                    <billmateinvoice_creditmemo_fee>
+                        <type>singleton</type>
+                        <class>billmateinvoice/observer</class>
+                        <method>creditmemoSaveAfter</method>
+                    </billmateinvoice_creditmemo_fee>
+                </observers>
+            </sales_order_creditmemo_save_after>
         </events>
    </global>
    <default>
