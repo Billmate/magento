@@ -108,6 +108,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 					$quote->setIsActive(false)->save();
 					$this->_redirect('/');
 				}
+                $quote->setReservedOrderId(null);
 				$quote->collectTotals()->save();
 			}
         }
