@@ -4,7 +4,7 @@ class Billmate_BillmateInvoice_Model_Quote_TaxTotal extends Mage_Sales_Model_Quo
 {
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
-		parent::collect($address);
+		//parent::collect($address);
         $collection = $address->getQuote()->getPaymentsCollection();
         if ($collection->count() <= 0 || $address->getQuote()->getPayment()->getMethod() == null) {
             return $this;

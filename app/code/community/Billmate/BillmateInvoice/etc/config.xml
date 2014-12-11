@@ -67,8 +67,8 @@
                     </fee>
 					<billmate_tax>
                         <class>billmateinvoice/quote_taxTotal</class>
-                        <after>discount,shipping,subtotal</after>
-                        <before>tax,grand_total</before>
+                        <after>discount,shipping,subtotal,tax</after>
+                        <before>grand_total</before>
                     </billmate_tax>
                 </totals>
             </quote>
@@ -85,7 +85,7 @@
                 <totals>
                     <fee>
                         <class>billmateinvoice/order_creditmemo_total_fee</class>
-                        <after>discount,shipping,subtotal</after>
+                        <after>discount,shipping,subtotal,tax</after>
                         <before>tax,grand_total</before>
                     </fee>
                 </totals>

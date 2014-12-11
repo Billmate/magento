@@ -12,12 +12,14 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
         $k = Mage::helper('billmateinvoice')->getBillmate(true, false);
 
         $orderValues = array();
-        $orderValues['PaymentData'] = array(
-            'Number' => $liveid,
-            'Orderid' => $order->getIncrementId()
-        );
+        if($liveid) {
+            $orderValues['PaymentData'] = array(
+                'number' => $liveid,
+                'orderid' => $order->getIncrementId()
+            );
 
-		$k->UpdatePayment($orderValues);
+            $k->UpdatePayment($orderValues);
+        }
 	}
 
     public function salesOrderPaymentPlaceEnd(Varien_Event_Observer $observer)

@@ -23,7 +23,7 @@
 class BillMate{
 	var $VERSION = "";
 	var $CLIENT = "";
-	var $EID = "";
+	var $ID = "";
 	var $KEY = "";
 	var $URL = "api.billmate.se";
 	var $MODE = "CURL";
@@ -31,7 +31,7 @@ class BillMate{
 	var $TEST = false;
 	var $DEBUG = false;
 	function BillMate($eid,$key,$ssl=true,$test=false,$debug=false){
-		$this->EID = $eid;
+		$this->ID = $eid;
 		$this->KEY = $key;
         defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "Magento:BillMate:2.0.9" );
         defined('BILLMATE_SERVER') || define('BILLMATE_SERVER',  "2.0.6" );
@@ -47,7 +47,7 @@ class BillMate{
 	function call($function,$params) {
 		$values = array(
 			"credentials" => array(
-				"eid"=>$this->EID,
+				"id"=>$this->ID,
 				"hash"=>$this->hash(json_encode($params)),
 				"version"=>$this->VERSION,
 				"client"=>$this->CLIENT,

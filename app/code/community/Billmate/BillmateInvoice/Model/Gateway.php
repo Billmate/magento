@@ -70,20 +70,20 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 
 		$store = Mage::app()->getStore();
 
-        $orderValues['paymentData'] = array(
-            'Method' => 1,
-            'Currency' => $currentCurrencyCode,
-            'Country' => $storeCountryIso2,
-            'OrderId' => (string)time(),
-            'AutoActivate' => 0,
-            'Language' => Billmate_Country::fromLocale($storeLanguage)
+        $orderValues['PaymentData'] = array(
+            'method' => 1,
+            'currency' => $currentCurrencyCode,
+            'country' => $storeCountryIso2,
+            'orderid' => (string)time(),
+            'autoactivate' => 0,
+            'language' => BillmateCountry::fromLocale($storeLanguage)
 
         );
         $orderValues['PaymentInfo'] = array(
-            'PaymentDate' => date('Y-m-d',now()),
-            'Paymentterms' => 14,
-            'Yourreference' => $Billing->getFirstname(). ' ' . $Billing->getLastname(),
-            'Delivery' => $Shipping->getShippingMethod(),
+            'paymentdate' => (string)date('Y-m-d'),
+            'paymentterms' => 14,
+            'yourreference' => $Billing->getFirstname(). ' ' . $Billing->getLastname(),
+            'delivery' => $Shipping->getShippingMethod(),
 
         );
 
@@ -97,9 +97,9 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
             'company' => $Billing->getCompany(),
             'street' => $bill[0],
             'street2' => isset($bill[1]) ? $bill[1] : '',
-            'zip' => $Billing->getPostCode(),
+            'zip' => $Billing->getPostcode(),
             'city' => $Billing->getCity(),
-            'country' => Billmate_Country::fromCode($Billing->getCountry()),
+            'country' => BillmateCountry::fromCode($Billing->getCountry()),
             'phone' => $Billing->getTelephone(),
             'email' => $Billing->email
         );
@@ -110,9 +110,9 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
             'company' => $Shipping->getCompany(),
             'street' => $shipp[0],
             'street2' => isset($shipp[1]) ? $shipp[1] : '',
-            'zip' => $Shipping->getPostCode(),
+            'zip' => $Shipping->getPostcode(),
             'city' => $Shipping->getCity(),
-            'country' => Billmate_Country::fromCode($Shipping->getCountry()),
+            'country' => BillmateCountry::fromCode($Shipping->getCountry()),
             'phone' => $Shipping->getTelephone()
         );
 
@@ -140,13 +140,12 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 				$percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
 				$orderValues['Articles'][] = array(
 						'quantity'   => (int)$_item->getQty(),
-						'artnr'    => $_item->getSKU(),
+						'artnr'    => $_item->getProduct()->getSKU(),
                         'title'    => $_item->getName(),
                         // Dynamic pricing set price to zero
                         'aprice'    => (int)0,
                         'taxrate'      => (float)$percent,
                         'discount' => 0.0,
-                        'flags'    => 0,
                         'withouttax' => (int)0
 
 				);
@@ -163,13 +162,13 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 				$price = $_directory->currencyConvert($_item->getCalculationPrice(),$baseCurrencyCode,$currentCurrencyCode);
 					
 				//Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
-		
+
 				$orderValues['Articles'][] = array(
 						'quantity'   => (int)$_item->getQty(),
-						'artnr'    => $_item->getSKU(),
+						'artnr'    => $_item->getProduct()->getSKU(),
                         'title'    => $_item->getName(),
                         'aprice'    => (int)round($price*100,0),
-                        'vat'      => (float)$percent,
+                        'taxrate'      => (float)$percent,
                         'discount' => 0.0,
                         'withouttax' => $_item->getQty() * (int)round($price*100,0)
 
@@ -238,15 +237,15 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
             'tax' => $totalTax,
             'withtax' => $totalValue + $totalTax
         );
-		$result  = json_decode($k->addPayment($orderValues),true);
+		$result  = $k->addPayment($orderValues);
 
-        if(isset($result['data']['code'])){
+        if(isset($result['code'])){
 
-            Mage::throwException(utf8_encode($result['data']['code']. ': '.$result['data']['message']));
+            Mage::throwException(utf8_encode($result['code']. ': '.$result['message']));
         } else {
             $session = Mage::getSingleton('core/session', array('name' => 'frontend'));
-            $session->setData('billmateinvoice_id', $result['data']['number']);
-            $session->setData('billmateorder_id', $result['data']['orderid']);
+            $session->setData('billmateinvoice_id', $result['number']);
+            $session->setData('billmateorder_id', $result['orderid']);
         }
     }
     
@@ -272,14 +271,14 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
         $Shipping= $quote->getShippingAddress();
   
         try{
-            $addr = json_decode($k->getAddress(array('pno' =>$payment[$methodname.'_pno'])),true);
+            $addr = $k->getAddress(array('pno' =>$payment[$methodname.'_pno']));
             
 			if(!is_array($addr)){
 		        Mage::throwException( Mage::helper('payment')->__(utf8_encode($addr)));
             }
 
-			if( isset($addr['data']['code']) ){
-                switch($addr['data']['code']){
+			if( isset($addr['code']) ){
+                switch($addr['code']){
                     case '1001':
                         Mage::throwException( Mage::helper('payment')->__('Credit denied for Personal/Organisationnumber'));
                         break;
@@ -303,22 +302,22 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
                         break;
                 }
 			}
-			foreach( $addr['data'] as $key => $col ){
-				$addr['data'][$key] = utf8_encode(($col));
+			foreach( $addr as $key => $col ){
+				$addr[$key] = utf8_encode(($col));
 			}
-			if( empty( $addr['data']['firstname'] ) ){
+			if( empty( $addr['firstname'] ) ){
 				$this->firstname = $Billing->getFirstname();
 				$this->lastname = $Billing->getLastname();
-				$this->company  = $addr['data']['lastname'];
+				$this->company  = $addr['lastname'];
 			} else {
-				$this->firstname = $addr['data']['firstname'];
-				$this->lastname = $addr['data']['lastname'];
+				$this->firstname = $addr['firstname'];
+				$this->lastname = $addr['lastname'];
 				$this->company  = '';
 			}
-            $this->street = $addr['data']['address'];
-            $this->postcode = $addr['data']['zipcode'];
-            $this->city = $addr['data']['city'];
-            $this->country = BillmateCountry::getCode( $addr['data']['country'] );
+            $this->street = $addr['address'];
+            $this->postcode = $addr['zipcode'];
+            $this->city = $addr['city'];
+            $this->country = (BillmateCountry::getCode( $addr['country'] ) != '') ? BillmateCountry::getCode( $addr['country'] ) : 'se';
 			$this->country_name = Mage::getModel('directory/country')->loadByCode($this->country)->getName();
 
         }catch( Exception $ex ){
@@ -328,17 +327,17 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
 
         $fullname = $Billing->getFirstname().' '.$Billing->getLastname().' '.$Billing->getCompany();
-		if( empty($addr['data']['firstname']) ){
+		if( empty($addr['firstname']) ){
 			$apiName = $Billing->getFirstname().' '.$Billing->getLastname().' '.$Billing->getCompany();
 		} else {
-			$apiName  = $addr['data']['firstname'].' '.$addr['data']['lastname'];
+			$apiName  = $addr['firstname'].' '.$addr['lastname'];
 		}
         $billingStreet = $Billing->getStreet();
         
-		$addressNotMatched = !isEqual($addr['data']['address'], $billingStreet[0] ) ||
-		    !isEqual($addr['data']['zipcode'], $Billing->getPostcode()) ||
-		    !isEqual($addr['data']['city'], $Billing->getCity()) ||
-		    !isEqual(strtolower($addr['data']['country']), strtolower(BillmateCountry::fromCode($Billing->getCountryId())));
+		$addressNotMatched = !isEqual($addr['address'], $billingStreet[0] ) ||
+		    !isEqual($addr['zipcode'], $Billing->getPostcode()) ||
+		    !isEqual($addr['city'], $Billing->getCity()) ||
+		    !isEqual(strtolower($addr['country']), strtolower(BillmateCountry::fromCode($Billing->getCountryId())));
 
         
         $shippingStreet = $Shipping->getStreet();
