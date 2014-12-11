@@ -33,7 +33,7 @@ class BillMate{
 	function BillMate($eid,$key,$ssl=true,$test=false,$debug=false){
 		$this->EID = $eid;
 		$this->KEY = $key;
-        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "BillMate:2.0.9" );
+        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "Magento:BillMate:2.0.9" );
         defined('BILLMATE_SERVER') || define('BILLMATE_SERVER',  "2.0.6" );
 		$this->CLIENT = BILLMATE_CLIENT;
 		$this->SSL = $ssl;
