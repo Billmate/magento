@@ -5,7 +5,8 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
     function makePayment(){
         // Init $orderValues Array
         $orderValues = array();
-        $quote = Mage::getSingleton('checkout/session')->getQuote();        
+        $quote = Mage::getSingleton('checkout/session')->getQuote();
+
         $Billing= $quote->getBillingAddress();
         $Shipping= $quote->getShippingAddress();
 		
@@ -83,7 +84,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
             'paymentdate' => (string)date('Y-m-d'),
             'paymentterms' => 14,
             'yourreference' => $Billing->getFirstname(). ' ' . $Billing->getLastname(),
-            'delivery' => $Shipping->getShippingMethod(),
+            'delivery' => $Shipping->getShippingDescription(),
 
         );
 
