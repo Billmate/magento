@@ -11,7 +11,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
         $eid = (int)Mage::getStoreConfig('payment/partpayment/eid');
         $secret=(float)Mage::getStoreConfig('payment/partpayment/secret');
         $testmode=(boolean)Mage::getStoreConfig('payment/partpayment/test_mode');
-        return new Billmate($eid, $secret, $ssl, $debug, $testmode);
+        return new Billmate($eid, $secret, $ssl, $testmode,$debug);
     }
     private function getLowestPaymentAccount($country) {
         switch ($country) {

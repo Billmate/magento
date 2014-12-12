@@ -21,7 +21,7 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
             $result = $k->UpdatePayment($orderValues);
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$result['number']));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate status: '.$result['status']));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Invoice Url: '.$result['url']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Invoice Url: '.$result['urlJag ']));
             $order->save();
         }
 	}

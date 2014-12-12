@@ -96,7 +96,9 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
     public function getOrderPlaceRedirectUrl()
     {
         //when you click on place order you will be redirected on this url, if you don't want this action remove this method
-        return Mage::getUrl('cardpay/cardpay/redirect', array('_secure' => true));
+        $gateway = Mage::getSingleton('billmatecardpay/gateway');
+        $redirectUrl = $gateway->makePayment();
+        return $redirectUrl;
     }
     
     /*public function authorize(Varien_Object $payment, $amount){

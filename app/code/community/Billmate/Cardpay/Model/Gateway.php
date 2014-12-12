@@ -1,229 +1,245 @@
 <?php
 class Billmate_Cardpay_Model_Gateway extends Varien_Object{
     public $isMatched = true;
-    function makePayment($quote, $addorder = false){
-        
+    function makePayment(){
+        $quote = Mage::getSingleton('checkout/session')->getQuote();
+
         $_customer  = Mage::getSingleton('customer/session')->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomer()->getData() : null;
         $Customer = (object)$_customer;
-        
-		if(empty($_POST)) $_POST = $_GET;		
-		$country_to_currency = array(
-			'NO' => 'NOK',
-			'SE' => 'SEK',
-			'FI' => 'EUR',
-			'DK' => 'DKK',
-			'DE' => 'EUR',
-			'NL' => 'EUR',
-		);
-		$methodname = 'billmatecardpay';
+
+        if(empty($_POST)) $_POST = $_GET;
+        $country_to_currency = array(
+            'NO' => 'NOK',
+            'SE' => 'SEK',
+            'FI' => 'EUR',
+            'DK' => 'DKK',
+            'DE' => 'EUR',
+            'NL' => 'EUR',
+        );
+        $methodname = 'billmatebankpay';
         $k = Mage::helper($methodname)->getBillmate(true, false);
 
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
-        
 
-      //  $quote = Mage::getSingleton('checkout/session')->getQuote();        
+
+        //  $quote = Mage::getSingleton('checkout/session')->getQuote();
         $Billing= $quote->getBillingAddress();
         $Shipping= $quote->getShippingAddress();
-		
+
         $billingiso3 = Mage::getModel('directory/country')->load($Billing->getCountryId())->getIso3Code();
-		$billing_country = Mage::getModel('directory/country')->load($Billing->getCountryId())->getName() ;
+        $billing_country = Mage::getModel('directory/country')->load($Billing->getCountryId())->getName() ;
 
         $shippingiso3 = Mage::getModel('directory/country')->load($Shipping->getCountryId())->getIso3Code();
-		$shipping_country = Mage::getModel('directory/country')->load($Shipping->getCountryId())->getName() ;
-		$shipping_country = $shipping_country == 'SWE' ? 209 : $shipping_country;
+        $shipping_country = Mage::getModel('directory/country')->load($Shipping->getCountryId())->getName() ;
+        $shipping_country = $shipping_country == 'SWE' ? 209 : $shipping_country;
 
-		$language = 138;
-		$encoding = 2;
-		$currency = 0;
-        
-		switch ($billingiso3) {
-			// Sweden
-			case 'SWE':
-				$country = 209;
-				$language = 138;
-				$encoding = 2;
-				$currency = 0;
-				$billing_country = 209;
-				break;
-		}
-		
-		$ship_address = $bill_address = array();
-	    $shipp = $Shipping->getStreet();
+        // Get Store Country
+        $countryCode = Mage::getStoreConfig('general/country/default',Mage::app()->getStore());
+        $storeCountryIso2 = Mage::getModel('directory/country')->loadByCode($countryCode)->getIso2Code();
 
-	    $ship_address = array(
-		    'email'           => $Shipping->email,
-		    'telno'           => $Shipping->getTelephone(),
-		    'cellno'          => '',
-		    'fname'           => $Shipping->getFirstname(),
-		    'lname'           => $Shipping->getLastname(),
-		    'company'         => $Shipping->getCompany(),
-		    'careof'          => '',
-		    'street'          => $shipp[0],
-		    'house_number'    => isset($house_no)? $house_no: '',
-		    'house_extension' => isset($house_ext)?$house_ext:'',
-		    'zip'             => $Shipping->getPostcode(),
-		    'city'            => $Shipping->getCity(),
-		    'country'         => $shipping_country,
-	    );
-	    $bill = $Billing->getStreet();
-	    $bill_address = array(
-		    'email'           => $Billing->email,
-		    'telno'           => $Billing->getTelephone(),
-		    'cellno'          => '',
-		    'fname'           => $Billing->getFirstname(),
-		    'lname'           => $Billing->getLastname(),
-		    'company'         => $Billing->getCompany(),
-		    'careof'          => '',
-		    'street'          => $bill[0],
-		    'house_number'    => '',
-		    'house_extension' => '',
-		    'zip'             => $Billing->getPostcode(),
-		    'city'            => $Billing->getCity(),
-		    'country'         => $billing_country,
-	    );
-	    foreach($bill_address as $key => $col ){
-	        $bill_address[$key] = utf8_decode($col);
-	    }
-	    foreach($ship_address as $key => $col ){
-	        $ship_address[$key] = utf8_decode($col);
-	    }
-	    $goods_list = array();
-        
-	    $baseCurrencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
-		$_taxHelper  = Mage::helper('tax');
-        $_weeeHelper = Mage::helper('weee');
-        $currentCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
-        $_directory = Mage::helper('directory');
-		$percent = 0;
-        $store = Mage::app()->getStore();
-		$discountAmount = 0;
-		$_simplePricesTax = ($_taxHelper->displayPriceIncludingTax() || $_taxHelper->displayBothPrices());
-	    foreach( $quote->getAllItems() as $_item){ 
-            
-            if( $_item->getParentItemId() ){
-				continue;
-			}
+        // Get Store language
+        $storeLanguage = Mage::app()->getLocale()->getLocaleCode();
 
-           $request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
-			
-			$productId = $_item->getProductId();
-			$_product = Mage::getModel('catalog/product')->load($productId);
-			
-            $taxclassid = $_product->getData('tax_class_id');
-			if( $taxclassid == null && $_item->getProductType() == 'bundle'){
-				$options = $_item->getChildrenItems();
-				$percent=0;
-				foreach($options as $option){
-					$taxclassid = $option->getProduct()->getData('tax_class_id');
-					$percent += Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
-				}
-				$percent = $percent/sizeof($options);
-			} else {
-				$percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
-			}
-            
-			$priceinc = $_item->getPriceInclTax();
-			if( Mage::getStoreConfig("tax/calculation/price_includes_tax", $store->getId())){
-				$price = $_item->getPriceInclTax() / (1+$percent/100);
-			}else{
-				$price = $_item->getPriceInclTax();
-			}
+        $language = 138;
+        $encoding = 2;
+        $currency = 0;
 
-			$goods_list[] = array(
-				'qty'   => (int)$_item->getQtyOrdered(),
-				'goods' => array(
-					'artno'    => $_product->getSKU(),
-					'title'    => $_item->getName(),
-					'price'    => (int)round($price*100,0),
-					'vat'      => (float)$percent,
-					'discount' => 0.0,
-					'flags'    => 0,
-				)
-			);
-			$discountAmount+= abs( $_item->getDiscountAmount() );
-	    }
-		$totals = Mage::getSingleton('checkout/session')->getQuote()->getTotals();
-		
-		//print_r($quote1['subtotal']->getData());
-		
-		if(isset($totals['discount']) || $discountAmount > 0) {
-			if( $discountAmount == 0 ){
-				$discountAmount = abs($totals['discount']->getValue());
-			}
-			$applyTax = (boolean)Mage::getStoreConfig('tax/calculation/discount_tax');
-			$goods_list[] = array(
-				'qty'   => (int)1,
-				'goods' => array(
-					'artno'    => '',
-					'title'    => Mage::helper('payment')->__('Rabatt'),
-					'price'    => -round(($discountAmount*0.8)*100),
-					'vat'      => ($applyTax) ?$percent:0,
-					'discount' => 0.0,
-					'flags'    => 0,
-				)
-			);
-		}
-        $shippingamount = $quote->getShippingAmount(); 
-		
-		$request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
-		
-		$shippingTaxClass = Mage::getStoreConfig('tax/classes/shipping_tax_class', Mage::app()->getStore() );
-		$percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($shippingTaxClass));
-		
-        if(!empty($shippingamount) && $shippingamount>0){
-            
-		    $goods_list[] = array(
-			    'qty'   => 1,
-			    'goods' => array(
-				    'artno'    => '',
-				    'title'    => Mage::helper('payment')->__('Shipping'),
-				    'price'    => round($shippingamount*100,0),
-				    'vat'      => $percent,
-				    'discount' => 0.0,
-				    'flags'    => 8,
-			    )
-		    );
-		}
-		$lang = explode( '_', Mage::app()->getLocale()->getLocaleCode());
-		
-	    $pclass = -1 ;
-        $last_order_increment_id = Mage::getModel("sales/order")->getCollection()->getLastItem()->getIncrementId();
-	    $transaction = array(
-		    "order1"=>(string)$last_order_increment_id,
-			'order2'=>'',
-		    "comment"=>(string)'',
-		    "flags"=>0,
-		    "reference"=>"",
-		    "reference_code"=>"",
-		    "currency"=>Mage::app()->getStore()->getCurrentCurrencyCode(),
-		    "country"=> getCountryID(),
-		    "language"=>$lang[0],
-		    "pclass"=>$pclass,
-		    'gender'=>'1',
-		    "shipInfo"=>array("delay_adjust"=>"1"),
-		    "travelInfo"=>array(),
-		    "incomeInfo"=>array(),
-		    "bankInfo"=>array(),
-		    "sid"=>array("time"=>microtime(true)),
-		    "extraInfo"=>array(array("cust_no"=>(string)$customerId,"creditcard_data"=>$_POST))
-	    );
-        $payment_action = Mage::getStoreConfig('payment/billmatecardpay/payment_action');
-		if( $payment_action== 'sale'){
-            $transaction["extraInfo"][0]["status"] = 'Paid';
+        switch ($billingiso3) {
+            // Sweden
+            case 'SWE':
+                $country = 209;
+                $language = 138;
+                $encoding = 2;
+                $currency = 0;
+                $billing_country = 209;
+                break;
         }
-		if( $addorder ) {
-			$result = $k->addOrder('',$bill_address,$ship_address,$goods_list,$transaction);
-			return;
-		}
-		$session = Mage::getSingleton("core/session",  array("name"=>"frontend"));
-		if( $session->getData('card_api_called') == 1) return;
+        $baseCurrencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
+        $currentCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
 
-	    $result1 = $k->AddInvoice('',$bill_address,$ship_address,$goods_list,$transaction);
-        if( !is_array($result1)){
-            Mage::throwException( utf8_encode( $result1));
+        $ship_address = $bill_address = array();
+        $shipp = $Shipping->getStreet();
+        $bill = $Billing->getStreet();
+        $orderValues['PaymentData'] = array(
+            'method' => 8,
+            'currency' => $currentCurrencyCode,
+            'country' => $storeCountryIso2,
+            'orderid' => (string)time(),
+            'autoactivate' => 0,
+            'language' => BillmateCountry::fromLocale($storeLanguage)
+
+        );
+        $orderValues['PaymentInfo'] = array(
+            'paymentdate' => (string)date('Y-m-d'),
+            'paymentterms' => 14,
+            'yourreference' => $Billing->getFirstname(). ' ' . $Billing->getLastname(),
+            'delivery' => $Shipping->getShippingDescription(),
+
+        );
+        $prompt_name = Mage::getStoreConfig('payment/billmatecardpay/prompt_name') == 1 ? '1' : '0';
+        $do3dsecure = Mage::getStoreConfig('payment/billmatecardpay/do_3d_secure') == 0 ? '0' : '1';
+
+        $orderValues['Card'] = array(
+            '3dsecure' => $do3dsecure,
+            'promptname' => $prompt_name,
+            'accepturl' => Mage::getUrl('cardpay/cardpay/accept'),
+            'cancelurl' => Mage::getUrl('cardpay/cardpay/cancel'),
+            'callbackurl' => Mage::getUrl('cardpay/cardpay/notify'),
+            'returnmethod' => 'POST'
+        );
+
+        $orderValues['Customer'] = array(
+            'nr' => $customerId,
+        );
+        $orderValues['Customer']['Billing'] = array(
+            'firstname' => $Billing->getFirstname(),
+            'lastname' => $Billing->getLastname(),
+            'company' => $Billing->getCompany(),
+            'street' => $bill[0],
+            'street2' => isset($bill[1]) ? $bill[1] : '',
+            'zip' => $Billing->getPostcode(),
+            'city' => $Billing->getCity(),
+            'country' => BillmateCountry::fromCode($Billing->getCountry()),
+            'phone' => $Billing->getTelephone(),
+            'email' => $Billing->email
+        );
+
+        $orderValues['Customer']['Shipping'] = array(
+            'firstname' => $Shipping->getFirstname(),
+            'lastname' => $Shipping->getLastname(),
+            'company' => $Shipping->getCompany(),
+            'street' => $shipp[0],
+            'street2' => isset($shipp[1]) ? $shipp[1] : '',
+            'zip' => $Shipping->getPostcode(),
+            'city' => $Shipping->getCity(),
+            'country' => BillmateCountry::fromCode($Shipping->getCountry()),
+            'phone' => $Shipping->getTelephone()
+        );
+        foreach($bill_address as $key => $col ){
+            $bill_address[$key] = utf8_decode($col);
+        }
+        foreach($ship_address as $key => $col ){
+            $ship_address[$key] = utf8_decode($col);
+        }
+        $goods_list = array();
+
+        $_directory = Mage::helper('directory');
+        $_taxHelper  = Mage::helper('tax');
+        $_weeeHelper = Mage::helper('weee');
+        $percent = 0;
+        $store = Mage::app()->getStore();
+        $discountAmount = 0;
+        $_simplePricesTax = ($_taxHelper->displayPriceIncludingTax() || $_taxHelper->displayBothPrices());
+        // Create Array to save ParentId when bundle is fixed prised
+        $bundleArr = array();
+        $totalValue = 0;
+        $totalTax = 0;
+        foreach( $quote->getAllItems() as $_item){
+            // Continue if bundleArr contains item parent id, no need for get price then.
+            if( in_array($_item->getParentItemId(),$bundleArr)){
+                continue;
+            }
+            $request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
+            $taxclassid = $_item->getProduct()->getData('tax_class_id');
+            // If Product type == bunde and if bundle price type == fixed
+            if($_item->getProductType() == 'bundle' && $_item->getProduct()->getPriceType() == 1){
+                // Set bundle id to $bundleArr
+                $bundleArr[] = $_item->getId();
+
+            }
+
+            // If Product type == bunde and if bundle price type == dynamic
+            if($_item->getProductType() == 'bundle' && $_item->getProduct()->getPriceType() == 0){
+
+                $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+                $orderValues['Articles'][] = array(
+                    'quantity'   => (int)$_item->getQty(),
+                    'artnr'    => $_item->getProduct()->getSKU(),
+                    'title'    => $_item->getName(),
+                    // Dynamic pricing set price to zero
+                    'aprice'    => (int)0,
+                    'taxrate'      => (float)$percent,
+                    'discount' => 0.0,
+                    'withouttax' => (int)0
+
+                );
+
+
+                // Else the item is not bundle and dynamic priced
+            } else {
+                $temp = 0;
+                $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+
+
+                // For tierPrices to work, we need to get calculation price not the price on the product.
+                // If a customer buys many of a kind and get a discounted price, the price will bee on the quote item.
+                $price = $_directory->currencyConvert($_item->getCalculationPrice(),$baseCurrencyCode,$currentCurrencyCode);
+
+                //Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
+
+                $orderValues['Articles'][] = array(
+                    'quantity'   => (int)$_item->getQty(),
+                    'artnr'    => $_item->getProduct()->getSKU(),
+                    'title'    => $_item->getName(),
+                    'aprice'    => (int)round($price*100,0),
+                    'taxrate'      => (float)$percent,
+                    'discount' => 0.0,
+                    'withouttax' => $_item->getQty() * (int)round($price*100,0)
+
+                );
+                $temp = $_item->getQty() * (int) round($price*100,0);
+                $totalValue += $temp;
+                $totalTax += $temp * ($percent/100);
+            }
+        }
+
+        $totals = Mage::getSingleton('checkout/session')->getQuote()->getTotals();
+
+        //print_r($quote1['subtotal']->getData());
+
+        if(isset($totals['discount'])) {
+            $orderValues['Articles'][] = array(
+                'qty'   => (int)1,
+                'artno'    => 'discount',
+                'title'    => Mage::helper('payment')->__('Discount'),
+                'price'    => round($totals['discount']->getValue()*0.8)*100,
+                'vat'      => (float)$percent,
+                'discount' => 0.0,
+                'flags'    => 0,
+
+            );
+            $totalValue += (-1 * round($totals['discount']->getValue()*0.8))*100;
+            $totalTax += ((-1 * round($totals['discount']->getValue()*0.8))*100) * ($percent/100);
+        }
+        $rates = $quote->getShippingAddress()->getShippingRatesCollection();
+        if(!empty($rates)){
+            if( $Shipping->getBaseShippingTaxAmount() > 0 )
+                $rate = round( $Shipping->getBaseShippingTaxAmount() / $Shipping->getBaseShippingAmount() * 100);
+            else
+                $rate = 0;
+
+            $orderValues['Cart']['Shipping'] = array(
+                'withouttax' => $Shipping->getShippingAmount()*100,
+                'taxrate' => (int)$rate
+            );
+            $totalValue += $Shipping->getShippingAmount()*100;
+            $totalTax += ($Shipping->getShippingAmount()*100) * ($rate/100);
+        }
+
+        $orderValues['Cart']['Total'] = array(
+            'withouttax' => $totalValue,
+            'tax' => $totalTax,
+            'withtax' => $totalValue + $totalTax
+        );
+        $result = $k->addPayment($orderValues);
+
+        if( isset($result['code'])){
+            Mage::throwException( utf8_encode( $result['message']));
         }else{
-			$session->setData("card_api_called", 1);
-		}
-        return $result1;
+            $session = Mage::getSingleton('core/session', array('name' => 'frontend'));
+            $session->setData('billmateinvoice_id', $result['number']);
+            $session->setData('billmateorder_id', $result['orderid']);
+        }
+        return $result['url'];
     }
 }

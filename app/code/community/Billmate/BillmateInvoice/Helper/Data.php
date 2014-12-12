@@ -38,7 +38,7 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
         $secret=(float)Mage::getStoreConfig('payment/billmateinvoice/secret');
         $testmode=(boolean)Mage::getStoreConfig('payment/billmateinvoice/test_mode');
         
-        return new Billmate($eid, $secret, $ssl, $debug, $testmode);
+        return new Billmate($eid, $secret, $ssl, $testmode,$debug);
     }
     public function isOneStepCheckout()
     {

@@ -140,7 +140,8 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         $session->setLastOrderId($session->getLastOrderId());
 
 		if(empty($_POST)) $_POST = $_GET;
-
+        Mage::log(print_r($_POST,true));
+        die();
         if( $order->getState() == $status ){
 
             $session->setLastSuccessQuoteId($session->getLastRealOrderId());

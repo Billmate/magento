@@ -67,7 +67,7 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
             ->setCancelUrl(Mage::getUrl('bankpay/bankpay/cancel'));
             
         // add cart totals and line items
-        $api->setPaypalCart(Mage::getModel('paypal/cart', array($order)))
+        $api->setBillmateCart(Mage::getModel('paypal/cart', array($order)))
             ->setIsLineItemsEnabled($this->_config->lineItemsEnabled);
         
         $result = $api->getStandardCheckoutRequest();
@@ -90,7 +90,9 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
     public function getOrderPlaceRedirectUrl()
     {
         //when you click on place order you will be redirected on this url, if you don't want this action remove this method
-        return Mage::getUrl('bankpay/bankpay/redirect', array('_secure' => true));
+        $gateway = Mage::getSingleton('billmatebankpay/gateway');
+        $redirectUrl = $gateway->makePayment();
+        return $redirectUrl;
     }
     
     /*public function authorize(Varien_Object $payment, $amount){

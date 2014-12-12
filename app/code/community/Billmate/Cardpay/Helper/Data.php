@@ -13,7 +13,7 @@ class Billmate_Cardpay_Helper_Data extends Mage_Core_Helper_Abstract
         $secret=(float)Mage::getStoreConfig('payment/billmatecardpay/secret');
         $testmode =(float)Mage::getStoreConfig('payment/billmatecardpay/test_mode');
         
-        return new Billmate($eid, $secret, $ssl, $debug, $testmode);
+        return new Billmate($eid, $secret, $ssl, $testmode, $debug);
     }
     
 }

@@ -122,7 +122,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
     }
 
     /**
-     * when paypal returns
+     * when Billmate returns
      * The order information at this point is in POST
      * variables.  However, you don't want to "process" the order until you
      * get validation from the IPN.
@@ -140,7 +140,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $session->setLastOrderId($session->getLastOrderId());
 
 		if(empty($_POST)) $_POST = $_GET;
-
+        Mage::log(print_r($_POST,true));
+        die();
         if( $order->getState() == $status ){
             $session->setLastSuccessQuoteId($session->getLastRealOrderId());
             $session->setOrderId($_POST['order_id']);

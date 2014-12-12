@@ -11,45 +11,16 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
         $Shipping= $quote->getShippingAddress();
 		
         $payment = Mage::app()->getRequest()->getPost('payment');
-        $_customer  = Mage::getSingleton('customer/session')->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomer()->getData() : null;
-        
-		$Customer = (object)$_customer;
-        
-		$country_to_currency = array(
-			'NO' => 'NOK',
-			'SE' => 'SEK',
-			'FI' => 'EUR',
-			'DK' => 'DKK',
-			'DE' => 'EUR',
-			'NL' => 'EUR',
-		);
+
 		$methodname = $payment['method'] == 'billmateinvoice'? 'billmateinvoice': 'partpayment';
         $k = Mage::helper($methodname)->getBillmate(true, false);
 
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
-        $iso3 = Mage::getModel('directory/country')->load($Billing->getCountryId())->getIso3Code();
         $countryCode = Mage::getStoreConfig('general/country/default',Mage::app()->getStore());
         $storeCountryIso2 = Mage::getModel('directory/country')->loadByCode($countryCode)->getIso2Code();
         $storeLanguage = Mage::app()->getLocale()->getLocaleCode();
 		
-		if( $payment['method'] == 'billmatecardpay' ){
-			$country = Mage::getModel('directory/country')->load($Billing->getCountryId())->getName() ;
-		} else {
-			$country = 209;
-		}
-		$language = 138;
-		$encoding = 2;
-		$currency = 0;
 
-		switch ($iso3) {
-			// Sweden
-			case 'SWE':
-				$country = 209;
-				$language = 138;
-				$encoding = 2;
-				$currency = 0;
-				break;
-		}
 		$ship_address = $bill_address = array();
 	    $shipp = $Shipping->getStreet();
 
@@ -249,21 +220,11 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
             $session->setData('billmateorder_id', $result['orderid']);
         }
     }
+
     
     function init($update = false){
      
         $payment = Mage::app()->getRequest()->getPost('payment');
-        $_customer  = Mage::getSingleton('customer/session')->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomer()->getData() : null;
-        $Customer = (object)$_customer;
-        
-		$country_to_currency = array(
-			'NO' => 'NOK',
-			'SE' => 'SEK',
-			'FI' => 'EUR',
-			'DK' => 'DKK',
-			'DE' => 'EUR',
-			'NL' => 'EUR',
-		);
 
     	$methodname = $payment['method'];
         $k = Mage::helper($methodname)->getBillmate(true, false);
@@ -325,7 +286,6 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
             Mage::logException( $ex );
             die('alert("'.strip_tags( str_replace("<br> ",'\n\n', $ex->getMessage()) ).'");');
         }
-        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
 
         $fullname = $Billing->getFirstname().' '.$Billing->getLastname().' '.$Billing->getCompany();
 		if( empty($addr['firstname']) ){
@@ -362,12 +322,9 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 			    'city'      => $this->city,
 			    'country_id'   => strtoupper($this->country),
 			);
-			
-			$customerAddress = Mage::getModel('customer/address');
-			$customer = Mage::getSingleton('customer/session')->getCustomer();
+
             $Billing->addData( $data )->save();
             $Shipping->addData($data)->save();
-        //    Mage::getSingleton('checkout/session')->clear();
             Mage::getModel('checkout/session')->loadCustomerQuote();
         }
     }
