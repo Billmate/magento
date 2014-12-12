@@ -110,13 +110,14 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
         $data = $billmate->getPaymentplans($additionalinfo);
 
         array_walk($data, array($this,'correct_lang_billmate'));
-
-//        $model = Mage::getModel('partpayment/pclass');
+        Mage::log(print_r($data,true));
         foreach($data as $_row ){
             $_row['eid'] = $eid;
-            $_row['pclassid'] = $_row['id'];
-            unset($_row['id']);
-            $_row['country_code'] = (string)$countrycode ;
+            $_row['country_code'] = (string)$countrycode;
+            $_row['paymentplanid'] = (string) $_row['paymentplanid'];
+            $_row['currency'] = (string) $_row['currency'];
+            $_row['language'] = (string) $_row['language'];
+            $_row['country'] = (string) $_row['country'];
 
 
             Mage::getModel('partpayment/pclass')
@@ -285,15 +286,15 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 		return $title;
     }
     function correct_lang_billmate(&$item, $index){
-        $keys = array('pclassid', 'description','months', 'startfee','invoicefee','interestrate', 'minamount', 'country', 'type', 'expire', 'maxamount' );
-        $item[1] = utf8_encode($item[1]);
+        //$keys = array('paymentplanid', 'description','nbrofmonths', 'startfee','handlingfee','interestrate', 'minamount', 'country', 'type', 'expirydate','currency', 'maxamount','language' );
+
         if( !is_array($item ) ){
             Mage::log('Not and array');
             Mage::log($item);
         }
-        $item = array_combine( $keys, $item );
+        //$item = array_combine( $keys, $item );
         $item['startfee'] = $item['startfee'] / 100;
-        $item['invoicefee'] = $item['invoicefee'] / 100;
+        $item['handlingfee'] = $item['handlingfee'] / 100;
         $item['interestrate'] = $item['interestrate'] / 100;
         $item['minamount'] = $item['minamount'] / 100;
         $item['maxamount'] = $item['maxamount'] / 100;
