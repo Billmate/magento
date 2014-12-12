@@ -21,7 +21,7 @@
  * 2.0.9 20141204 Yuksel Findik: Returns array and verifies the data is safe
  */
 class BillMate{
-	var $VERSION = "";
+	var $VERSION = "2.0.5";
 	var $CLIENT = "";
 	var $ID = "";
 	var $KEY = "";

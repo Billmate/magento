@@ -61,7 +61,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     public function authorize(Varien_Object $payment, $amount)
     {
     	
-       $gateway =  Mage::getSingleton('billmateinvoice/gateway');
+       $gateway =  Mage::getSingleton('partpayment/gateway');
        $gateway->makePayment();
     }
     public function validate()

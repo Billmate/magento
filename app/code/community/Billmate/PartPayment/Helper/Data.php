@@ -2,10 +2,10 @@
 class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
     function getBillmate($ssl = true, $debug = false ){
 
-        require_once Mage::getBaseDir('lib').'/Billmate/BillMate.php';
+        require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
         require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
-        include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
-        include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
+        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
+        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
 
 
         $eid = (int)Mage::getStoreConfig('payment/partpayment/eid');
@@ -43,10 +43,10 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
     }
     function savePclasses($eid, $secret, $countrycode, $testmode ){
     
-        require_once Mage::getBaseDir('lib').'/Billmate/BillMate.php';
+        require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
         require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
-        include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
-        include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
+        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
+        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
 
 
         $eid = (int)$eid;
@@ -59,62 +59,66 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 			// Sweden
 			case 'SE':
 				$country = 209;
-				$language = 138;
+				$language = 'sv';
 				$encoding = 2;
-				$currency = 0;
+				$currency = 'SEK';
 				break;
 			// Finland
 			case 'FI':
 				$country = 73;
-				$language = 37;
+				$language = 'fi';
 				$encoding = 4;
-				$currency = 2;
+				$currency = 'EUR';
 				break;
 			// Denmark
 			case 'DK':
 				$country = 59;
-				$language = 27;
+				$language = 'da';
 				$encoding = 5;
-				$currency = 3;
+				$currency = 'DKK';
 				break;
 			// Norway	
 			case 'NO':
 				$country = 164;
-				$language = 97;
+				$language = 'no';
 				$encoding = 3;
-				$currency = 1;
+				$currency = 'NOK';
 
 				break;
 			// Germany	
 			case 'DE':
 				$country = 81;
-				$language = 28;
+				$language = 'de';
 				$encoding = 6;
-				$currency = 2;
+				$currency = 'EUR';
 				break;
 			// Netherlands															
 			case 'NL':
 				$country = 154;
-				$language = 101;
+				$language = 'nl';
 				$encoding = 7;
-				$currency = 2;
+				$currency = 'EUR';
 				break;
 		}
         
-        $additionalinfo = array(
+        $additionalinfo['PaymentData'] = array(
 	        "currency"=>$currency,//SEK
-	        "country"=>$country,//Sweden
+	        "country"=>strtolower($countrycode),//Sweden
 	        "language"=>$language,//Swedish
         );
 
-        $data = $billmate->FetchCampaigns($additionalinfo);
+        $data = $billmate->getPaymentplans($additionalinfo);
 
         array_walk($data, array($this,'correct_lang_billmate'));
 
 //        $model = Mage::getModel('partpayment/pclass');
         foreach($data as $_row ){
             $_row['eid'] = $eid;
+            $_row['pclassid'] = $_row['id'];
+            unset($_row['id']);
             $_row['country_code'] = (string)$countrycode ;
+
+
             Mage::getModel('partpayment/pclass')
             ->addData($_row)
             ->save();
