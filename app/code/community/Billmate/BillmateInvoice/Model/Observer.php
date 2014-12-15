@@ -3,9 +3,11 @@
 class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
 {
 	public function activate(Varien_Event_Observer $observer)
-	{		
+	{	/** @var $order Mage_Sales_Model_Order */
 		$order = $observer->getEvent()->getOrder();
-
+        if(!$order->getPayment()->hasMethodInstance()) return;
+        $method = $order->getPayment()->getMethodInstance()->getCode();
+        if($method != 'billmateinvoice' || $method != 'partpayment') return;
 		$session = Mage::getSingleton("core/session",  array("name"=>"frontend"));
 		$liveid = $session->getData("billmateinvoice_id");
 		$session->unsetData('billmateinvoice_id');
