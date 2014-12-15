@@ -278,10 +278,10 @@ abstract class Billmate_Cardpay_Model_Api_Abstract extends Varien_Object
     /**
      * Set Billmate cart instance
      *
-     * @param Billmate_Cardpay_Model_Cart $cart
-     * @return Mage_Billmate_Model_Api_Abstract
+     * @param Mage_Paypal_Model_Cart $cart
+     * @return Billmate_Cardpay_Model_Api_Abstract
      */
-    public function setBillmateCart(Billmate_Cardpay_Model_Cart $cart)
+    public function setBillmateCart(Mage_Paypal_Model_Cart $cart)
     {
         $this->_cart = $cart;
         return $this;

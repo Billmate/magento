@@ -42,6 +42,12 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
         return $amount;
     }
 
+    /**
+     * Check if Paymentplans is more than a week old.
+     * If they are refresh.
+     *
+     * @throws Exception
+     */
     public function checkPclasses(){
         $collection = Mage::getModel('partpayment/pclass')->getCollection();
 
@@ -71,6 +77,13 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 
     }
 
+    /**
+     * Save Paymentplans
+     * @param $eid
+     * @param $secret
+     * @param $countrycode
+     * @param $testmode
+     */
     function savePclasses($eid, $secret, $countrycode, $testmode ){
     
         require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';

@@ -55,7 +55,7 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
         
         $orderIncrementId = $this->getCheckout()->getLastRealOrderId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
-        /* @var $api Mage_Paypal_Model_Api_Standard */
+        /* @var $api Billmate_Cardpay_Model_Api_Standard */
 
 		$prompt_name = Mage::getStoreConfig('payment/billmatecardpay/prompt_name') == 1 ? 'YES' : 'NO';
 		$do3dsecure = Mage::getStoreConfig('payment/billmatecardpay/do_3d_secure') == 0 ? 'NO' : 'YES';
@@ -73,7 +73,7 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
             ->setCancelUrl(Mage::getUrl('cardpay/cardpay/cancel'));
             
         // add cart totals and line items
-        $api->setPaypalCart(Mage::getModel('paypal/cart', array($order)))
+        $api->setBillmateCart(Mage::getModel('paypal/cart', array($order)))
             ->setIsLineItemsEnabled($this->_config->lineItemsEnabled);
         
         $result = $api->getStandardCheckoutRequest();
