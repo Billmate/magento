@@ -11,8 +11,10 @@ $customerData['email'] = Mage::getSingleton('checkout/session')
 
  ?>
 
+
 <script type="text/javascript" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN,true).'frontend/base/default/js/jquery.js?version=1.19';?>"></script>
 <script type="text/javascript" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN,true).'frontend/base/default/js/billmatepopup.js?version=1.19';?>"></script>
+
 <ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none;">
     <li>
         <img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) ?>/billmate/images/bm_faktura_l.png" />
