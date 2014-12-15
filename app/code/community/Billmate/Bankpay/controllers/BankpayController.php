@@ -167,8 +167,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $this->_redirect(Mage::getStoreConfig('payment/billmatebankpay/bank_error_page'));
         }else{
             
-            $gateway =  Mage::getSingleton('billmatebankpay/gateway');
-            $result = $gateway->makePayment($order);
+            //$gateway =  Mage::getSingleton('billmatebankpay/gateway');
+            //$result = $gateway->makePayment($order);
             
 			$status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
 			
