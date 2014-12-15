@@ -9,6 +9,9 @@ $customerData['email'] = Mage::getSingleton('checkout/session')
 	->email;
 }
  ?>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN,true).'js/jquery.js?version=1.19';?>"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN,true).'js/billmatepopup.js?version=1.19';?>"></script>
+
 <ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none;">
     <li>
         <img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) ?>/billmate/images/bm_delbetalning_l.png" />
