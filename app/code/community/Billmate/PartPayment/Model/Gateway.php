@@ -71,7 +71,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         $store = Mage::app()->getStore();
 
         $orderValues['PaymentData'] = array(
-            'method' => 1,
+            'method' => 4,
             'currency' => $currentCurrencyCode,
             'paymentplanid' => $_POST['pclass'],
             'country' => $storeCountryIso2,
@@ -296,8 +296,8 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
                 $this->lastname = $addr['lastname'];
                 $this->company  = '';
             }
-            $this->street = $addr['address'];
-            $this->postcode = $addr['zipcode'];
+            $this->street = $addr['street'];
+            $this->postcode = $addr['zip'];
             $this->city = $addr['city'];
             $this->country = (BillmateCountry::getCode( $addr['country'] ) != '') ? BillmateCountry::getCode( $addr['country'] ) : 'se';
             $this->country_name = Mage::getModel('directory/country')->loadByCode($this->country)->getName();
@@ -316,8 +316,8 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         }
         $billingStreet = $Billing->getStreet();
 
-        $addressNotMatched = !isEqual($addr['address'], $billingStreet[0] ) ||
-            !isEqual($addr['zipcode'], $Billing->getPostcode()) ||
+        $addressNotMatched = !isEqual($addr['street'], $billingStreet[0] ) ||
+            !isEqual($addr['zip'], $Billing->getPostcode()) ||
             !isEqual($addr['city'], $Billing->getCity()) ||
             !isEqual(strtolower($addr['country']), strtolower(BillmateCountry::fromCode($Billing->getCountryId())));
 

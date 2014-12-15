@@ -41,6 +41,36 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 
         return $amount;
     }
+
+    public function checkPclasses(){
+        $collection = Mage::getModel('partpayment/pclass')->getCollection();
+
+        $first = $collection->getFirstItem();
+        if($collection->getSize() == 0 || (strtotime($first->getCreated() <= strtotime('-1 week')))){
+            $collectionPclass = Mage::getModel('partpayment/pclass')->getCollection();
+            if($collection->getSize() > 0) {
+                foreach ($collectionPclass as $row) {
+                    $row->delete();
+                }
+            }
+
+            // Fetch new Pclasses
+            $countryData = explode(',', Mage::getStoreConfig('payment/partpayment/countries'));
+            $eid = (int)Mage::getStoreConfig('payment/partpayment/eid');
+            $secret=(float)Mage::getStoreConfig('payment/partpayment/secret');
+            $testMode=(boolean)Mage::getStoreConfig('payment/partpayment/test_mode');
+
+
+            foreach($countryData as $countryCode){
+                    $this->savePclasses($eid, $secret, $countryCode, $testMode);
+
+            }
+            return;
+        }
+        return;
+
+    }
+
     function savePclasses($eid, $secret, $countrycode, $testmode ){
     
         require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
@@ -108,21 +138,22 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
         );
 
         $data = $billmate->getPaymentplans($additionalinfo);
+        if(!isset($data['code'])) {
 
-        array_walk($data, array($this,'correct_lang_billmate'));
-        Mage::log(print_r($data,true));
-        foreach($data as $_row ){
-            $_row['eid'] = $eid;
-            $_row['country_code'] = (string)$countrycode;
-            $_row['paymentplanid'] = (string) $_row['paymentplanid'];
-            $_row['currency'] = (string) $_row['currency'];
-            $_row['language'] = (string) $_row['language'];
-            $_row['country'] = (string) $_row['country'];
+            array_walk($data, array($this, 'correct_lang_billmate'));
+            foreach ($data as $_row) {
+                $_row['eid'] = $eid;
+                $_row['country_code'] = (string)$countrycode;
+                $_row['paymentplanid'] = (string)$_row['paymentplanid'];
+                $_row['currency'] = (string)$_row['currency'];
+                $_row['language'] = (string)$_row['language'];
+                $_row['country'] = (string)$_row['country'];
 
 
-            Mage::getModel('partpayment/pclass')
-            ->addData($_row)
-            ->save();
+                Mage::getModel('partpayment/pclass')
+                    ->addData($_row)
+                    ->save();
+            }
         }
 
     }
@@ -136,10 +167,10 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
        $quote = Mage::getSingleTon('checkout/session')->getQuote();
 	   $address = $quote->getShippingAddress();
 	   $isoCode3 =  'SWE';//Mage::getModel('directory/country')->load($address->getCountryId())->getIso3Code();
-	   $isoCode2 =  'SE'; //Mage::getModel('directory/country')->load($address->getCountryId())->getIso2Code();
+	   $isoCode2 =  Mage::getModel('directory/country')->load($address->getCountryId())->getIso2Code();
 	   $collection = Mage::getModel('partpayment/pclass')
 	   		   ->getCollection()
-	   		   ->addFieldToFilter('country_code', $isoCode2 );
+	   		   ->addFieldToFilter('country', $isoCode2 );
 
 		// Maps countries to currencies
 		$country_to_currency = array(
@@ -186,7 +217,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 					$lowest_payment = $this->getLowestPaymentAccount($isoCode3);
 					$monthly_cost = 0;
 	
-					$monthly_fee = $pclass->getInvoicefee();
+					$monthly_fee = $pclass->getHandlingfee();
 					$start_fee = $pclass->getStartfee();
 	
 					$sum += $start_fee;
@@ -195,14 +226,14 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 	
 					$minimum_payment = ($pclass->getType() === 1) ? $this->getLowestPaymentAccount($isoCode3) : 0;
 	
-					if ($pclass->getMonths() == 0) {
+					if ($pclass->getNbrofmonths() == 0) {
 						$payment = $sum;
 					} elseif ($pclass->getInterestrate() == 0) {
-						$payment = $sum / $pclass->getMonths();
+						$payment = $sum / $pclass->getNbrofonths();
 					} else {
 						$interest_rate = $pclass->getInterestrate() / (100.0 * 12);
 						
-						$payment = $sum * $interest_rate / (1 - pow((1 + $interest_rate), -$pclass->getMonths()));
+						$payment = $sum * $interest_rate / (1 - pow((1 + $interest_rate), -$pclass->getNbrofmonths()));
 					}
 	
 					$payment += $monthly_fee;
@@ -210,7 +241,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 					$balance = $sum;
 					$pay_data = array();
 	
-					$months = $pclass->getMonths();
+					$months = $pclass->getNbrofmonths();
 					
 					while (($months != 0) && ($balance > 0.01)) {
 						$interest = $balance * $pclass->getInterestrate() / (100.0 * 12);
@@ -251,19 +282,19 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 			}
 			$monthly_cost = $_directory->currencyConvert($monthly_cost,$baseCurrencyCode,$currentCurrencyCode);
 	
-			$payment_option[$pclass['pclassid']]['monthly_cost'] = round($monthly_cost,2);
-			$payment_option[$pclass['pclassid']]['pclass_id'] = $pclass->getPclassid();
-			$payment_option[$pclass['pclassid']]['months'] = $pclass->getMonths();
-			$payment_option[$pclass['pclassid']]['description'] = $pclass->getDescription();
+			$payment_option_temp['monthly_cost'] = round($monthly_cost,2);
+			$payment_option_temp['pclass_id'] = $pclass->getPaymentplanid();
+			$payment_option_temp['months'] = $pclass->getNbrofmonths();
+			$payment_option_temp['description'] = $pclass->getDescription();
+            $payment_option[] = $payment_option_temp;
 		}
 		
 		return $payment_option;
     }
     function getLowPclass($total){
         $method = array();
-	   		   		
+        $this->checkPclasses();
 		$payment_option = $this->getPlclass($total);
-		
 		$status = true;
 		if (!$payment_option) {
 			$status = false;

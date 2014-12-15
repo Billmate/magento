@@ -27,12 +27,8 @@ class Billmate_Partpayment_IndexController extends Mage_Core_Controller_Front_Ac
         }
     }
 
-    public function pclassAction(){
-        $billmate = Mage::helper('partpayment')->getBillmate(true,false);
+    public function checkpclassAction(){
+        $billmate = Mage::helper('partpayment')->checkPclasses();
 
-        $values['PaymentData'] = array('currency' => 'SEK', 'country' => 'se', 'language' => 'sv');
-        $result = $billmate->getPaymentplans($values);
-        print_r($result);
-        die();
     }
 }
