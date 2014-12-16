@@ -25,9 +25,9 @@
  */
 
 /**
- * Billmate Standard checkout request API
+ * PayPal Standard checkout request API
  */
-class Billmate_Bankpay_Model_Api_Standard extends Billmate_Bankpay_Model_Api_Abstract
+class Billmate_Bankpay_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
 {
     /**
      * Global interface map and export filters
@@ -79,7 +79,7 @@ class Billmate_Bankpay_Model_Api_Standard extends Billmate_Bankpay_Model_Api_Abs
 
 
     /**
-     * Generate Billmate Standard checkout request fields
+     * Generate PayPal Standard checkout request fields
      * Depending on whether there are cart line items set, will aggregate everything or display items specifically
      * Shipping amount in cart line items is implemented as a separate "fake" line item
      */
@@ -133,7 +133,7 @@ class Billmate_Bankpay_Model_Api_Standard extends Billmate_Bankpay_Model_Api_Abs
 
 
     /**
-     * Adopt specified request array to be compatible with Billmate
+     * Adopt specified request array to be compatible with Paypal
      * Puerto Rico should be as state of USA and not as a country
      *
      * @param array $request
