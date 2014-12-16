@@ -2,8 +2,7 @@
 <layout version="0.1.0">
     <default>
         <reference name="head">
-			<action method="addItem"><type>skin_js</type><name>js/billmatepopup.js?version=1.19</name></action>
-			<action method="addItem"><type>skin_js</type><name>js/jquery.js?version=1.19</name></action>
+
 			<action method="addItem"><type>skin_css</type><name>css/billmatestyle.css</name></action>
 			<block type="core/text" name="billmate.inline.javascript">
 				<action method="setText">
@@ -62,37 +61,37 @@ var oldurl = null;
     
     <sales_order_print>
         <reference name="order_totals">
-            <block name="billmateinvoice_fee" type="BillmateInvoice/order_totals_fee" before="tax"/>
+            <block name="billmateinvoice_fee" type="billmateinvoice/order_totals_fee" before="tax"/>
         </reference>
     </sales_order_print>
 
     <sales_order_view>
         <reference name="order_totals">
-            <block name="billmateinvoice_fee" type="BillmateInvoice/order_totals_fee" before="tax"/>
+            <block name="billmateinvoice_fee" type="billmateinvoice/order_totals_fee" before="tax"/>
         </reference>
     </sales_order_view>
 
     <sales_order_invoice>
         <reference name="invoice_totals">
-            <block name="billmateinvoice_fee" type="BillmateInvoice/invoice_totals_fee" before="tax"/>
+            <block name="billmateinvoice_fee" type="billmateinvoice/invoice_totals_fee" before="tax"/>
         </reference>
     </sales_order_invoice>
 
     <sales_order_printinvoice>
         <reference name="invoice_totals">
-            <block name="billmateinvoice_fee" type="BillmateInvoice/invoice_totals_fee" before="tax"/>
+            <block name="billmateinvoice_fee" type="billmateinvoice/invoice_totals_fee" before="tax"/>
         </reference>
     </sales_order_printinvoice>
 
     <sales_email_order_items>
         <reference name="order_totals">
-            <block name="billmateinvoice_fee" type="BillmateInvoice/order_totals_fee" before="tax"/>
+            <block name="billmateinvoice_fee" type="billmateinvoice/order_totals_fee" before="tax"/>
         </reference>
     </sales_email_order_items>
 
     <sales_email_order_invoice_items>
         <reference name="invoice_totals">
-            <block name="billmateinvoice_fee" type="BillmateInvoice/invoice_totals_fee" before="tax"/>
+            <block name="billmateinvoice_fee" type="billmateinvoice/invoice_totals_fee" before="tax"/>
         </reference>
     </sales_email_order_invoice_items>
 </layout>
