@@ -225,6 +225,5 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
         }else{
 			$session->setData("bank_api_called", 1);
 		}
-        return $result1;
     }
 }

@@ -224,6 +224,5 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
         }else{
 			$session->setData("card_api_called", 1);
 		}
-        return $result1;
     }
 }

@@ -96,77 +96,37 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 		$store = Mage::app()->getStore();
 		$_simplePricesTax = ($_taxHelper->displayPriceIncludingTax() || $_taxHelper->displayBothPrices());
 
-		// Create Array to save ParentId when bundle is fixed prised
-		$bundleArr = array();
-		
-		foreach( $quote->getAllItems() as $_item){
-			// Continue if bundleArr contains item parent id, no need for get price then.
-			if( in_array($_item->getParentItemId(),$bundleArr)){
+		foreach( $quote->getAllItems() as $_item){ 
+            if( $_item->getParentItemId() ){
 				continue;
 			}
-			$request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
-			$taxclassid = $_item->getProduct()->getData('tax_class_id');
-			// If Product type == bunde and if bundle price type == fixed
-			if($_item->getProductType() == 'bundle' && $_item->getProduct()->getPriceType() == 1){
-				// Set bundle id to $bundleArr
-				$bundleArr[] = $_item->getId();
+            $request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
+            $taxclassid = $_item->getProduct()->getData('tax_class_id');
+            $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+            $_product = $_item->getProduct();
+
+			$_price = $_taxHelper->getPrice($_product, $_product->getPrice()) ;
+			$_regularPrice = $_taxHelper->getPrice($_product, $_product->getPrice(), $_simplePricesTax); 
+			$_finalPrice = $_taxHelper->getPrice($_product, $_product->getFinalPrice(), false) ;
+			$_finalPriceInclTax = $_taxHelper->getPrice($_product, $_product->getFinalPrice(), true) ;
+			$_weeeDisplayType = $_weeeHelper->getPriceDisplayType(); 
+
+			$price = $_directory->currencyConvert($_finalPrice,$baseCurrencyCode,$currentCurrencyCode);
 		
-			}
-				
-			// If Product type == bunde and if bundle price type == dynamic
-			if($_item->getProductType() == 'bundle' && $_item->getProduct()->getPriceType() == 0){
-					
-				// Get bundle options
-				$options = $_item->getChildrenItems();
-					
-					
-				$percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
-				$goods_list[] = array(
-						'qty'   => (int)$_item->getQty(),
-						'goods' => array(
-								'artno'    => $_item->getSKU(),
-								'title'    => $_item->getName(),
-								// Dynamic pricing set price to zero
-								'price'    => (int)0,
-								'vat'      => (float)$percent,
-								'discount' => 0.0,
-								'flags'    => 0,
-						)
-				);
+		//Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
 		
-		
-				// Else the item is not bundle and dynamic priced
-			} else {
-				$percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
-					
-		
-				$_product = $_item->getProduct();
-		
-				$_price = $_taxHelper->getPrice($_product, $_product->getPrice()) ;
-				$_regularPrice = $_taxHelper->getPrice($_product, $_product->getPrice(), $_simplePricesTax);
-				$_finalPrice = $_taxHelper->getPrice($_product, $_product->getFinalPrice(), false) ;
-				$_finalPriceInclTax = $_taxHelper->getPrice($_product, $_product->getFinalPrice(), true) ;
-				$_weeeDisplayType = $_weeeHelper->getPriceDisplayType();
-		
-				// For tierPrices to work, we need to get calculation price not the price on the product.
-				// If a customer buys many of a kind and get a discounted price, the price will bee on the quote item.
-				$price = $_directory->currencyConvert($_item->getCalculationPrice(),$baseCurrencyCode,$currentCurrencyCode);
-					
-				//Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
-		
-				$goods_list[] = array(
-						'qty'   => (int)$_item->getQty(),
-						'goods' => array(
-								'artno'    => $_item->getSKU(),
-								'title'    => $_item->getName(),
-								'price'    => (int)round($price*100,0),
-								'vat'      => (float)$percent,
-								'discount' => 0.0,
-								'flags'    => 0,
-						)
-				);
-			}
-		}
+			$goods_list[] = array(
+				'qty'   => (int)$_item->getQty(),
+				'goods' => array(
+					'artno'    => $_item->getSKU(),
+					'title'    => $_item->getName(),
+					'price'    => (int)round($price*100,0),
+					'vat'      => (float)$percent,
+					'discount' => 0.0,
+					'flags'    => 0,
+				)
+			);
+	    }
 		
 		$totals = Mage::getSingleton('checkout/session')->getQuote()->getTotals();
 
