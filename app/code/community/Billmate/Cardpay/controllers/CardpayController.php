@@ -140,8 +140,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         $session->setLastOrderId($session->getLastOrderId());
 
 		if(empty($_POST)) $_POST = $_GET;
-        Mage::log(print_r($_POST,true));
-        die();
+
         if( $order->getState() == $status ){
 
             $session->setLastSuccessQuoteId($session->getLastRealOrderId());
@@ -167,10 +166,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 
             $this->_redirect(Mage::getStoreConfig('payment/billmatecardpay/card_error_page'));
         }else{
-            
-            $gateway =  Mage::getSingleton('billmatecardpay/gateway');
-            $result = $gateway->makePayment($order);
-			
+
 			$status = Mage::getStoreConfig('payment/billmatecardpay/order_status');
 			
 			$isCustomerNotified = false;

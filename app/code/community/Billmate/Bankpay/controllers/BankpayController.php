@@ -142,9 +142,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 		if(empty($_POST)) $_POST = $_GET;
         $_POST['data'] = json_decode($_POST['data'],true);
         if( $order->getState() == $status ){
-            $session->setLastSuccessQuoteId($session->getLastRealOrderId());
-            $session->setOrderId($_POST['order_id']);
-            $session->setLastSuccessQuoteId($session->getBillmateQuoteId(true));
+            $session->setOrderId($_POST['orderid']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
             $order->sendNewOrderEmail();
@@ -166,9 +164,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
             $this->_redirect(Mage::getStoreConfig('payment/billmatebankpay/bank_error_page'));
         }else{
-            
-            //$gateway =  Mage::getSingleton('billmatebankpay/gateway');
-            //$result = $gateway->makePayment($order);
+
             
 			$status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
 			
@@ -180,7 +176,6 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$_POST['data']['number']));
 
 			$order->save();
-            $session->setLastSuccessQuoteId($session->getBillmateQuoteId(true));
             $session->setQuoteId($session->getBillmateStandardQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
 			$order->sendNewOrderEmail(); 

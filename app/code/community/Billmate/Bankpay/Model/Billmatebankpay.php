@@ -90,6 +90,8 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
     public function getOrderPlaceRedirectUrl()
     {
         //when you click on place order you will be redirected on this url, if you don't want this action remove this method
+        $session = Mage::getSingleton('checkout/session');
+        $session->setBillmateQuoteId($session->getQuoteId());
         $gateway = Mage::getSingleton('billmatebankpay/gateway');
         $redirectUrl = $gateway->makePayment();
         return $redirectUrl;

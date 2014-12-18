@@ -16,7 +16,7 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
             'DE' => 'EUR',
             'NL' => 'EUR',
         );
-        $methodname = 'billmatebankpay';
+        $methodname = 'billmatecardpay';
         $k = Mage::helper($methodname)->getBillmate(true, false);
 
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
@@ -82,7 +82,7 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
         $orderValues['Card'] = array(
             '3dsecure' => $do3dsecure,
             'promptname' => $prompt_name,
-            'accepturl' => Mage::getUrl('cardpay/cardpay/accept'),
+            'accepturl' => Mage::getUrl('cardpay/cardpay/success'),
             'cancelurl' => Mage::getUrl('cardpay/cardpay/cancel'),
             'callbackurl' => Mage::getUrl('cardpay/cardpay/notify'),
             'returnmethod' => 'POST'
