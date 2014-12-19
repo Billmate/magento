@@ -2,13 +2,25 @@
 <layout version="0.1.0">
     <default>
         <reference name="head">
-			<action method="addItem"><type>skin_js</type><name>js/billmatepopup.js?version=1.19</name></action>
-			<action method="addItem"><type>skin_js</type><name>js/jquery.js?version=1.19</name></action>
 			<action method="addItem"><type>skin_css</type><name>css/billmatestyle.css</name></action>
 			<block type="core/text" name="billmate.inline.javascript">
 				<action method="setText">
-					<text>
-					<![CDATA[
+					<text><![CDATA[
+					<script type="text/javascript">
+                            if (!window.jQuery){
+                                var jq = document.createElement('script');
+                                jq.type = "text/javascript";
+                                jq.src = "/skin/frontend/base/default/js/jquery.js";
+                                document.getElementsByTagName('head')[0].appendChild(jq);
+                            }
+                            // If billmateLoaded == false
+                            if(!window.billmateLoaded){
+                                var jq = document.createElement('script');
+                                jq.type = "text/javascript";
+                                jq.src = "/skin/frontend/base/default/js/billmatepopup.js";
+                                document.getElementsByTagName('head')[0].appendChild(jq);
+                            }
+					</script>
 <script type="text/javascript" src="https://efinance.se/billmate/base_jquery.js"></script>					
 <script type="text/javascript">
 var oldurl = null;

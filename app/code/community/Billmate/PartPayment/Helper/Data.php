@@ -203,7 +203,6 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 			'DEU' => 'EUR',
 			'NLD' => 'EUR'
 		);
-		
 
 		foreach ($collection as $pclass) {
 	
@@ -245,7 +244,6 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 						$payment = $sum / $pclass->getNbrofonths();
 					} else {
 						$interest_rate = $pclass->getInterestrate() / (100.0 * 12);
-						
 						$payment = $sum * $interest_rate / (1 - pow((1 + $interest_rate), -$pclass->getNbrofmonths()));
 					}
 	
@@ -277,8 +275,9 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 						
 						$months -= 1;
 					}
-	
-					$monthly_cost = round(isset($pay_data[0]) ? ($pay_data[0]) : 0, 2);
+					Mage::log(print_r($pay_data,true));
+
+					$monthly_cost = round(isset($pay_data[0]) ? ($pay_data[0]) : 0, 0);
 	
 					if ($monthly_cost < 0.01) {
 						continue;
@@ -295,7 +294,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 			}
 			$monthly_cost = $_directory->currencyConvert($monthly_cost,$baseCurrencyCode,$currentCurrencyCode);
 	
-			$payment_option_temp['monthly_cost'] = round($monthly_cost,2);
+			$payment_option_temp['monthly_cost'] = $monthly_cost;
 			$payment_option_temp['pclass_id'] = $pclass->getPaymentplanid();
 			$payment_option_temp['months'] = $pclass->getNbrofmonths();
 			$payment_option_temp['description'] = $pclass->getDescription();

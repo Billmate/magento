@@ -1,5 +1,5 @@
 //https://github.com/paulirish/matchMedia.js/
-
+window.billmateLoaded = true;
 function match_media_mount(){
 window.matchMedia = window.matchMedia || (function(doc, undefined){
 
