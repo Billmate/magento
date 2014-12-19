@@ -205,7 +205,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 		);
 
 		foreach ($collection as $pclass) {
-	
+
 			// 0 - Campaign
 			// 1 - Account
 			// 2 - Special
@@ -243,7 +243,8 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 					} elseif ($pclass->getInterestrate() == 0) {
 						$payment = $sum / $pclass->getNbrofonths();
 					} else {
-						$interest_rate = $pclass->getInterestrate() / (100.0 * 12);
+						// Because Interest rate is in decimal for example 0.12 no need to multiply by 100
+						$interest_rate = $pclass->getInterestrate() / 12;
 						$payment = $sum * $interest_rate / (1 - pow((1 + $interest_rate), -$pclass->getNbrofmonths()));
 					}
 	
@@ -255,7 +256,8 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 					$months = $pclass->getNbrofmonths();
 					
 					while (($months != 0) && ($balance > 0.01)) {
-						$interest = $balance * $pclass->getInterestrate() / (100.0 * 12);
+						// Because Interest rate is in decimal for example 0.12 no need to multiply by 100
+						$interest = $balance * $pclass->getInterestrate()/ 12;
 						$new_balance = $balance + $interest + $monthly_fee;
 	
 						if ($minimum_payment >= $new_balance || $payment >= $new_balance) {
@@ -275,7 +277,6 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 						
 						$months -= 1;
 					}
-					Mage::log(print_r($pay_data,true));
 
 					$monthly_cost = round(isset($pay_data[0]) ? ($pay_data[0]) : 0, 0);
 	

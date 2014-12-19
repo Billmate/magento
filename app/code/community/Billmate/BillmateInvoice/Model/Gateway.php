@@ -213,7 +213,9 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 
         if(isset($result['code'])){
 
-            Mage::throwException(utf8_encode($result['code']. ': '.$result['message']));
+            Mage::throwException(utf8_encode($result['message']));
+
+
         } else {
             $session = Mage::getSingleton('core/session', array('name' => 'frontend'));
             $session->setData('billmateinvoice_id', $result['number']);

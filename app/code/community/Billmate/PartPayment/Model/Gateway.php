@@ -222,19 +222,8 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         $result  = $k->addPayment($orderValues);
 
         if(isset($result['code'])){
-            switch($result['code']){
-                case '2401':
-                case '2402':
-                case '2403':
-                case '2404':
-                case '2405':
-                    Mage::throwException(utf8_encode($result['code']. ': '.$result['message']));
-                    break;
-                default:
-                    Mage::throwException(utf8_encode($result['code']. ': '.$result['message']));
-                    break;
-            }
 
+            Mage::throwException(utf8_encode($result['message']));
         } else {
             $session = Mage::getSingleton('core/session', array('name' => 'frontend'));
             $session->setData('billmateinvoice_id', $result['number']);
