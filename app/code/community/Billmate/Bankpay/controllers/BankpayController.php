@@ -142,7 +142,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 		if(empty($_POST)) $_POST = $_GET;
         $_POST['data'] = json_decode($_POST['data'],true);
         if( $order->getState() == $status ){
-            $session->setOrderId($_POST['orderid']);
+            $session->setOrderId($_POST['data']['orderid']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
             $order->sendNewOrderEmail();
@@ -151,16 +151,16 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             return;
         }
 		
-        if( isset($_POST['code']) ){
+        if( isset($_POST['data']['code']) ){
             
             $status = 'pending_payment';
-            $comment = $this->__('Unable to complete order, Reason : ').$_POST['message'] ;
+            $comment = $this->__('Unable to complete order, Reason : ').$_POST['data']['message'] ;
             $isCustomerNotified = true;
             $order->setState('new', $status, $comment, $isCustomerNotified);
             $order->save();
             $order->sendOrderUpdateEmail(true, $comment);
             
-            Mage::getSingleton('core/session')->addError($this->__('Unable to process with payment gateway :').$_POST['message']);
+            Mage::getSingleton('core/session')->addError($this->__('Unable to process with payment gateway :').$_POST['data']['message']);
 
             $this->_redirect(Mage::getStoreConfig('payment/billmatebankpay/bank_error_page'));
         }else{

@@ -140,11 +140,11 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         $session->setLastOrderId($session->getLastOrderId());
 
 		if(empty($_POST)) $_POST = $_GET;
-
+        $_POST['data'] = json_decode($_POST['data'],true);
         if( $order->getState() == $status ){
 
             $session->setLastSuccessQuoteId($session->getLastRealOrderId());
-            $session->setOrderId($_POST['order_id']);
+            $session->setOrderId($_POST['data']['order_id']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
             $order->sendNewOrderEmail();
@@ -153,16 +153,16 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             return;
         }
         
-        if( !empty($_POST['status']) && $_POST['status'] != 0 ){
+        if(isset($_POST['data']['code'])){
             
             $status = 'pending_payment';
-            $comment = $this->__('Unable to complete order, Reason : ').$_POST['error_message'] ;
+            $comment = $this->__('Unable to complete order, Reason : ').$_POST['data']['message'] ;
             $isCustomerNotified = true;
             $order->setState('new', $status, $comment, $isCustomerNotified);
             $order->save();
             $order->sendOrderUpdateEmail(true, $comment);
             
-            Mage::getSingleton('core/session')->addError($this->__('Unable to process with payment gateway :').$_POST['error_message']);
+            Mage::getSingleton('core/session')->addError($this->__('Unable to process with payment gateway :').$_POST['message']['message']);
 
             $this->_redirect(Mage::getStoreConfig('payment/billmatecardpay/card_error_page'));
         }else{
@@ -173,8 +173,8 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 			$order->setState('new', $status, '', $isCustomerNotified);
 
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by ipn.'));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Transaction Id: #'.$_POST['trans_id']));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$result[0]));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$_POST['data']['status']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$_POST['data']['number']));
 
 			$order->save();
             $session->setQuoteId($session->getBillmateQuoteId(true));
