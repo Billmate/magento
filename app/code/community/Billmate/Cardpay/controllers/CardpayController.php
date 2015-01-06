@@ -2,34 +2,35 @@
 
 class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Action{
     /**
-     * When a customer chooses Paypal on Checkout/Payment page
+     * When a customer chooses Billmate on Checkout/Payment page
      *
      */
 
     public function notifyAction(){
-        global $_POST, $_GET;
-
-        $input = file_get_contents("php://input");
-
-        $data = $_POST = $_GET = (array)json_decode($input);
+        if(empty($_POST)) $_POST = $_GET;
+        $_POST['data'] = json_decode(stripslashes($_POST['data']),true);
+        $data = $_POST['data'];
         $session = Mage::getSingleton('checkout/session');
-        $session->setData('last_real_order_id', $data['order_id']);
-        $order = Mage::getModel('sales/order')->load($session->getLastRealOrderId());;
-        $gateway =  Mage::getSingleton('billmatecardpay/gateway');
+        $session->setData('last_real_order_id', $data['orderid']);
+
+        $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
+
         try{
-            $result = $gateway->makePayment($order);
+
 
             $status = Mage::getStoreConfig('payment/billmatecardpay/order_status');
 
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by ipn.'));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Transaction Id: #'.$data['trans_id']));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$result[0]));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$_POST['data']['status']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$_POST['data']['number']));
 
             $isCustomerNotified = false;
-            $order->setState('new', $status, '', $isCustomerNotified);
+            $order->setState($status, $status, '', $isCustomerNotified);
             $order->save();
             $this->clearAllCache();
+
         }catch(Exception $ex){
+            Mage::log($ex->getMessage());
         }
     }
 

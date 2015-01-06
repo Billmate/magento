@@ -2,30 +2,28 @@
 
 class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Action{
     /**
-     * When a customer chooses Paypal on Checkout/Payment page
+     * When a customer chooses Billmate on Checkout/Payment page
      *
      */
     public function notifyAction(){
-        global $_POST, $_GET;
+        //global $_POST, $_GET;
 
-        $input = file_get_contents("php://input");
-        //$input = '{"status": 0, "order_id": "100000468", "error_message": "Approved", "amount": "301000", "currency": "SEK", "mac": "d59232a71f5cbe44186d4d7b314e5171b7c7d99ffd8d20d77a2c283081cc94c8", "time": "2014-05-10 07:15:56.043216", "test": "static data", "merchant_id": "7270", "pay_method": "handelsbanken", "trans_id": "800674228"}';
-        $data = $_POST = $_GET = (array)json_decode($input);
-
+        if(empty($_POST)) $_POST = $_GET;
+        $_POST['data'] = json_decode(stripslashes($_POST['data']),true);
+        $data = $_POST['data'];
         $session = Mage::getSingleton('checkout/session');
-        $session->setData('last_real_order_id', $data['order_id']);
+        $session->setData('last_real_order_id', $data['orderid']);
 
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
 
-        $gateway =  Mage::getSingleton('billmatebankpay/gateway');
         try{
-            $result = $gateway->makePayment($order);
+
 
             $status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
 
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by ipn.'));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Transaction Id: #'.$data['trans_id']));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$result[0]));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$_POST['data']['status']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$_POST['data']['number']));
 
             $isCustomerNotified = false;
             $order->setState($status, $status, '', $isCustomerNotified);
@@ -140,7 +138,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $session->setLastOrderId($session->getLastOrderId());
 
 		if(empty($_POST)) $_POST = $_GET;
-        $_POST['data'] = json_decode($_POST['data'],true);
+        $_POST['data'] = json_decode(stripslashes($_POST['data']),true);
         if( $order->getState() == $status ){
             $session->setOrderId($_POST['data']['orderid']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
