@@ -155,13 +155,13 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 
 		if(isset($totals['discount'])) {
 			$orderValues['Articles'][] = array(
-				'qty'   => (int)1,
-                'artno'    => 'discount',
+				'quantity'   => (int)1,
+                'artnr'    => 'discount',
                 'title'    => Mage::helper('payment')->__('Discount'),
-                'price'    => round($totals['discount']->getValue()*0.8)*100,
-                'vat'      => (float)$percent,
+                'aprice'    => round($totals['discount']->getValue()*0.8)*100,
+                'taxrate'      => (float)$percent,
                 'discount' => 0.0,
-                'flags'    => 0,
+                'withouttax'    => round($totals['discount']->getValue()*0.8)*100,
 
 			);
             $totalValue += (-1 * round($totals['discount']->getValue()*0.8))*100;
