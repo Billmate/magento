@@ -22,12 +22,12 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     	}
 
         if($quote == null ) return false;
-        //$countries = explode(',', Mage::getStoreConfig('payment/partpayment/countries'));
+        $countries = explode(',', Mage::getStoreConfig('payment/partpayment/countries'));
 
-        // Check active Paymentplan country instead.
+        //TODO Check active Paymentplan country instead.
         $collection = Mage::getModel('partpayment/pclass')->getCollection();
         $collection->addFieldToSelect('country')->getSelect()->group('country');
-        $countries = $collection->getColumnValues('country');
+        //$countries = $collection->getColumnValues('country');
 		
         $avail = in_array($quote->getBillingAddress()->getCountry(), $countries );
 		if( $avail ){
