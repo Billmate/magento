@@ -204,8 +204,8 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
                 'withouttax'    => round($totals['discount']->getValue()*0.8)*100,
 
             );
-            $totalValue += (-1 * round($totals['discount']->getValue()*0.8))*100;
-            $totalTax += ((-1 * round($totals['discount']->getValue()*0.8))*100) * ($percent/100);
+            $totalValue += (1 * round($totals['discount']->getValue()*0.8))*100;
+            $totalTax += ((1 * round($totals['discount']->getValue()*0.8))*100) * ($percent/100);
         }
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
         if(!empty($rates)){
