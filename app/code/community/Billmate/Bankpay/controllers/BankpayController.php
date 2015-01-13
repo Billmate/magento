@@ -8,8 +8,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
     public function notifyAction(){
         //global $_POST, $_GET;
 
-        if(empty($_POST)) $_POST = $_GET;
-
+        $_POST = file_get_contents('php://input');
         $k = Mage::helper('billmatebankpay')->getBillmate(true,false);
         $session = Mage::getSingleton('checkout/session');
         $data = $k->verify_hash($_POST);
@@ -21,6 +20,15 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
 
             $status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
+            if( $order->getState() == $status ){
+                $session->setOrderId($data['orderid']);
+                $session->setQuoteId($session->getBillmateQuoteId(true));
+                Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
+                $order->sendNewOrderEmail();
+
+                $this->_redirect('checkout/onepage/success', array('_secure'=>true));
+                return;
+            }
 
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by ipn.'));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data['status']));
@@ -174,7 +182,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 			
 			$isCustomerNotified = false;
 			$order->setState('new', $status, '', $isCustomerNotified);
-            $values = array(
+
+            $values['PaymentData'] = array(
                 'number' => $data['number'],
                 'orderid' => $order->getIncrementId()
             );

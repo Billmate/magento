@@ -121,6 +121,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         $bundleArr = array();
         $totalValue = 0;
         $totalTax = 0;
+        $configSku = false;
         foreach( $quote->getAllItems() as $_item){
             // Continue if bundleArr contains item parent id, no need for get price then.
             if( in_array($_item->getParentItemId(),$bundleArr)){
@@ -133,6 +134,35 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
                 // Set bundle id to $bundleArr
                 $bundleArr[] = $_item->getId();
 
+            }
+
+            if($_item->getProductType() == 'configurable'){
+                $configSku = $_item->getSku();
+                $cp = $_item->getProduct();
+                $sp = Mage::getModel('catalog/product')->loadByAttribute('sku',$_item->getSku());
+
+                $price = $_directory->currencyConvert($_item->getCalculationPrice(),$baseCurrencyCode,$currentCurrencyCode);
+                $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+                $orderValues['Articles'][] = array(
+                    'quantity'   => (int)$_item->getQty(),
+                    'artnr'    => $_item->getProduct()->getSKU(),
+                    'title'    => $cp->getName().' - '.$sp->getName(),
+                    // Dynamic pricing set price to zero
+                    'aprice'    => (int)round($price*100,0),
+                    'taxrate'      => (float)$percent,
+                    'discount' => 0.0,
+                    'withouttax' => (int)round($price*100) * $_item->getQty()
+
+                );
+                $temp = $_item->getQty() * (int)round($price*100,0);
+                $totalValue += $temp;
+                $totalTax += $temp * ($percent/100);
+
+            }
+            if($_item->getSku() == $configSku){
+                Mage::log(print_r($_item->getName(),true));
+
+                continue;
             }
 
             // If Product type == bunde and if bundle price type == dynamic

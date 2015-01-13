@@ -69,11 +69,19 @@ class BillMate{
 		return $this->verify_hash($response);
 	}
 	function verify_hash($response) {
-		$response_array = json_decode($response,true);
-		//If it is not decodable, the actual response will be returnt.
-		if(!$response_array) 
+		$response_array = array();
+		if(!is_array($response))
+			$response_array = json_decode($response,true);
+		else
+			$response_array = $response;
+		//If it is not decodable, the actual response will be returnt. ** When verify Post the response is an array and will not return here.
+		if(!$response_array && !is_array($response))
 			return $response;
-		
+		// If response is array we need to json_decode credentials index and data index
+		if(is_array($response)) {
+			$response_array['credentials'] = json_decode($response['credentials'], true);
+			$response_array['data'] = json_decode($response['data'],true);
+		}
 		//If it is a valid response without any errors, it will be verified with the hash.
 		if(isset($response_array["credentials"])){
 			$hash = $this->hash(json_encode($response_array["data"]));
