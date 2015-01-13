@@ -65,7 +65,7 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
             'currency' => $currentCurrencyCode,
             'country' => $storeCountryIso2,
             'orderid' => (string)time(),
-            'autoactivate' => 0,
+            'autoactivate' => Mage::getStoreConfig('payment/billmatecardpay/payment_action') == 'sale' ? 1 : 0,
             'language' => BillmateCountry::fromLocale($storeLanguage)
 
         );
@@ -134,7 +134,12 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
         $bundleArr = array();
         $totalValue = 0;
         $totalTax = 0;
+        $discountAdded = false;
+        $discountValue = 0;
         foreach( $quote->getAllItems() as $_item){
+            /**
+             * @var $_item Mage_Sales_Model_Quote_Item
+             */
             // Continue if bundleArr contains item parent id, no need for get price then.
             if( in_array($_item->getParentItemId(),$bundleArr)){
                 continue;
@@ -176,28 +181,34 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
                 $price = $_directory->currencyConvert($_item->getCalculationPrice(),$baseCurrencyCode,$currentCurrencyCode);
 
                 //Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
+                $discount = 0.0;
 
+                if($_item->getBaseDiscountAmount() != 0){
+                    $discountAdded = true;
+                    $discount = 100 *($_item->getBaseDiscountAmount() / $price);
+                }
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
                     'title'    => $_item->getName(),
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
-                    'discount' => 0.0,
+                    'discount' => $discount,
                     'withouttax' => $_item->getQty() * (int)round($price*100,0)
 
                 );
-                $temp = $_item->getQty() * (int) round($price*100,0);
+                $discountValue += $_item->getBaseDiscountAmount() * $_item->getQty();
+
+                $temp = $_item->getQty() * (int)round($price*100,0);
                 $totalValue += $temp;
                 $totalTax += $temp * ($percent/100);
             }
         }
-
         $totals = Mage::getSingleton('checkout/session')->getQuote()->getTotals();
 
         //print_r($quote1['subtotal']->getData());
 
-        if(isset($totals['discount'])) {
+        if(isset($totals['discount']) && !$discountAdded) {
             $orderValues['Articles'][] = array(
                 'quantity'   => (int)1,
                 'artnr'    => 'discount',
@@ -211,6 +222,22 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
             $totalValue += (1 * round($totals['discount']->getValue()*0.8))*100;
             $totalTax += ((1 * round($totals['discount']->getValue()*0.8))*100) * ($percent/100);
         }
+
+        if(isset($totals['discount']) && $discountAdded) {
+            $orderValues['Articles'][] = array(
+                'quantity'   => (int)1,
+                'artnr'    => 'discount',
+                'title'    => Mage::helper('payment')->__('Discount'),
+                'aprice'    => -round(($discountValue*0.8) * 100),
+                'taxrate'      => (float)$percent,
+                'discount' => 0.0,
+                'withouttax'    => -round(($discountValue*0.8) * 100),
+
+            );
+            $totalValue -= round(($discountValue*0.8) * 100);
+            $totalTax -= round(($discountValue*0.8) * 100) * ($percent/100);
+        }
+
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
         if(!empty($rates)){
             if( $Shipping->getBaseShippingTaxAmount() > 0 )

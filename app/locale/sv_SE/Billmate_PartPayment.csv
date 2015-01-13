@@ -36,6 +36,7 @@ PClassid,PClass ID
 Type,Typ
 Description,Beskrivning
 Months,Månader
+"Month","Månad"
 Interest rate,Ränta
 Invoice Fee,Faktureringsavgift
 Start fee,Startavgift

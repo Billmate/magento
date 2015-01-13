@@ -242,29 +242,9 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
             }
 
 			if( isset($addr['code']) ){
-                switch($addr['code']){
-                    case '1001':
-                        Mage::throwException( Mage::helper('payment')->__('Credit denied for Personal/Organisationnumber'));
-                        break;
-                    case '8010':
-                        Mage::throwException(Mage::helper('payment')->__('Personal/Organisation number can not be found in the system'));
-                        break;
-                    case '9010':
-                    case '9011':
-                        if(Mage::getStoreConfig('payment/billmateinvoice/test_mode')) {
-                            Mage::throwException(Mage::helper('payment')->__(utf8_encode($addr['data']['message'])));
-                        }
-                        break;
-                    case '9014':
-                        Mage::throwException(Mage::helper('payment')->__('Personal/Organisation number is required'));
-                        break;
-                    case '9015':
-                        Mage::throwException(Mage::helper('payment')->__('Personal/Organisation number is shorter than expected'));
-                        break;
-                    case '9016':
-                        Mage::throwException(Mage::helper('payment')->__('Personal/Organisation number is not valid'));
-                        break;
-                }
+
+                Mage::throwException( $addr['message']);
+
 			}
 			foreach( $addr as $key => $col ){
 				$addr[$key] = utf8_encode(($col));

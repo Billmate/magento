@@ -60,6 +60,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
 		$ship_address = $bill_address = array();
 	    $shipp = $Shipping->getStreet();
         $bill = $Billing->getStreet();
+
         $orderValues['PaymentData'] = array(
             'method' => 16,
             'currency' => $currentCurrencyCode,

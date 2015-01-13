@@ -177,10 +177,14 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 			
 			$isCustomerNotified = false;
 			$order->setState('new', $status, '', $isCustomerNotified);
-
+            $values = array(
+                'number' => $data['number'],
+                'orderid' => $order->getIncrementId()
+            );
+            $data1 = $k->updatePayment($values);
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by ipn.'));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data['status']));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data['number']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data1['status']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
 
 			$order->save();
             $session->setQuoteId($session->getBillmateQuoteId(true));

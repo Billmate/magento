@@ -5,7 +5,7 @@
  * Billmate API - PHP Class 
  *
  * LICENSE: This source file is part of Billmate API, that is fully owned by Billmate AB
- * This is not open source. For licensing queries, please contact efinance at info@billmate.se.
+ * This is not open source. For licensing queries, please contact Billmate AB at info@billmate.se.
  *
  * @category Billmate
  * @package Billmate
@@ -20,9 +20,8 @@
  * 2.0.8 20141125 Yuksel Findik: Url is updated. Some variables are updated
  * 2.0.9 20141204 Yuksel Findik: Returns array and verifies the data is safe
  * 2.1.0 20141215 Yuksel Findik: Unnecessary variables are removed
- * 2.1.1 20141218 Yuksel Findik: If response can not be json_decoded, will return actuall response
- * 2.1.2.20150107 Jesper Johansson verify_hash function taxes the post from notify and accepturls and verifies hash
- * 									usage: Billmage->verify_hash($_POST); Returns error code 9511 when hash failing.
+ * 2.1.1 20141218 Yuksel Findik: If response can not be json_decoded, will return actual response
+ * 2.1.2 20150112 Yuksel Findik: verify_hash function is added.
  */
 class BillMate{
 	var $ID = "";
@@ -35,7 +34,7 @@ class BillMate{
 	function BillMate($id,$key,$ssl=true,$test=false,$debug=false){
 		$this->ID = $id;
 		$this->KEY = $key;
-        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "BillMate:2.1.1" );
+        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "BillMate:2.1.2" );
         defined('BILLMATE_SERVER') || define('BILLMATE_SERVER',  "2.0.6" );
 		$this->SSL = $ssl;
 		$this->DEBUG = $debug;
@@ -67,13 +66,21 @@ class BillMate{
 				$response = $this->curl(json_encode($values));
 				break;
 		}
+		return $this->verify_hash($response);
+	}
+	function verify_hash($response) {
 		$response_array = json_decode($response,true);
-		if(!$response_array) return $response;
+		//If it is not decodable, the actual response will be returnt.
+		if(!$response_array) 
+			return $response;
+		
+		//If it is a valid response without any errors, it will be verified with the hash.
 		if(isset($response_array["credentials"])){
 			$hash = $this->hash(json_encode($response_array["data"]));
+			//If hash matches, the data will be returnt as array.
 			if($response_array["credentials"]["hash"]==$hash)
 				return $response_array["data"];
-			else return array("error"=>9511,"message"=>"Verification error","hash"=>$hash,"hash_received"=>$response_array["credentials"]["hash"]);
+			else return array("code"=>9511,"message"=>"Verification error","hash"=>$hash,"hash_received"=>$response_array["credentials"]["hash"]);
 		}
 		return $response_array;
 	}
@@ -96,26 +103,6 @@ class BillMate{
 		}else curl_close($ch);
 		
 	    return $data;
-	}
-
-	/**
-	 * A Method for verify hash response
-	 * @param $post The post data
-	 *
-	 * @return mixed true|false
-	 */
-	public function verify_hash($response) {
-		$response_array['data'] = json_decode(stripslashes($response['data']),true);
-		$response_array['credentials'] = json_decode(stripslashes($response['credentials']),true);
-		if(!$response_array) return $response;
-		if(isset($response_array["credentials"])){
-			$hash = $this->hash(json_encode($response_array["data"]));
-			if($response_array["credentials"]["hash"]==$hash)
-				return $response_array["data"];
-			else return array("error"=>9511,"message"=>"Verification error","hash"=>$hash,"hash_received"=>$response_array["credentials"]["hash"]);
-		}
-		return $response_array;
-
 	}
 	function hash($args) {
 		$this->out("TO BE HASHED DATA",$args);

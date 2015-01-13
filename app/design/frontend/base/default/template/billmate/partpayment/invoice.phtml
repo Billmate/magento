@@ -27,7 +27,7 @@ $customerData['email'] = Mage::getSingleton('checkout/session')
 				$terms = $this->termsx();
 				$currency = Mage::app()->getStore()->getCurrentCurrencyCode(); 
 				foreach( $terms as $term ){
-					$label = $term['description']. ' '.round( Mage::helper('core')->currency( $term['monthly_cost'], false, true),2).' '.$currency.' / per '. Mage::helper('payment')->__('Month');
+					$label = $term['description']. ' '.round( Mage::helper('core')->currency( $term['monthly_cost'], false, true),2).' '.$currency.' / per '. Mage::helper('partpayment')->__('Month');
 					echo '<option value="'.$term['pclass_id'].'">'.$label.'</option>';
 				}
 			?>

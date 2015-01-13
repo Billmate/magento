@@ -174,10 +174,14 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 			
 			$isCustomerNotified = false;
 			$order->setState('new', $status, '', $isCustomerNotified);
-
+            $values = array(
+                'number' => $data['number'],
+                'orderid' => $order->getIncrementId()
+            );
+            $data1 = $k->updatePayment($values);
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed.'));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment status: #'.$data['status']));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data['number']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment status: #'.$data1['status']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
 
 			$order->save();
             $session->setQuoteId($session->getBillmateStandardQuoteId(true));
