@@ -22,8 +22,8 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
         $countries = explode(',', Mage::getStoreConfig('payment/billmateinvoice/countries'));
 
         if( in_array($quote->getShippingAddress()->getCountry(), $countries ) ){
-			$data = $quote->getTotals();
-			$total = $data['subtotal']->getValue();
+			//$data = $quote->getTotals();
+			$total = $quote->getSubtotal();
 			$min_total = Mage::getStoreConfig('payment/billmateinvoice/min_amount');
 			$max_total = Mage::getStoreConfig('payment/billmateinvoice/max_amount');
 			return $total >= $min_total && $total <= $max_total;

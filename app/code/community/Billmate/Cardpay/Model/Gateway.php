@@ -136,6 +136,8 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
         $totalTax = 0;
         $discountAdded = false;
         $discountValue = 0;
+        $discountTax = 0;
+        $discounts = array();
         $configSku = false;
         foreach( $quote->getAllItems() as $_item){
             /**
@@ -165,6 +167,8 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
                 if($_item->getBaseDiscountAmount() != 0){
                     $discountAdded = true;
                     $discount = 100 *($_item->getBaseDiscountAmount() / $price);
+                    $marginal = ($percent/100)/ (1+($percent/100));
+                    $discountTax = ($_item->getQty() * $_item->getBaseDiscountAmount()) * $marginal;
                 }
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
@@ -177,7 +181,10 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
                     'withouttax' => (int)round($price*100) * $_item->getQty()
 
                 );
-                $discountValue += $_item->getBaseDiscountAmount() * $_item->getQty();
+                Mage::log('disctax'. $discountTax. 'price'. $price. 'discB'. $_item->getBaseDiscountAmount().'disc'. $_item->getDiscountAmount());
+                $discounts[(int)$percent] += $_item->getBaseDiscountAmount() * $_item->getQty() - $discountTax;
+
+                //$discountValue += $_item->getBaseDiscountAmount() * $_item->getQty();
                 $temp = $_item->getQty() * (int)round($price*100,0);
                 $totalValue += $temp;
                 $totalTax += $temp * ($percent/100);
@@ -221,6 +228,8 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
                 if($_item->getBaseDiscountAmount() != 0){
                     $discountAdded = true;
                     $discount = 100 *($_item->getBaseDiscountAmount() / $price);
+                    $marginal = ($percent/100)/ (1+($percent/100));
+                    $discountTax = ($_item->getQty() * $_item->getBaseDiscountAmount()) * $marginal;
                 }
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
@@ -233,7 +242,7 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
 
                 );
                 $discountValue += $_item->getBaseDiscountAmount() * $_item->getQty();
-
+                $discounts[(int)$percent] += $_item->getBaseDiscountAmount() * $_item->getQty() - $discountTax;
                 $temp = $_item->getQty() * (int)round($price*100,0);
                 $totalValue += $temp;
                 $totalTax += $temp * ($percent/100);
@@ -259,18 +268,21 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
         }
 
         if(isset($totals['discount']) && $discountAdded) {
-            $orderValues['Articles'][] = array(
-                'quantity'   => (int)1,
-                'artnr'    => 'discount',
-                'title'    => Mage::helper('payment')->__('Discount'),
-                'aprice'    => -round(($discountValue*0.8) * 100),
-                'taxrate'      => (float)$percent,
-                'discount' => 0.0,
-                'withouttax'    => -round(($discountValue*0.8) * 100),
 
-            );
-            $totalValue -= round(($discountValue*0.8) * 100);
-            $totalTax -= round(($discountValue*0.8) * 100) * ($percent/100);
+            foreach ($discounts as $percent => $value){
+                $orderValues['Articles'][] = array(
+                    'quantity' => (int)1,
+                    'artnr' => 'discount',
+                    'title' => Mage::helper('payment')->__('Discount').' - '. Mage::helper('payment')->__('Vat'). $percent.'%',
+                    'aprice' => -round((abs($value)) * 100),
+                    'taxrate' => (float)$percent,
+                    'discount' => 0.0,
+                    'withouttax' => -round(abs($value) * 100),
+
+                );
+                $totalValue -= round((abs($value)) * 100);
+                $totalTax -= round((abs($value)) * 100) * ($percent / 100);
+            }
         }
 
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
