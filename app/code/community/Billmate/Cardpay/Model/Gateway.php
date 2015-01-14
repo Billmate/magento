@@ -160,6 +160,12 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
 
                 $price = $_directory->currencyConvert($_item->getCalculationPrice(),$baseCurrencyCode,$currentCurrencyCode);
                 $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
+                $discount = 0.0;
+
+                if($_item->getBaseDiscountAmount() != 0){
+                    $discountAdded = true;
+                    $discount = 100 *($_item->getBaseDiscountAmount() / $price);
+                }
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
@@ -167,17 +173,18 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
                     // Dynamic pricing set price to zero
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
-                    'discount' => 0.0,
+                    'discount' => $discount,
                     'withouttax' => (int)round($price*100) * $_item->getQty()
 
                 );
+                $discountValue += $_item->getBaseDiscountAmount() * $_item->getQty();
                 $temp = $_item->getQty() * (int)round($price*100,0);
                 $totalValue += $temp;
                 $totalTax += $temp * ($percent/100);
 
             }
             if($_item->getSku() == $configSku){
-                Mage::log(print_r($_item->getName(),true));
+
 
                 continue;
             }
