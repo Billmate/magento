@@ -117,13 +117,18 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
                 $price = $_directory->currencyConvert($_item->getCalculationPrice(),$baseCurrencyCode,$currentCurrencyCode);
                 $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
                 $discount = 0.0;
-
+                $discountPerArticle = 0;
                 if($_item->getBaseDiscountAmount() != 0){
                     $discountAdded = true;
                     $discount = 100 *($_item->getBaseDiscountAmount() / $price);
                     $marginal = ($percent/100)/ (1+($percent/100));
-                    $discountTax = ($_item->getQty() * $_item->getBaseDiscountAmount()) * $marginal;
+
+                    $discountPerArticle = $_item->getBaseDiscountAmount();
+                    // $discountPerArticle without VAT
+                    $discountPerArticle = $discountPerArticle - ($discountPerArticle * $marginal);
+
                 }
+                $total = ($discountAdded) ? (int) round((($price - $discountPerArticle) * $_item->getQty())* 100) : (int)round($price*100) * $_item->getQty();
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
@@ -132,13 +137,11 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
                     'discount' => $discount,
-                    'withouttax' => (int)round($price*100) * $_item->getQty()
+                    'withouttax' => $total
 
                 );
 
-                $discountValue += $_item->getBaseDiscountAmount() * $_item->getQty();
-                $discounts[(int)$percent] += $_item->getBaseDiscountAmount() * $_item->getQty() - $discountTax;
-                $temp = $_item->getQty() * (int)round($price*100,0);
+                $temp = $total;
                 $totalValue += $temp;
                 $totalTax += $temp * ($percent/100);
 
@@ -178,14 +181,18 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 					
 				//Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
                 $discount = 0.0;
-
+                $discountPerArticle = 0;
                 if($_item->getBaseDiscountAmount() != 0){
                     $discountAdded = true;
                     $discount = 100 *($_item->getBaseDiscountAmount() / $price);
-
                     $marginal = ($percent/100)/ (1+($percent/100));
-                    $discountTax = ($_item->getQty() * $_item->getBaseDiscountAmount()) * $marginal;
+
+                    $discountPerArticle = $_item->getBaseDiscountAmount();
+                    // $discountPerArticle without VAT
+                    $discountPerArticle = $discountPerArticle - ($discountPerArticle * $marginal);
+
                 }
+                $total = ($discountAdded) ? (int) round((($price - $discountPerArticle) * $_item->getQty())* 100) : (int)round($price*100) * $_item->getQty();
 				$orderValues['Articles'][] = array(
 						'quantity'   => (int)$_item->getQty(),
 						'artnr'    => $_item->getProduct()->getSKU(),
@@ -193,12 +200,10 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
                         'aprice'    => (int)round($price*100,0),
                         'taxrate'      => (float)$percent,
                         'discount' => $discount,
-                        'withouttax' => $_item->getQty() * (int)round($price*100,0)
+                        'withouttax' => $total
 
 				);
-                $discountValue += $_item->getBaseDiscountAmount() * $_item->getQty();
-                $discounts[(int)$percent] += $_item->getBaseDiscountAmount() * $_item->getQty() - $discountTax;
-                $temp = $_item->getQty() * (int) round($price*100,0);
+                $temp = $total;
                 $totalValue += $temp;
                 $totalTax += $temp * ($percent/100);
 			}
@@ -220,7 +225,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
             $totalValue += (1 * round($totals['discount']->getValue()*0.8))*100;
             $totalTax += ((1 * round($totals['discount']->getValue()*0.8))*100) * ($percent/100);
         }
-
+        /*
         if(isset($totals['discount']) && $discountAdded) {
             foreach ($discounts as $percent => $value){
                 $orderValues['Articles'][] = array(
@@ -236,7 +241,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
                 $totalValue -= round((abs($value)) * 100);
                 $totalTax -= round((abs($value)) * 100) * ($percent / 100);
             }
-        }
+        }*/
 
 
        $rates = $quote->getShippingAddress()->getShippingRatesCollection();
@@ -276,8 +281,8 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 
         $orderValues['Cart']['Total'] = array(
             'withouttax' => $totalValue,
-            'tax' => $totalTax,
-            'withtax' => $totalValue + $totalTax
+            'tax' => (int)$totalTax,
+            'withtax' =>(int) $totalValue + (int)$totalTax
         );
 		$result  = $k->addPayment($orderValues);
 
