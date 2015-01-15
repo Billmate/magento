@@ -22,6 +22,7 @@
  * 2.1.0 20141215 Yuksel Findik: Unnecessary variables are removed
  * 2.1.1 20141218 Yuksel Findik: If response can not be json_decoded, will return actual response
  * 2.1.2 20150112 Yuksel Findik: verify_hash function is added.
+ * 2.1.4 20150115 Yuksel Findik: verify_hash is improved. The serverdata is added instead of useragent
  */
 class BillMate{
 	var $ID = "";
@@ -31,27 +32,30 @@ class BillMate{
 	var $SSL = true;
 	var $TEST = false;
 	var $DEBUG = false;
-	function BillMate($id,$key,$ssl=true,$test=false,$debug=false){
+	var $REFERER = false;
+	function BillMate($id,$key,$ssl=true,$test=false,$debug=false,$referer=array()){
 		$this->ID = $id;
 		$this->KEY = $key;
-        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "BillMate:2.1.2" );
+        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "BillMate:2.1.4" );
         defined('BILLMATE_SERVER') || define('BILLMATE_SERVER',  "2.0.6" );
 		$this->SSL = $ssl;
 		$this->DEBUG = $debug;
 		$this->TEST = $test;
+		$this->REFERER = $referer;
 	}
 	public function __call($name,$args){
 	 	if(count($args)==0) return; //Function call should be skipped
 	 	return $this->call($name,$args[0]);
 	}
 	function call($function,$params) {
+		
 		$values = array(
 			"credentials" => array(
 				"id"=>$this->ID,
 				"hash"=>$this->hash(json_encode($params)),
 				"version"=>BILLMATE_SERVER,
 				"client"=>BILLMATE_CLIENT,
-				"useragent"=>$_SERVER['HTTP_USER_AGENT'],
+				"serverdata"=>array_merge($_SERVER,$this->REFERER),
 				"time"=>microtime(true),
 				"test"=>$this->TEST?"1":"0",
 			),
@@ -69,15 +73,10 @@ class BillMate{
 		return $this->verify_hash($response);
 	}
 	function verify_hash($response) {
-		$response_array = array();
-		if(!is_array($response))
-			$response_array = json_decode($response,true);
-		else
-			$response_array = $response;
-		//If it is not decodable, the actual response will be returnt. ** When verify Post the response is an array and will not return here.
-		if(!$response_array && !is_array($response))
+		$response_array = is_array($response)?$response:json_decode($response,true);
+		//If it is not decodable, the actual response will be returnt.
+		if(!$response_array && !is_array($response)) 
 			return $response;
-		// If response is array we need to json_decode credentials index and data index
 		if(is_array($response)) {
 			$response_array['credentials'] = json_decode($response['credentials'], true);
 			$response_array['data'] = json_decode($response['data'],true);
