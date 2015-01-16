@@ -163,18 +163,18 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
                 $price = $_directory->currencyConvert($_item->getCalculationPrice(),$baseCurrencyCode,$currentCurrencyCode);
                 $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
                 $discount = 0.0;
-                $discountPerArticle = 0;
+                $discountAmount = 0;
                 if($_item->getBaseDiscountAmount() != 0){
                     $discountAdded = true;
-                    $discount = 100 *($_item->getBaseDiscountAmount() / $price);
-                    $marginal = ($percent/100)/ (1+($percent/100));
 
-                    $discountPerArticle = $_item->getBaseDiscountAmount();
+                    $marginal = ($percent/100)/ (1+($percent/100));
+                    $discount = $_item->getDiscountPercent();
+                    $discountAmount = $_item->getBaseDiscountAmount();
                     // $discountPerArticle without VAT
-                    $discountPerArticle = $discountPerArticle - ($discountPerArticle * $marginal);
+                    $discountAmount = $discountAmount - ($discountAmount * $marginal);
 
                 }
-                $total = ($discountAdded) ? (int) round((($price - $discountPerArticle) * $_item->getQty())* 100) : (int)round($price*100) * $_item->getQty();
+                $total = ($discountAdded) ? (int) round((($price * $_item->getQty() - $discountAmount)* 100)) : (int)round($price*100) * $_item->getQty();
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
@@ -226,18 +226,18 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
 
                 //Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
                 $discount = 0.0;
-                $discountPerArticle = 0;
+                $discountAmount = 0;
                 if($_item->getBaseDiscountAmount() != 0){
                     $discountAdded = true;
-                    $discount = 100 *($_item->getBaseDiscountAmount() / $price);
+                    //$discount = 100 *($_item->getBaseDiscountAmount() / $price);
                     $marginal = ($percent/100)/ (1+($percent/100));
-
-                    $discountPerArticle = $_item->getBaseDiscountAmount();
+                    $discount = $_item->getDiscountPercent();
+                    $discountAmount = $_item->getBaseDiscountAmount();
                     // $discountPerArticle without VAT
-                    $discountPerArticle = $discountPerArticle - ($discountPerArticle * $marginal);
+                    $discountAmount = $discountAmount - ($discountAmount * $marginal);
 
                 }
-                $total = ($discountAdded) ? (int) round((($price - $discountPerArticle) * $_item->getQty())* 100) : (int)round($price*100) * $_item->getQty();
+                $total = ($discountAdded) ? (int) round((($price * $_item->getQty() - $discountAmount)* 100)) : (int)round($price*100) * $_item->getQty();
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
