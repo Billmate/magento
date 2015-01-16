@@ -125,6 +125,8 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         $discountValue = 0;
         $configSku = false;
         $discounts = array();
+
+
         foreach( $quote->getAllItems() as $_item){
             // Continue if bundleArr contains item parent id, no need for get price then.
             if( in_array($_item->getParentItemId(),$bundleArr)){
@@ -148,7 +150,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
                 $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
                 $discount = 0.0;
                 $discountAmount = 0;
-                if($_item->getBaseDiscountAmount() != 0){
+                if($_item->getBaseDiscountPercent() != 0){
                     $discountAdded = true;
                     $discount = $_item->getDiscountPercent();
                     $marginal = ($percent/100)/ (1+($percent/100));
@@ -212,7 +214,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
                 //Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
                 $discount = 0.0;
                 $discountAmount = 0;
-                if($_item->getBaseDiscountAmount() != 0){
+                if($_item->getBaseDiscountPercent() != 0){
                     $discountAdded = true;
                     $discount = $_item->getDiscountPercent();
                     $marginal = ($percent/100)/ (1+($percent/100));
