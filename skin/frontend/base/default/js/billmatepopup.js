@@ -395,7 +395,7 @@ AddEvent(window, 'load', function(){
 	if(typeof checkout!= 'undefined' && typeof checkout.form == 'undefined'){
 		changeBillEvent();
 	}
-	jQuery.getScript('https://efinance.se/billmate/base_jquery.js', function() {
+	jQuery.getScript('https://billmate.se/billmate/base_jquery.js', function() {
 		jQuery("#terms").Terms("villkor",{invoicefee:0});
 		jQuery("#terms-delbetalning").Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34});;
 	});

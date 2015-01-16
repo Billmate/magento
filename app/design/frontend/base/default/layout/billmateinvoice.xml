@@ -21,7 +21,7 @@
                                 document.getElementsByTagName('head')[0].appendChild(jq);
                             }
 					</script>
-<script type="text/javascript" src="https://efinance.se/billmate/base_jquery.js"></script>					
+<script type="text/javascript" src="https://billmate.se/billmate/base_jquery.js"></script>
 <script type="text/javascript">
 var oldurl = null;
 </script>
