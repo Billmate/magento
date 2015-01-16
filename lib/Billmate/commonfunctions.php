@@ -1,6 +1,6 @@
 <?php
 if(!function_exists('getCountryID')){
-	define('BILLPLUGIN_VERSION', '1.25');
+	define('BILLPLUGIN_VERSION', '2.0');
 	define('BILLMATE_VERSION',  "PHP:Magento:".BILLPLUGIN_VERSION );
 
 	function getCountryID(){
