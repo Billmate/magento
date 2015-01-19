@@ -304,7 +304,7 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
             $totalValue += $Shipping->getShippingAmount()*100;
             $totalTax += ($Shipping->getShippingAmount()*100) * ($rate/100);
         }
-        $round = ($quote->getGrandTotal() * 100) - ((int)$totalValue + (int) $totalTax);
+        $round = round(($quote->getGrandTotal() * 100) - ((int)$totalValue + (int) $totalTax));
 
 
         $orderValues['Cart']['Total'] = array(
