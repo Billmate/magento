@@ -12,7 +12,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     protected $_canRefund               = true;
     protected $_canRefundInvoicePartial = false;
     protected $_canVoid                 = false;
-    protected $_canUseInternal          = true;
+    protected $_canUseInternal          = false;
     protected $_canUseCheckout          = true;
     
     public function isAvailable($quote = null)

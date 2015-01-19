@@ -12,7 +12,7 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
     protected $_canRefund               = true;
     protected $_canRefundInvoicePartial = false;
     protected $_canVoid                 = true;
-    protected $_canUseInternal          = true;
+    protected $_canUseInternal          = false;
     protected $_canUseCheckout          = true;
 	
     public function isAvailable($quote = null)

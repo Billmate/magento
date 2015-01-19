@@ -11,7 +11,7 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
     protected $_canRefund               = true;
     protected $_canRefundInvoicePartial = false;
     protected $_canVoid                 = false;
-    protected $_canUseInternal          = true;
+    protected $_canUseInternal          = false;
     protected $_canUseCheckout          = true;
     protected $_liveurl                 = 'https://cardpay.billmate.se/pay';
     protected $_testurl                 = 'https://cardpay.billmate.se/pay/test';
