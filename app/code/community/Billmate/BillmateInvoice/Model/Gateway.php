@@ -279,11 +279,14 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
                 $totalTax += ($Shipping->getBaseFeeAmount()*100) * ($feeinfo['rate']/100);
 			}
 		}
+        $round = ($quote->getGrandTotal() * 100) - ((int)$totalValue + (int) $totalTax);
+
 
         $orderValues['Cart']['Total'] = array(
             'withouttax' => $totalValue,
             'tax' => (int)$totalTax,
-            'withtax' =>(int) $totalValue + (int)$totalTax
+            'rounding' => $round,
+            'withtax' =>(int) $totalValue + (int)$totalTax + (int) $round
         );
 		$result  = $k->addPayment($orderValues);
 
