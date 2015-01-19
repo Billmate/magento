@@ -56,7 +56,7 @@
             <billmatecardpay>
                 <model>billmatecardpay/billmatecardpay</model>
                 <countries>SE,DE,NL</countries>
-                <title>Billmate Cardpay</title>
+                <title></title>
 				<card_error_page>home</card_error_page>
                 <eid>7270</eid>
                 <payment_action>authorize</payment_action>

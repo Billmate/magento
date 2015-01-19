@@ -59,7 +59,9 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 	        $total = $address->getGrandTotal();
 	        $title = Mage::helper('partpayment')->getLowPclass($total);
 	    }
-        return $this->getConfigData('title').$title;
+        $preTitle = (Mage::getStoreConfig('payment/partpayment/title') != '') ? Mage::getStoreConfig('payment/partpayment/title') : Mage::helper('partpayment')->__('Billmate Part Payment');
+        return $preTitle.$title;
+        //return $this->getConfigData('title').$title;
     }
 
     public function authorize(Varien_Object $payment, $amount)

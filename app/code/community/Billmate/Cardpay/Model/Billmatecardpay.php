@@ -83,7 +83,7 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
     
    
     public function getTitle(){
-        return Mage::getStoreConfig('payment/billmatecardpay/title');
+        return (Mage::getStoreConfig('payment/billmatecardpay/title') != '') ? Mage::getStoreConfig('payment/billmatecardpay/title') : Mage::helper('billmatecardpay')->__('Billmate Cardpay');
     }
     public function getBillmateUrl(){
         
