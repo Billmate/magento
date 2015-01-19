@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<config>
+    <tabs>
+        <billmate_tab translate="label">
+            <label>Billmate</label>
+            <sort_order>60</sort_order>
+        </billmate_tab>
+    </tabs>
+    <sections>
+        <billmate translate="label">
+            <label>Billmate</label>
+            <tab>billmate_tab</tab>
+            <sort_order>1000</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <settings translate="label">
+                    <label>Billmate Common settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1000</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <firecheckout translate="label,comment">
+                            <label>Firecheckout Active</label>
+                            <comment>Activate if you use FireCheckout. Will use a different javascript file</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </firecheckout>
+                        <customcss translate="label,comment">
+                            <label>Use custom stylesheet</label>
+                            <comment>Activate if you want to use a custom stylesheet, add a file in directory : /skin/frontend/base/default/css named billmatestyle-custom.css</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </customcss>
+                    </fields>
+                </settings>
+            </groups>
+        </billmate>
+    </sections>
+</config>

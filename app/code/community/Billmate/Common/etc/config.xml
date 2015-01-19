@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Billmate_Common>
+            <version>1.0.0</version>
+        </Billmate_Common>
+    </modules>
+    <global>
+    </global>
+</config>
