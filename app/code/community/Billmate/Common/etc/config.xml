@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Billmate_Common>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </Billmate_Common>
     </modules>
     <global>
@@ -11,6 +11,13 @@
                 <class>Billmate_Common_Model</class>
             </billmatecommon>
         </models>
+        <resources>
+            <billmatecommon_setup>
+                <setup>
+                    <module>Billmate_Common</module>
+                </setup>
+            </billmatecommon_setup>
+        </resources>
         <events>
             <admin_system_config_changed_section_billmate>
                 <observers>

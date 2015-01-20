@@ -45,6 +45,34 @@
                         </customcss>
                     </fields>
                 </settings>
+                <credentials translate="label">
+                    <label>Billmate Credentials</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>2000</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <eid translate="label comment tooltip">
+                            <label>Eid</label>
+                            <sort_order>5</sort_order>
+                            <tooltip><![CDATA[This your billmate merchant id. This should be valid.]]></tooltip>
+                            <comment><![CDATA[Your Merchant Id here.]]></comment>
+                            <show_in_default>1</show_in_default>
+                            <show_in_store>1</show_in_store>
+                            <show_in_website>1</show_in_website>
+                            <frontend_type>text</frontend_type>
+                        </eid>
+                        <secret translate="label">
+                            <label>Secret Key</label>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_store>1</show_in_store>
+                            <show_in_website>1</show_in_website>
+                            <frontend_type>text</frontend_type>
+                        </secret>
+                    </fields>
+                </credentials>
             </groups>
         </billmate>
     </sections>
