@@ -6,5 +6,21 @@
         </Billmate_Common>
     </modules>
     <global>
+        <models>
+            <billmatecommon>
+                <class>Billmate_Common_Model</class>
+            </billmatecommon>
+        </models>
+        <events>
+            <admin_system_config_changed_section_billmate>
+                <observers>
+                    <PartPayment>
+                        <type>singleton</type>
+                        <class>billmatecommon/observer</class>
+                        <method>adminSystemConfigChangedSectionBillmate</method>
+                    </PartPayment>
+                </observers>
+            </admin_system_config_changed_section_billmate>
+        </events>
     </global>
 </config>

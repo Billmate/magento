@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<config>
+    <sections>
+		<firecheckout translate="label" module="firecheckout">
+			<groups>
+				<address_form_status translate="label comment">
+					<fields>
+						<person_number translate="label" module="checkout">
+                            <label>Person Number</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_formFieldOption</source_model>
+                            <backend_model>firecheckout/system_config_backend_address_form_status</backend_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </person_number>
+					</fields>
+				</address_form_status>
+				<address_form_order translate="label comment">
+					<fields>
+						<person_number translate="label" module="checkout">
+                            <label>Person Number</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>33</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </person_number>
+					</fields>
+				</address_form_order>
+			</groups>
+		</firecheckout>
+		<payment>
+                    <groups>
+                        <billmateinvoice translate="label" module="billmateinvoice">
+                            <label>Billmate Invoice</label>
+                            <sort_order>670</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_store>1</show_in_store>
+                            <show_in_website>1</show_in_website>
+                            <fields>
+                                <active translate="label">
+                                    <label>Enabled</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <sort_order>1</sort_order>
+                                </active>
+                                <test_mode translate="label">
+                                    <label>Test Mode</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <sort_order>2</sort_order>
+                                </test_mode>
+                                <title translate="label">
+                                    <label>Title</label>
+                                    <frontend_type>text</frontend_type>
+        							<!-- <comment><![CDATA[<img src="/media/billmate/images/bm_faktura_l.png" />]]></comment> -->
+        							<comment>
+        								<model>billmateinvoice/adminhtml_comment</model>
+        							</comment>
+                                    <sort_order>3</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </title>
+                                <countries translate="label">
+                                    <label>Available Countries</label>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_store>1</show_in_store>
+                                    <show_in_website>1</show_in_website>
+                                    <sort_order>4</sort_order>
+                                    <source_model>billmateinvoice/adminhtml_system_config_source_country</source_model>
+                                </countries>
+                                <billmate_fee translate="label">
+                                    <label>Invoice Fee</label>
+                                    <frontend_type>text</frontend_type>
+                                    <show_in_store>1</show_in_store>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_default>1</show_in_default>
+                                    <sort_order>5</sort_order>
+                                </billmate_fee>
+        						<tax_class translate="label">
+                                    <label>Invoice fee tax class</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_shipping_taxclass</source_model>
+                                    <sort_order>6</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_store>1</show_in_store>
+                                    <show_in_website>1</show_in_website>
+                                    <comment>The tax class to use to calculate the invoice fee tax</comment>
+                                </tax_class>
+                                <eid translate="label">
+                                    <label>Merchant Id</label>
+                                    <frontend_type>text</frontend_type>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <sort_order>7</sort_order>
+                                </eid>
+                                <secret translate="label">
+                                    <label>Secret</label>
+                                    <frontend_type>text</frontend_type>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <sort_order>8</sort_order>
+                                </secret>
+                                <order_status translate="label">
+                                    <label>New Order Status</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>billmateinvoice/adminhtml_system_config_source_status</source_model>
+                                    <sort_order>9</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </order_status>
+                                <sort_order translate="label">
+                                    <label>Sort Order</label>
+                                    <frontend_type>text</frontend_type>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <sort_order>10</sort_order>
+                                </sort_order>
+                                 <min_amount translate="label" module="cms">
+                                    <label>Minimum Total</label>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>11</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </min_amount>
+                                <max_amount translate="label" module="cms">
+                                    <label>Maximum Total</label>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>12</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </max_amount>
+                           </fields>
+                        </billmateinvoice>
+                    </groups>
+                </payment>
+            </sections>
+        </config>
