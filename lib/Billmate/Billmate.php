@@ -23,6 +23,7 @@
  * 2.1.1 20141218 Yuksel Findik: If response can not be json_decoded, will return actual response
  * 2.1.2 20150112 Yuksel Findik: verify_hash function is added.
  * 2.1.4 20150115 Yuksel Findik: verify_hash is improved. The serverdata is added instead of useragent
+ * 2.1.5 20150122 Yuksel Findik: Will make a utf8_decode before it returns the result
  */
 class BillMate{
 	var $ID = "";
@@ -36,7 +37,7 @@ class BillMate{
 	function BillMate($id,$key,$ssl=true,$test=false,$debug=false,$referer=array()){
 		$this->ID = $id;
 		$this->KEY = $key;
-        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "BillMate:2.1.4" );
+        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "BillMate:2.1.5" );
         defined('BILLMATE_SERVER') || define('BILLMATE_SERVER',  "2.0.6" );
 		$this->SSL = $ssl;
 		$this->DEBUG = $debug;
@@ -89,7 +90,7 @@ class BillMate{
 				return $response_array["data"];
 			else return array("code"=>9511,"message"=>"Verification error","hash"=>$hash,"hash_received"=>$response_array["credentials"]["hash"]);
 		}
-		return $response_array;
+		return array_map("utf8_decode",$response_array);
 	}
 	function curl($parameters) {
 		$ch = curl_init();
