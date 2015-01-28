@@ -34,9 +34,12 @@ var oldurl = null;
             <block type="core/template" template="billmate/billmatescript.phtml"/>
         </reference>
     </default>
-    <checkout_onepage_index>
 
-    </checkout_onepage_index>
+    <firecheckout_index_index>
+        <reference name="head">
+            <block type="core/template" template="billmate/firecheckout.phtml"/>
+        </reference>
+    </firecheckout_index_index>
     <billmateinvoice_index_index>
         <remove name="head"/>
         <remove name="footer"/>
@@ -49,7 +52,7 @@ var oldurl = null;
             </action>
         </reference>
         <reference name="content">
-            <block type="billmateinvoice/changeaddress" name="billmate_invoice"></block>
+            <block type="billmateinvoice/changeaddress" name="billmate_invoice"/>
         </reference>
     </billmateinvoice_index_index>
 
@@ -60,7 +63,7 @@ var oldurl = null;
             </action>
         </reference>
         <reference name="content">
-            <block type="core/template" name="billmate_invoice_info" template='billmate/info.phtml'></block>
+            <block type="core/template" name="billmate_invoice_info" template='billmate/info.phtml'/>
         </reference>
     </billmateinvoice_index_getinfo>
 
@@ -73,7 +76,7 @@ var oldurl = null;
             </action>
         </reference>
         <reference name="content">
-            <block type="billmateinvoice/changeaddress" name="billmate_invoice"></block>
+            <block type="billmateinvoice/changeaddress" name="billmate_invoice"/>
         </reference>
     </billmateinvoice_index_updateaddress>
 
