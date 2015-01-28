@@ -39,7 +39,7 @@ class Billmate_PartPayment_Model_Observer extends Mage_Core_Model_Abstract
                 $countryData = $_POST['groups']['partpayment']['fields']['countries']['value'];
             }
 			//$countries = array('SE');
-            Mage::log(print_r($countryData,true));
+
             $countries = $countryData;
             $gateway = Mage::helper("partpayment");
 			

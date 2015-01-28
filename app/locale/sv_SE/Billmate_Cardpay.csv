@@ -8,7 +8,6 @@ Payment Action,Betalningsåtgärd
 Test Mode,Testläge
 Available Countries,Tillgängliga länder
 New Order Status,Ny orderstatus
-
 "B","Ej giltigt organisations-/personnummer. Kontrollera numret."
 "<","Ej giltigt organisations-/personnummer. Kontrollera numret."
 Unable to process with payment gateway,Tyvärr kunde inte din betalning genomföras

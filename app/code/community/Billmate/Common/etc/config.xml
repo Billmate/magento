@@ -6,6 +6,16 @@
         </Billmate_Common>
     </modules>
     <global>
+        <helpers>
+            <billmatecommon>
+                <class>Billmate_Common_Helper</class>
+            </billmatecommon>
+        </helpers>
+        <blocks>
+            <billmatecommon>
+                <class>Billmate_Common_Block</class>
+            </billmatecommon>
+        </blocks>
         <models>
             <billmatecommon>
                 <class>Billmate_Common_Model</class>
@@ -30,4 +40,15 @@
             </admin_system_config_changed_section_billmate>
         </events>
     </global>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <billmatecommon after="Mage_Adminhtml">Billmate_Common</billmatecommon>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
 </config>

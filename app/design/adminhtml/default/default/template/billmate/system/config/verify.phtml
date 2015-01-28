@@ -1,0 +1,25 @@
+<script type="text/javascript">
+    function verify(){
+
+        var eid = $('billmate_credentials_eid').value;
+        var secret = $('billmate_credentials_secret').value;
+        new Ajax.Request('<?php echo $this->getAjaxCheckUrl() ?>',{
+            method: 'post',
+            parameters: {
+                eid: eid,
+                secret: secret
+            },
+            onSuccess: function(transport){
+                if(transport.responseText){
+                    var response = transport.responseText.evalJSON();
+                    if(response.success)
+                        alert('Verified');
+                    else
+                        alert('Cant verify credentials');
+                }
+            }
+        })
+    }
+</script>
+
+<?php echo $this->getButtonHtml(); ?>

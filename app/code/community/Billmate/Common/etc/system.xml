@@ -23,7 +23,7 @@
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
-                        <firecheckout translate="label,comment">
+                        <firecheckout translate="label comment">
                             <label>Firecheckout Active</label>
                             <comment>Activate if you use FireCheckout. Will use a different javascript file</comment>
                             <frontend_type>select</frontend_type>
@@ -71,6 +71,15 @@
                             <show_in_website>1</show_in_website>
                             <frontend_type>text</frontend_type>
                         </secret>
+                        <verify translate="label">
+                            <label>Verify</label>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>button</frontend_type>
+                            <frontend_model>billmatecommon/adminhtml_system_config_form_verify</frontend_model>
+                        </verify>
                     </fields>
                 </credentials>
             </groups>
