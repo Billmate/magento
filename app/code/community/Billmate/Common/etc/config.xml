@@ -55,4 +55,15 @@
             </adminhtml>
         </routers>
     </admin>
+    <frontend>
+        <routers>
+            <billmatecommon>
+                <use>standard</use>
+                <args>
+                    <module>Billmate_Common</module>
+                    <frontName>billmatecommon</frontName>
+                </args>
+            </billmatecommon>
+        </routers>
+    </frontend>
 </config>

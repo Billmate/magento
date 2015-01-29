@@ -40,12 +40,23 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $billmate = $this->getBillmate();
 
-        $values['PaymentData'] = array(
+        $values = array(
             'pno' => $pno
         );
 
         $result = $billmate->GetAddress($values);
         if(!isset($result['code'])){
+            if(isset($result['country'])) {
+                $countryCollection = Mage::getModel('directory/country')->getCollection();
+                foreach ($countryCollection as $country) {
+                    if ($result['country'] == $country->getName()) {
+                        $countryIso = $country->getIso2Code();
+                        break;
+                    }
+                }
+                $countryCollection = null;
+                $result['country'] = $countryIso;
+            }
             return $result;
         }
         else {

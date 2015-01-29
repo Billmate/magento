@@ -18,11 +18,4 @@ class Billmate_Common_Adminhtml_BillmatecommonController extends Mage_Adminhtml_
 
         $this->getResponse()->setBody(Zend_Json::encode($result));
     }
-
-    public function getaddressAction()
-    {
-        $pno = $this->getRequest()->getParam('billmate_pno');
-
-        $result['success'] = Mage::helper('billmatecommon')->getAddress($pno);
-    }
 }

@@ -34,10 +34,15 @@ var oldurl = null;
             <block type="core/template" template="billmate/billmatescript.phtml"/>
         </reference>
     </default>
-
+    <checkout_onepage_index>
+        <reference name="head">
+            <block type="core/template" template="billmate/getaddress.phtml"/>
+        </reference>
+    </checkout_onepage_index>
     <firecheckout_index_index>
         <reference name="head">
             <block type="core/template" template="billmate/firecheckout.phtml"/>
+            <block type="core/template" template="billmate/getaddress.phtml"/>
         </reference>
     </firecheckout_index_index>
     <billmateinvoice_index_index>
