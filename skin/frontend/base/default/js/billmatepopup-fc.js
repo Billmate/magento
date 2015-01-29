@@ -402,14 +402,7 @@ function SaveAddress(){
 }
 AddEvent(window, 'load', function(){
     match_media_mount();
-    if( document.getElementById("billing:person_number") != null ){
-        AddEvent(document.getElementById("billing:person_number"),'change', function(){
-            $person = document.getElementById("billing:person_number").value.trim();
-            if( $person  == '' ) return false;
-        })
-    }else {
-        jQuery('.payment_person_number').show();
-    }
+
 
 
     if(typeof checkout!= 'undefined' && typeof checkout.form == 'undefined'){
@@ -433,23 +426,6 @@ function billmateGetAddress(e){
     checkAddress();
 }
 
-document.observe('dom:loaded',function(){
-
-    document.observe('change',function(e,el){
-        if(e.target.id == 'partpayment_pno' || e.target.id == 'billmateinvoice_pno'){
-
-
-            $('billing:person_number').value = e.target.value;
-
-        }
-
-        if((e.target.id == 'p_method_billmateinvoice' || e.target.id == 'p_method_partpayment') && $('billing:person_number').up('#billing-new-address-form').visible()){
-            jQuery('.payment_person_number').hide();
-        }
-    })
-
-
-})
 function ShowDivInCenter(divId)
 {
     try

@@ -2,8 +2,10 @@
 
 if (Mage::getStoreConfig('billmate/settings/firecheckout')) ?>
     <script>
-        jQuery(document).ready(function(jQuery){
-            jQuery('#billing-new-address-form').children('fieldset').children('ul').prepend("<li class=\"wide\"><label for=\"person_number\"><?php echo Mage::helper('billmateinvoice')->__('Person Number'); ?></label></li>"
-            +'<div class="input-box"><input type="text" class="input-text" name="payment[person_number]" id="person_number" title="<?php echo Mage::helper('billmateinvoice')->__('Person number'); ?>"/> </div>');
+        document.observe('dom:loaded',function(){
+
+            var pno ="<li class=\"wide\"><label for=\"person_number\"><?php echo Mage::helper('billmateinvoice')->__('Person Number'); ?></label></li>"
+            +'<div class="input-box"><input type="text" class="input-text" name="payment[person_number]" id="person_number" title="<?php echo Mage::helper('billmateinvoice')->__('Person number'); ?>"/> </div>';
+            $('billing-new-address-form').down('ul').innerHTML = pno + $('billing-new-address-form').down('ul').innerHTML;
         });
     </script>

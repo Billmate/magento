@@ -60,7 +60,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 	        $title = Mage::helper('partpayment')->getLowPclass($total);
 	    }
 
-        return Mage::helper($preTitle = Mage::getStoreConfig('payment/partpayment/title'))->__($preTitle).$title;
+        return Mage::helper('partpayment')->__(Mage::getStoreConfig('payment/partpayment/title')).$title;
         //return $this->getConfigData('title').$title;
     }
 
@@ -74,8 +74,14 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     {
         parent::validate();
         $payment = $_POST['payment'];
-        if( empty( $payment['partpayment_pno'] ) ){
-            Mage::throwException(Mage::helper('payment')->__('Missing Personal number') );
+        if(Mage::getStoreConfig('billmate/settings/firecheckout')){
+            if( empty( $payment['person_number'] ) ){
+                Mage::throwException(Mage::helper('payment')->__('Missing Personal number') );
+            }
+        } else {
+            if( empty( $payment['partpayment_pno'] ) ){
+                Mage::throwException(Mage::helper('payment')->__('Missing Personal number') );
+            }
         }
         if( empty( $payment['partpayment_phone'] ) ){
             Mage::throwException(Mage::helper('payment')->__('Missing phone number') );
