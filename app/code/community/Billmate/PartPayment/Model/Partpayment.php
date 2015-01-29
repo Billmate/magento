@@ -26,7 +26,9 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 
         //TODO Check active Paymentplan country instead.
         $collection = Mage::getModel('partpayment/pclass')->getCollection();
-        $collection->addFieldToSelect('country')->getSelect()->group('country');
+        if($collection->getSize() == 0){
+            return false;
+        }
         //$countries = $collection->getColumnValues('country');
 		
         $avail = in_array($quote->getBillingAddress()->getCountry(), $countries );
