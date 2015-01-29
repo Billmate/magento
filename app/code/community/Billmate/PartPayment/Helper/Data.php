@@ -296,6 +296,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 			$monthly_cost = $_directory->currencyConvert($monthly_cost,$baseCurrencyCode,$currentCurrencyCode);
 	
 			$payment_option_temp['monthly_cost'] = $monthly_cost;
+            $payment_option_temp['nbrofmonths'] = $pclass->getNbrofmonths();
 			$payment_option_temp['pclass_id'] = $pclass->getPaymentplanid();
 			$payment_option_temp['months'] = $pclass->getNbrofmonths();
 			$payment_option_temp['description'] = $pclass->getDescription();
