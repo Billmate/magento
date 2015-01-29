@@ -61,7 +61,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 
         $orderValues['Customer'] = array(
             'nr' => $customerId,
-            'pno' => $payment[$methodname.'_pno']
+            'pno' => (empty($payment[$methodname.'_pno'])) ? $payment['person_number'] : $payment[$methodname.'_pno']
         );
         $orderValues['Customer']['Billing'] = array(
             'firstname' => $Billing->getFirstname(),
@@ -316,9 +316,11 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
         $quote = Mage::getSingleton('checkout/session')->getQuote();        
         $Billing= $quote->getBillingAddress();
         $Shipping= $quote->getShippingAddress();
+
+        $pno = (empty($payment[$methodname.'_pno'])) ? $payment['person_number'] : $payment[$methodname.'_pno'];
   
         try{
-            $addr = $k->getAddress(array('pno' =>$payment[$methodname.'_pno']));
+            $addr = $k->getAddress(array('pno' =>$pno));
             
 			if(!is_array($addr)){
 		        Mage::throwException( Mage::helper('payment')->__(utf8_encode($addr)));

@@ -96,7 +96,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
         $secret=(float)$secret;
         $ssl=true;
         $debug = false;
-        $billmate = new Billmate($eid, $secret, $ssl, $debug, $testmode);
+        $billmate = new Billmate($eid, $secret, $ssl, $testmode, $debug);
 
 		switch ($countrycode) {
 			// Sweden

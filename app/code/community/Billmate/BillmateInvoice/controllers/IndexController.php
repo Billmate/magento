@@ -15,9 +15,16 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
                     echo 'payment.saveUrl=oldurl;payment.save();payment.onComplete=function(){checkout.setLoadWaiting(false);payment.saveUrl = billmateindexurl;payment.onComplete = function(res){ checkout.setLoadWaiting(false); eval(res.responseText);}}';
                     return;
                 }
+                if(Mage::getStoreConfig('billmate/settings/firecheckout')) {
+                    if (empty($payment['person_number'])) {
 
-                if (empty($payment[$payment['method'] . '_pno'])) {
-                    die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
+                        die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
+                    }
+                }
+                else {
+                    if (empty($payment[$payment['method'] . '_pno'])) {
+                        die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
+                    }
                 }
                 if (empty($payment[$payment['method'] . '_phone'])) {
                     die('alert("' . Mage::helper('payment')->__('Please confirm email address is accurate and can be used for billing') . '")');

@@ -143,7 +143,7 @@
                 <model>billmateinvoice/billmateinvoice</model>
                 <countries>SE,DE,NL</countries>
                 <order_status>pending</order_status>
-                <title></title>
+                <title>Billmate Invoice</title>
                 <active>1</active>
                 <min_amount>0</min_amount>
                 <max_amount>99999</max_amount>

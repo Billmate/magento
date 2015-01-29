@@ -90,7 +90,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
 
         $orderValues['Customer'] = array(
             'nr' => $customerId,
-            'pno' => $payment[$methodname.'_pno']
+            'pno' => (empty($payment[$methodname.'_pno'])) ? $payment['person_number'] : $payment[$methodname.'_pno']
         );
         $orderValues['Customer']['Billing'] = array(
             'firstname' => $Billing->getFirstname(),
@@ -340,7 +340,8 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         $Shipping= $quote->getShippingAddress();
 
         try{
-            $addr = $k->getAddress(array('pno' =>$payment[$methodname.'_pno']));
+            $pno = (empty($payment[$methodname.'_pno'])) ? $payment['person_number'] : $payment[$methodname.'_pno'];
+            $addr = $k->getAddress(array('pno' =>$pno));
             Mage::log(print_r($addr,true));
             if(!is_array($addr)){
                 Mage::throwException( Mage::helper('payment')->__(utf8_encode($addr)));

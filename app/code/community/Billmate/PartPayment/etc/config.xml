@@ -78,7 +78,7 @@
         <payment>
             <partpayment>
                 <model>partpayment/partpayment</model>
-                <title></title>
+                <title>Billmate Part Payment</title>
                 <active>0</active>
                 <order_status>pending</order_status>
                 <countries>SE,NL,DE</countries>
