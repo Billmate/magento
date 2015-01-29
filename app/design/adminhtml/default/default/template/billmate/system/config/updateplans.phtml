@@ -1,7 +1,7 @@
 <script type="text/javascript">
-    function update(){
+    function updateplans(){
 
-
+        console.log('test');
         new Ajax.Request('<?php echo $this->getAjaxCheckUrl() ?>',{
             method: 'get',
             onSuccess: function(transport){

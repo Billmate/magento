@@ -24,6 +24,7 @@
  * 2.1.2 20150112 Yuksel Findik: verify_hash function is added.
  * 2.1.4 20150115 Yuksel Findik: verify_hash is improved. The serverdata is added instead of useragent
  * 2.1.5 20150122 Yuksel Findik: Will make a utf8_decode before it returns the result
+ * 2.1.6 20150129 Yuksel Findik: Language is added as an optional paramater in credentials, version_compare is added for Curl setup
  */
 class BillMate{
 	var $ID = "";
@@ -37,8 +38,9 @@ class BillMate{
 	function BillMate($id,$key,$ssl=true,$test=false,$debug=false,$referer=array()){
 		$this->ID = $id;
 		$this->KEY = $key;
-        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "BillMate:2.1.5" );
+        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "BillMate:2.1.6" );
         defined('BILLMATE_SERVER') || define('BILLMATE_SERVER',  "2.0.6" );
+        defined('BILLMATE_LANGUAGE') || define('BILLMATE_LANGUAGE',  "" );
 		$this->SSL = $ssl;
 		$this->DEBUG = $debug;
 		$this->TEST = $test;
@@ -59,6 +61,7 @@ class BillMate{
 				"serverdata"=>array_merge($_SERVER,$this->REFERER),
 				"time"=>microtime(true),
 				"test"=>$this->TEST?"1":"0",
+				"language"=>BILLMATE_LANGUAGE
 			),
 			"data"=> $params,
 			"function"=>$function,
@@ -97,7 +100,8 @@ class BillMate{
 		curl_setopt($ch, CURLOPT_URL, "http".($this->SSL?"s":"")."://".$this->URL);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->SSL);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $this->SSL);
+		$vh = $this->SSL?((function_exists("phpversion") && function_exists("version_compare") && version_compare(phpversion(),'5.4','>=')) ? 2 : true):false;
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $vh);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
 		    'Content-Type: application/json',                                                                                
 		    'Content-Length: ' . strlen($parameters))                                                                       

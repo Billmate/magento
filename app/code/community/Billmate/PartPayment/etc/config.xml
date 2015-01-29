@@ -7,16 +7,16 @@
     </modules>
     <global>
         <events>
-			<sales_order_save_after>
-				<observers>
-					<sampleobserver_sales_order_save_after_observer>
-						<type>singleton</type>
-						<class>billmateinvoice/observer</class>
-						<method>activate</method>
-					</sampleobserver_sales_order_save_after_observer>
-				</observers>
-			</sales_order_save_after>
-		</events>
+            <sales_order_save_after>
+                <observers>
+                    <sampleobserver_sales_order_save_after_observer>
+                        <type>singleton</type>
+                        <class>billmateinvoice/observer</class>
+                        <method>activate</method>
+                    </sampleobserver_sales_order_save_after_observer>
+                </observers>
+            </sales_order_save_after>
+        </events>
         <models>
             <partpayment>
                 <class>Billmate_PartPayment_Model</class>
@@ -102,6 +102,16 @@
             </modules>
         </translate>
     </adminhtml>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules><Billmate_PartPayment after="Mage_Adminhtml">Billmate_PartPayment</Billmate_PartPayment></modules>
+
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
     <frontend>
         <translate>
             <modules>

@@ -100,9 +100,19 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </max_amount>
+                        <update translate="label comment">
+                            <label>Update Paymentplans</label>
+                            <comment>Update paymentplans to refresh plans</comment>
+                            <sort_order>11</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>button</frontend_type>
+                            <frontend_model>partpayment/adminhtml_system_config_form_updateplans</frontend_model>
+                        </update>
                        <view_pclass translate="label comment">
                             <label>Saved Pclases</label>
-                            <sort_order>11</sort_order>
+                            <sort_order>12</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_store>1</show_in_store>
                             <show_in_website>1</show_in_website>
