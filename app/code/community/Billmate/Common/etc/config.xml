@@ -33,7 +33,7 @@
             </billmatecommon_setup>
         </resources>
         <events>
-            <admin_system_config_changed_section_billmate>
+            <!--<admin_system_config_changed_section_billmate>
                 <observers>
                     <PartPayment>
                         <type>singleton</type>
@@ -41,7 +41,7 @@
                         <method>adminSystemConfigChangedSectionBillmate</method>
                     </PartPayment>
                 </observers>
-            </admin_system_config_changed_section_billmate>
+            </admin_system_config_changed_section_billmate> -->
         </events>
     </global>
     <admin>
