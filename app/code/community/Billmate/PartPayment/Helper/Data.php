@@ -48,12 +48,14 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
      *
      * @throws Exception
      */
-    public function checkPclasses(){
+    public function checkPclasses($frondend = false){
         $collection = Mage::getModel('partpayment/pclass')->getCollection();
-
+        $collection->addFieldToFilter('store_id',($frondend) ? Mage::app()->getStore()->getId() :Mage::helper('partpayment')->getStoreIdForConfig());
         $first = $collection->getFirstItem();
+
         if($collection->getSize() == 0 || (strtotime($first->getCreated() <= strtotime('-1 week')))){
             $collectionPclass = Mage::getModel('partpayment/pclass')->getCollection();
+            $collectionPclass->addFieldToFilter('store_id',($frondend) ? Mage::app()->getStore()->getId() :Mage::helper('partpayment')->getStoreIdForConfig());
             if($collection->getSize() > 0) {
                 foreach ($collectionPclass as $row) {
                     $row->delete();
@@ -61,20 +63,40 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
             }
 
             // Fetch new Pclasses
-            $countryData = explode(',', Mage::getStoreConfig('payment/partpayment/countries'));
+            $countries = explode(',',Mage::getStoreConfig('payment/partpayment/countries'));
+            $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
             $eid = (int)Mage::getStoreConfig('payment/partpayment/eid');
             $secret=(float)Mage::getStoreConfig('payment/partpayment/secret');
             $testMode=(boolean)Mage::getStoreConfig('payment/partpayment/test_mode');
 
 
-            foreach($countryData as $countryCode){
-                    $this->savePclasses($eid, $secret, $countryCode, $testMode);
+            foreach($countries as $country)
+                $this->savePclasses($eid, $secret, $country, $testMode,$lang[0]);
 
-            }
             return;
         }
         return;
 
+    }
+    public function getStoreIdForConfig()
+    {
+        if(strlen($code = Mage::getSingleton('adminhtml/config_data')->getStore()))
+        {
+            Mage::log('code1'.$code);
+            $store_id = Mage::getModel('core/store')->load($code)->getId();
+        }
+        elseif(strlen($code = Mage::getSingleton('adminhtml/config_data')->getWebsite())){
+            Mage::log('code2'.$code);
+            $website_id = Mage::getModel('core/website')->load($code)->getId();
+            Mage::log('website'.$website_id);
+            $store_id = Mage::app()->getWebsite($website_id)->getDefaultStore()->getId();
+        }
+        else{
+            $store_id = 0;
+        }
+
+
+        return $store_id;
     }
 
     /**
@@ -83,14 +105,15 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
      * @param $secret
      * @param $countrycode
      * @param $testmode
+     * @param $lang
      */
-    function savePclasses($eid, $secret, $countrycode, $testmode ){
+    function savePclasses($eid, $secret, $countrycode, $testmode ,$lang, $store = false){
     
         require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
         require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
         //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
         //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
-
+        $store_id = Mage::app()->getStore()->getId();
 
         $eid = (int)$eid;
         $secret=(float)$secret;
@@ -147,7 +170,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
         $additionalinfo['PaymentData'] = array(
 	        "currency"=>$currency,//SEK
 	        "country"=>strtolower($countrycode),//Sweden
-	        "language"=>$language,//Swedish
+	        "language"=>$lang,//Swedish
         );
 
         $data = $billmate->getPaymentplans($additionalinfo);
@@ -161,7 +184,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
                 $_row['currency'] = (string)$_row['currency'];
                 $_row['language'] = (string)$_row['language'];
                 $_row['country'] = (string)$_row['country'];
-
+                $_row['store_id'] = ($store != false) ? $store :$store_id;
 
                 Mage::getModel('partpayment/pclass')
                     ->addData($_row)
@@ -183,7 +206,11 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 	   $isoCode2 =  Mage::getModel('directory/country')->load($address->getCountryId())->getIso2Code();
 	   $collection = Mage::getModel('partpayment/pclass')
 	   		   ->getCollection()
-	   		   ->addFieldToFilter('country', $isoCode2 );
+	   		   ->addFieldToFilter('country', $isoCode2 )
+                ->addFieldToFilter('store_id',array(
+                    array('eq' => Mage::app()->getStore()->getId()),
+                    array('eq' => 0)
+                ));
 
 		// Maps countries to currencies
 		$country_to_currency = array(
@@ -307,7 +334,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
     }
     function getLowPclass($total){
         $method = array();
-        $this->checkPclasses();
+        $this->checkPclasses(true);
 		$payment_option = $this->getPlclass($total);
 		$status = true;
 		if (!$payment_option) {
