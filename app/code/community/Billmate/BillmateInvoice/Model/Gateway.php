@@ -13,7 +13,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
         $payment = Mage::app()->getRequest()->getPost('payment');
 
 		$methodname = $payment['method'] == 'billmateinvoice'? 'billmateinvoice': 'partpayment';
-        $k = Mage::helper($methodname)->getBillmate(true, false);
+        $k = Mage::helper('billmateinvoice')->getBillmate(true, false);
 
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
         $countryCode = Mage::getStoreConfig('general/country/default',Mage::app()->getStore());
@@ -312,7 +312,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
         $payment = Mage::app()->getRequest()->getPost('payment');
 
     	$methodname = $payment['method'];
-        $k = Mage::helper($methodname)->getBillmate(true, false);
+        $k = Mage::helper('billmateinvoice')->getBillmate(true, false);
         $quote = Mage::getSingleton('checkout/session')->getQuote();        
         $Billing= $quote->getBillingAddress();
         $Shipping= $quote->getShippingAddress();

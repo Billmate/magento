@@ -8,8 +8,8 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
         //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
 
 
-        $eid = (int)Mage::getStoreConfig('payment/partpayment/eid');
-        $secret=(float)Mage::getStoreConfig('payment/partpayment/secret');
+        $eid = (int)Mage::getStoreConfig('billmate/credentials/eid');
+        $secret=(float)Mage::getStoreConfig('billmate/credentials/secret');
         $testmode=(boolean)Mage::getStoreConfig('payment/partpayment/test_mode');
         return new Billmate($eid, $secret, $ssl, $testmode,$debug);
     }
@@ -65,8 +65,8 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
             // Fetch new Pclasses
             $countries = explode(',',Mage::getStoreConfig('payment/partpayment/countries'));
             $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
-            $eid = (int)Mage::getStoreConfig('payment/partpayment/eid');
-            $secret=(float)Mage::getStoreConfig('payment/partpayment/secret');
+            $eid = (int)Mage::getStoreConfig('billmate/credentials/eid');
+            $secret=(float)Mage::getStoreConfig('billmate/credentials/secret');
             $testMode=(boolean)Mage::getStoreConfig('payment/partpayment/test_mode');
 
 

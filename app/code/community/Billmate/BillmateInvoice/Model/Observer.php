@@ -21,6 +21,9 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
             );
 
             $result = $k->UpdatePayment($orderValues);
+            $payment = $order->getPayment();
+            $info = $payment->getMethodInstance()->getInfoInstance();
+            $info->setAdditionalInformation('invoiceid',$liveid);
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$result['number']));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate status: '.$result['status']));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Invoice Url: '.$result['url']));
@@ -44,6 +47,7 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
 
         //Set the invoice fee included tax value
         $info->setAdditionalInformation('billmateinvoice_fee',$quote->getFeeAmount());
+
         $info->save();
     }
 

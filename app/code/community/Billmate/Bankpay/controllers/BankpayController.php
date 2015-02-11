@@ -24,7 +24,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
 
             $status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
-            if( $order->getState() == $status ){
+            if( $order->getStatus() == $status ){
                 $session->setOrderId($quote->getReservedOrderId());
                 $session->setQuoteId($session->getBillmateQuoteId(true));
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
@@ -33,6 +33,11 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 $this->_redirect('checkout/onepage/success', array('_secure'=>true));
                 return;
             }
+
+            $payment = $order->getPayment();
+            $info = $payment->getMethodInstance()->getInfoInstance();
+            $info->setAdditionalInformation('invoiceid',$data['number']);
+
             $values['PaymentData'] = array(
                 'number' => $data['number'],
                 'orderid' => $order->getIncrementId()
@@ -190,6 +195,9 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 			
 			$isCustomerNotified = false;
 			$order->setState('new', $status, '', $isCustomerNotified);
+            $payment = $order->getPayment();
+            $info = $payment->getMethodInstance()->getInfoInstance();
+            $info->setAdditionalInformation('invoiceid',$data['number']);
 
             $values['PaymentData'] = array(
                 'number' => $data['number'],

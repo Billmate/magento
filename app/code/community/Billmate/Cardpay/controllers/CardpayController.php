@@ -23,7 +23,8 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 
 
             $status = Mage::getStoreConfig('payment/billmatecardpay/order_status');
-            if( $order->getState() == $status ){
+
+            if( $order->getStatus() == $status ){
 
                 $session->setLastSuccessQuoteId($quote->getId());
                 $session->setOrderId($quote->getReservedOrderId());
@@ -34,11 +35,16 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 
                 return;
             }
+            $payment = $order->getPayment();
+            $info = $payment->getMethodInstance()->getInfoInstance();
+            $info->setAdditionalInformation('invoiceid',$data['number']);
+
             $values['PaymentData'] = array(
                 'number' => $data['number'],
                 'orderid' => $order->getIncrementId()
             );
             $data1 = $k->updatePayment($values);
+
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by ipn.'));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data1['status']));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
@@ -195,13 +201,17 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 			
 			$isCustomerNotified = false;
 			$order->setState('new', $status, '', $isCustomerNotified);
-            Mage::log(print_r($data,true));
+            $payment = $order->getPayment();
+            $info = $payment->getMethodInstance()->getInfoInstance();
+            $info->setAdditionalInformation('invoiceid',$data['number']);
+
+
             $values['PaymentData'] = array(
                 'number' => $data['number'],
                 'orderid' => $order->getIncrementId()
             );
             $data1 = $k->updatePayment($values);
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by ipn.'));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by accept.'));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data1['status']));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
 

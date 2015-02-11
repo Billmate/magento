@@ -16,8 +16,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
 			'DE' => 'EUR',
 			'NL' => 'EUR',
 		);
-		$methodname = 'billmatebankpay';
-        $k = Mage::helper($methodname)->getBillmate(true, false);
+        $k = Mage::helper('billmatebankpay')->getBillmate(true, false);
 
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
         

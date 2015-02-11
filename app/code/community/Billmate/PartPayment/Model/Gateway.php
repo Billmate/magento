@@ -23,7 +23,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             'NL' => 'EUR',
         );
         $methodname = $payment['method'] == 'billmateinvoice'? 'billmateinvoice': 'partpayment';
-        $k = Mage::helper($methodname)->getBillmate(true, false);
+        $k = Mage::helper('partpayment')->getBillmate(true, false);
 
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
         $iso3 = Mage::getModel('directory/country')->load($Billing->getCountryId())->getIso3Code();
@@ -334,7 +334,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         );
 
         $methodname = $payment['method'];
-        $k = Mage::helper($methodname)->getBillmate(true, false);
+        $k = Mage::helper('partpayment')->getBillmate(true, false);
         $quote = Mage::getSingleton('checkout/session')->getQuote();
         $Billing= $quote->getBillingAddress();
         $Shipping= $quote->getShippingAddress();
