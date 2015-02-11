@@ -207,11 +207,15 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 	   $collection = Mage::getModel('partpayment/pclass')
 	   		   ->getCollection()
 	   		   ->addFieldToFilter('country', $isoCode2 )
-                ->addFieldToFilter('store_id',array(
-                    array('eq' => Mage::app()->getStore()->getId()),
-                    array('eq' => 0)
-                ));
-
+                ->addFieldToFilter('store_id',Mage::app()->getStore()->getId());
+        Mage::log('store_id'.Mage::app()->getStore()->getId());
+        Mage::log('count'.$collection->count());
+        if($collection->getSize() == 0) {
+            $collection = Mage::getModel('partpayment/pclass')
+                ->getCollection()
+                ->addFieldToFilter('country', $isoCode2)
+                ->addFieldToFilter('store_id', 0);
+        }
 		// Maps countries to currencies
 		$country_to_currency = array(
 			'NOR' => 'NOK',
