@@ -11,10 +11,13 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         $k = Mage::helper('billmatecardpay')->getBillmate(true,false);
         $session = Mage::getSingleton('checkout/session');
         $data = $k->verify_hash($_POST);
-        Mage::log(print_r($data,true));
-        $session->setData('last_real_order_id', $data['orderid']);
 
-        $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());
+        $quote = Mage::getModel('sales/quote')->load($data['orderid']);
+
+        $session->setData('last_real_order_id', $quote->getReservedOrderId());
+
+
+        $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
 
         try{
 
@@ -22,24 +25,23 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $status = Mage::getStoreConfig('payment/billmatecardpay/order_status');
             if( $order->getState() == $status ){
 
-                $session->setLastSuccessQuoteId($session->getLastRealOrderId());
-                $session->setOrderId($data['orderid']);
-                $session->setQuoteId($session->getBillmateQuoteId(true));
+                $session->setLastSuccessQuoteId($quote->getId());
+                $session->setOrderId($quote->getReservedOrderId());
+                $session->setQuoteId($quote->getId());
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
                 $order->sendNewOrderEmail();
                 $this->_redirect('checkout/onepage/success', array('_secure'=>true));
 
                 return;
             }
-            /*$values = array(
-
+            $values['PaymentData'] = array(
                 'number' => $data['number'],
                 'orderid' => $order->getIncrementId()
             );
-            $data1 = $k->updatePayment($values);*/
+            $data1 = $k->updatePayment($values);
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by ipn.'));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data['status']));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data['number']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data1['status']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
 
             $isCustomerNotified = false;
             $order->setState($status, $status, '', $isCustomerNotified);

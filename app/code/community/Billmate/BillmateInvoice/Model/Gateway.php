@@ -147,7 +147,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 
             }
             if($_item->getSku() == $configSku){
-                Mage::log(print_r($_item->getName(),true));
+
 
                 continue;
             }

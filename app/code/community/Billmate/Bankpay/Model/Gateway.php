@@ -65,7 +65,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
             'method' => 16,
             'currency' => $currentCurrencyCode,
             'country' => $storeCountryIso2,
-            'orderid' => (string)time(),
+            'orderid' => $quote->getId(),
             'autoactivate' => 0,
             'language' => BillmateCountry::fromLocale($storeLanguage)
 

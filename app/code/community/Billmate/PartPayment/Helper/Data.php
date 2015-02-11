@@ -208,8 +208,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 	   		   ->getCollection()
 	   		   ->addFieldToFilter('country', $isoCode2 )
                 ->addFieldToFilter('store_id',Mage::app()->getStore()->getId());
-        Mage::log('store_id'.Mage::app()->getStore()->getId());
-        Mage::log('count'.$collection->count());
+
         if($collection->getSize() == 0) {
             $collection = Mage::getModel('partpayment/pclass')
                 ->getCollection()

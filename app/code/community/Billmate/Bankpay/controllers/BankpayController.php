@@ -12,16 +12,20 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $k = Mage::helper('billmatebankpay')->getBillmate(true,false);
         $session = Mage::getSingleton('checkout/session');
         $data = $k->verify_hash($_POST);
-        $session->setData('last_real_order_id', $data['orderid']);
 
-        $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
+        $quote = Mage::getModel('sales/quote')->load($data['orderid']);
+
+        $session->setData('last_real_order_id', $quote->getReservedOrderId());
+
+
+        $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
 
         try{
 
 
             $status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
             if( $order->getState() == $status ){
-                $session->setOrderId($data['orderid']);
+                $session->setOrderId($quote->getReservedOrderId());
                 $session->setQuoteId($session->getBillmateQuoteId(true));
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
                 $order->sendNewOrderEmail();
@@ -29,10 +33,14 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 $this->_redirect('checkout/onepage/success', array('_secure'=>true));
                 return;
             }
-
+            $values['PaymentData'] = array(
+                'number' => $data['number'],
+                'orderid' => $order->getIncrementId()
+            );
+            $data1 = $k->updatePayment($values);
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by ipn.'));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data['status']));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data['number']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data1['status']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
 
             $isCustomerNotified = false;
             $order->setState($status, $status, '', $isCustomerNotified);
@@ -193,6 +201,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
 
 			$order->save();
+
             $session->setQuoteId($session->getBillmateStandardQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
 			$order->sendNewOrderEmail(); 

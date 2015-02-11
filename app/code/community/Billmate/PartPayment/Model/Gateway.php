@@ -342,7 +342,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         try{
             $pno = (empty($payment[$methodname.'_pno'])) ? $payment['person_number'] : $payment[$methodname.'_pno'];
             $addr = $k->getAddress(array('pno' =>$pno));
-            Mage::log(print_r($addr,true));
+
             if(!is_array($addr)){
                 Mage::throwException( Mage::helper('payment')->__(utf8_encode($addr)));
             }
