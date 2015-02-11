@@ -44,7 +44,7 @@ var oldurl = null;
             <action method="removeItem" ifconfig="billmate/settings/firecheckout"><type>skin_css</type><name>css/billmatestyle.css</name></action>
             <action method="addItem" ifconfig="billmate/settings/firecheckout">
                 <type>skin_css</type>
-                <name>css/billmatestyl-fc.css</name>
+                <name>css/billmatestyle-fc.css</name>
             </action>
             <block type="core/template" template="billmate/firecheckout.phtml"/>
             <block type="core/template" template="billmate/getaddress.phtml"/>
