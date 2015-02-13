@@ -33,7 +33,7 @@ if (Mage::getStoreConfig('billmate/settings/firecheckout') && !Mage::getSingleto
 				$terms = $this->termsx();
 				$currency = Mage::app()->getStore()->getCurrentCurrencyCode(); 
 				foreach( $terms as $term ){
-					$label = $term['nbrofmonths'].' '.Mage::helper('partpayment')->__('months of partpayment'). ' '.round( Mage::helper('core')->currency( $term['monthly_cost'], false, true),2).' '.$currency.' / '. Mage::helper('partpayment')->__('Month');
+					$label = $term['description']. ' '.round( Mage::helper('core')->currency( $term['monthly_cost'], false, true),2).' '.$currency.' / '. Mage::helper('partpayment')->__('Month');
 					echo '<option value="'.$term['pclass_id'].'">'.$label.'</option>';
 				}
 			?>

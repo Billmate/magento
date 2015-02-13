@@ -8,7 +8,7 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
     protected $_isGateway               = true;
     protected $_canAuthorize            = true;
     protected $_canCapture              = true;
-    protected $_canCapturePartial       = true;
+    protected $_canCapturePartial       = false;
     protected $_canRefund               = true;
     protected $_canRefundInvoicePartial = false;
     protected $_canVoid                 = true;
@@ -38,6 +38,57 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
     public function getTitle(){
         return Mage::helper('billmateinvoice')->__(Mage::getStoreConfig('payment/billmateinvoice/title'));
     }
+
+    public function capture(Varien_Object $payment, $amount)
+    {
+        if(Mage::getStoreConfig('billmate/settings/activation')) {
+            $k = Mage::helper('billmateinvoice')->getBillmate(true, false);
+            $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+
+            $values = array(
+                'number' => $invoiceId
+            );
+
+            $paymentInfo = $k->getPaymentInfo($values);
+            if ($paymentInfo['PaymentData']['status'] == 'Created') {
+
+                $result = $k->activatePayment(array('PaymentData' => $values));
+                if(isset($result['code']) )
+                    Mage::throwException(mb_convert_encoding($result['message'],'UTF-8','auto'));
+                if(!isset($result['code'])){
+                    $payment->setTransactionId($result['number']);
+                    $payment->setIsTransactionClosed(1);
+                }
+
+            }
+        }
+        return $this;
+    }
+
+    public function refund(Varien_Object $payment, $amount)
+    {
+        if(Mage::getStoreConfig('billmate/settings/activation')) {
+            $k = Mage::helper('billmateinvoice')->getBillmate(true, false);
+            $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+
+            $values = array(
+                'number' => $invoiceId
+            );
+            $paymentInfo = $k->getPaymentInfo($values);
+            if ($paymentInfo['PaymentData']['status'] == 'Paid' || $paymentInfo['PaymentData']['status'] == 'Factoring') {
+                $values['partcredit'] = false;
+                $result = $k->creditPayment(array('PaymentData' => $values));
+                if(isset($result['code']) )
+                    Mage::throwException(mb_convert_encoding($result['message'],'UTF-8','auto'));
+                if(!isset($result['code'])){
+                    $payment->setTransactionId($result['number']);
+                    $payment->setIsTransactionClosed(1);
+                }
+            }
+        }
+        return $this;
+    }
+
     public function validate()
     {
 		

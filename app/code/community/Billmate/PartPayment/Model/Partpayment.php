@@ -8,10 +8,10 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     protected $_isGateway               = true;
     protected $_canAuthorize            = true;
     protected $_canCapture              = true;
-    protected $_canCapturePartial       = true;
+    protected $_canCapturePartial       = false;
     protected $_canRefund               = true;
     protected $_canRefundInvoicePartial = false;
-    protected $_canVoid                 = false;
+    protected $_canVoid                 = true;
     protected $_canUseInternal          = false;
     protected $_canUseCheckout          = true;
     
@@ -67,6 +67,55 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 
         return Mage::helper('partpayment')->__(Mage::getStoreConfig('payment/partpayment/title')).$title;
         //return $this->getConfigData('title').$title;
+    }
+    public function capture(Varien_Object $payment, $amount)
+    {
+        if(Mage::getStoreConfig('billmate/settings/activation')) {
+            $k = Mage::helper('partpayment')->getBillmate(true, false);
+            $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+
+            $values = array(
+                'number' => $invoiceId
+            );
+
+            $paymentInfo = $k->getPaymentInfo($values);
+            if ($paymentInfo['PaymentData']['status'] == 'Created') {
+
+                $result = $k->activatePayment(array('PaymentData' => $values));
+                if(isset($result['code']) )
+                    Mage::throwException(mb_convert_encoding($result['message'],'UTF-8','auto'));
+                if(!isset($result['code'])){
+                    $payment->setTransactionId($result['number']);
+                    $payment->setIsTransactionClosed(1);
+                }
+            }
+
+        }
+        return $this;
+    }
+
+    public function refund(Varien_Object $payment, $amount)
+    {
+        if(Mage::getStoreConfig('billmate/settings/activation')) {
+            $k = Mage::helper('partpayment')->getBillmate(true, false);
+            $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+            $values = array(
+                'number' => $invoiceId
+            );
+            $paymentInfo = $k->getPaymentInfo($values);
+            if ($paymentInfo['PaymentData']['status'] == 'Paid' || $paymentInfo['PaymentData']['status'] == 'Factoring') {
+                $values['partcredit'] = false;
+                $result = $k->creditPayment(array('PaymentData' => $values));
+                if(isset($result['code']) )
+                    Mage::throwException(mb_convert_encoding($result['message'],'UTF-8','auto'));
+                if(!isset($result['code'])){
+                    $payment->setTransactionId($result['number']);
+                    $payment->setIsTransactionClosed(1);
+                }
+                Mage::log('result' . print_r($result, true));
+            }
+        }
+        return $this;
     }
 
     public function authorize(Varien_Object $payment, $amount)
