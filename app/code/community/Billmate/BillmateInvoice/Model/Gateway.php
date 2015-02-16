@@ -27,10 +27,10 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 	    $bill = $Billing->getStreet();
 
 	    foreach($bill_address as $key => $col ){
-	        $bill_address[$key] = utf8_decode($col);
+	        $bill_address[$key] = mb_convert_encoding($col,'UTF-8','auto');
 	    }
 	    foreach($ship_address as $key => $col ){
-	        $ship_address[$key] = utf8_decode($col);
+	        $ship_address[$key] = mb_convert_encoding($col,'UTF-8','auto');
 	    }
 
         
@@ -296,7 +296,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 
         if(isset($result['code'])){
 
-            Mage::throwException(utf8_encode($result['message']));
+            Mage::throwException(mb_convert_encoding($result['message'],'UTF-8','auto'));
 
 
         } else {
@@ -323,16 +323,16 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
             $addr = $k->getAddress(array('pno' =>$pno));
             
 			if(!is_array($addr)){
-		        Mage::throwException( Mage::helper('payment')->__(utf8_encode($addr)));
+		        Mage::throwException( Mage::helper('payment')->__(mb_convert_encoding($addr,'UTF-8',"auto")));
             }
 
 			if( isset($addr['code']) ){
 
-                Mage::throwException( $addr['message']);
+                Mage::throwException(mb_convert_encoding($addr['message'],'UTF-8','auto'));
 
 			}
 			foreach( $addr as $key => $col ){
-				$addr[$key] = utf8_encode(($col));
+				$addr[$key] = mb_convert_encoding($col,'UTF-8','auto');
 			}
 			if( empty( $addr['firstname'] ) ){
 				$this->firstname = $Billing->getFirstname();
@@ -351,7 +351,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 
         }catch( Exception $ex ){
             Mage::logException( $ex );
-            die('alert("'.strip_tags( str_replace("<br> ",'\n\n', $ex->getMessage()) ).'");');
+            die('alert("'.strip_tags( str_replace("<br> ",'\n\n', mb_convert_encoding($ex->getMessage(),'UTF-8','auto')) ).'");');
         }
 
         $fullname = $Billing->getFirstname().' '.$Billing->getLastname().' '.$Billing->getCompany();

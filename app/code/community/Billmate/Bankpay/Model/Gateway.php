@@ -313,7 +313,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
 		$result = $k->addPayment($orderValues);
 
         if( isset($result['code'])){
-            Mage::throwException( utf8_encode( $result['message']));
+            Mage::throwException( mb_convert_encoding( $result['message'],'UTF-8','auto'));
         }else{
             $session = Mage::getSingleton('core/session', array('name' => 'frontend'));
             $session->setData('billmateinvoice_id', $result['number']);
