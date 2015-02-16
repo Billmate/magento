@@ -327,8 +327,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
             }
 
 			if( isset($addr['code']) ){
-
-                Mage::throwException(mb_convert_encoding($addr['message'],'UTF-8','auto'));
+                Mage::throwException($addr['message']);
 
 			}
 			foreach( $addr as $key => $col ){
@@ -351,7 +350,8 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 
         }catch( Exception $ex ){
             Mage::logException( $ex );
-            die('alert("'.strip_tags( str_replace("<br> ",'\n\n', mb_convert_encoding($ex->getMessage(),'UTF-8','auto')) ).'");');
+
+            die('alert("'.utf8_encode($ex->getMessage())/*mb_convert_encoding(strip_tags( str_replace("<br> ",'\n\n',preg_replace_callback('/[\\\\]([a-f0-9]{2})/i','hex2dec',$ex->getMessage())) ),'UTF-8','auto')*/.'");');
         }
 
         $fullname = $Billing->getFirstname().' '.$Billing->getLastname().' '.$Billing->getCompany();

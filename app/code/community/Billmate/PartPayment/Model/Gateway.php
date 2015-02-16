@@ -372,7 +372,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
 
         }catch( Exception $ex ){
             Mage::logException( $ex );
-            die('alert("'.strip_tags( str_replace("<br> ",'\n\n', mb_convert_encoding($ex->getMessage(),'UTF-8','auto')) ).'");');
+            die('alert("'.utf8_encode($ex->getMessage())./*strip_tags( str_replace("<br> ",'\n\n', $ex->getMessage()) ).*/'");');
         }
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
 
