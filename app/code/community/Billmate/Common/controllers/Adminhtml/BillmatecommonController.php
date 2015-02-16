@@ -13,7 +13,6 @@ class Billmate_Common_Adminhtml_BillmatecommonController extends Mage_Adminhtml_
         $eid = $this->getRequest()->getParam('eid');
         $secret = $this->getRequest()->getParam('secret');
 
-
         $result['success'] = Mage::helper('billmatecommon')->verifyCredentials($eid,$secret);
 
         $this->getResponse()->setBody(Zend_Json::encode($result));

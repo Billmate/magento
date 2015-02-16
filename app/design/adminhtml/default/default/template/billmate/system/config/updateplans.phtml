@@ -17,10 +17,12 @@ if (strlen($code = Mage::app()->getRequest()->getParam('store'))) { // store lev
         new Ajax.Request('<?php echo $this->getAjaxCheckUrl().'?store='.$store_id ?>',{
             method: 'get',
             onSuccess: function(transport){
-                if(transport.responseText){
+                if(transport.responseText) {
                     var response = transport.responseText.evalJSON();
-                    if(response.success)
-                        alert('Updated paymentplans');
+                    if (response.success){
+                        $('payment_partpayment_view_pclass').down('#value').down('#grid').html(response.content)
+                        alert('Updated Paymentplans');
+                    }
                     else
                         alert('Couldnt update paymentplans');
                 }

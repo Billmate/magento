@@ -2,12 +2,11 @@
 class Billmate_Cardpay_Helper_Data extends Mage_Core_Helper_Abstract
 {
     function getBillmate($ssl = true, $debug = false ){
-
+        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.0');
+        $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
+        if(!defined('BILLMATE_LANGUAGE'))define('BILLMATE_LANGUAGE',$lang[0]);
         require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
         require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
-        include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
-        include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
-
 
         $eid = (int)Mage::getStoreConfig('billmate/credentials/eid');
         $secret=(float)Mage::getStoreConfig('billmate/credentials/secret');
