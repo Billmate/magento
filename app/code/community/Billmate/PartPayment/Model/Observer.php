@@ -7,7 +7,7 @@ class Billmate_PartPayment_Model_Observer extends Mage_Core_Model_Abstract
     {   
         $enabled = (int)$_POST['groups']['partpayment']['fields']['active']['value'];
         if($enabled){
-            $collection = Mage::getModel('partpayment/pclass')->getCollection();
+            /*$collection = Mage::getModel('partpayment/pclass')->getCollection();
             foreach( $collection as $item ){
                 $item->delete();
             }
@@ -45,7 +45,7 @@ class Billmate_PartPayment_Model_Observer extends Mage_Core_Model_Abstract
 			
             foreach( $countries as $country ){
                 $gateway->savePclasses($eid, $secret, $country, $testmode);
-            }
+            }*/
         }
     }
 }

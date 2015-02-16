@@ -62,7 +62,7 @@
                 </connection>
             </partpayment_write>
         </resources>
-        <events>
+        <!--<events>
             <admin_system_config_changed_section_payment>
                 <observers>
                     <PartPayment>
@@ -72,7 +72,7 @@
                     </PartPayment>
                 </observers>
             </admin_system_config_changed_section_payment>
-        </events>
+        </events> -->
     </global>
     <default>
         <payment>
