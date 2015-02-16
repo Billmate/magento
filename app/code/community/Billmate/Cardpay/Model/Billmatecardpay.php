@@ -6,16 +6,25 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
     
     protected $_isGateway               = false;
     protected $_canAuthorize            = true;
+    protected $_isInitializeNeeded      = true;
     protected $_canCapture              = true;
-    protected $_canCapturePartial       = true;
+    protected $_canCapturePartial       = false;
     protected $_canRefund               = true;
     protected $_canRefundInvoicePartial = false;
-    protected $_canVoid                 = false;
+    protected $_canVoid                 = true;
     protected $_canUseInternal          = false;
     protected $_canUseCheckout          = true;
     protected $_liveurl                 = 'https://cardpay.billmate.se/pay';
     protected $_testurl                 = 'https://cardpay.billmate.se/pay/test';
-    
+
+    public function initialize($paymentAction, $stateObject)
+    {
+        $state = Mage_Sales_Model_Order::STATE_PENDING_PAYMENT;
+        $stateObject->setState($state);
+        $stateObject->setStatus('pending_payment');
+        $stateObject->setIsNotified(false);
+    }
+
     public function isAvailable($quote = null)
     {
         if($quote == null ) return false;
@@ -29,6 +38,65 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
 			return $total >= $min_total && $total <= $max_total;
 		}
 		return false;
+    }
+
+    /*public function processInvoice($invoice, $payment)
+    {
+        $invoice->setTransactionId(time());
+        return $this;
+    }*/
+
+    public function capture(Varien_Object $payment, $amount)
+    {
+        if(Mage::getStoreConfig('billmate/settings/activation')) {
+            $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
+            $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+            $values = array(
+                'number' => $invoiceId
+            );
+            $paymentInfo = $k->getPaymentInfo($values);
+            if (is_array($paymentInfo) && $paymentInfo['PaymentData']['status'] == 'Created') {
+
+                $result = $k->activatePayment(array('PaymentData' => $values));
+                if(isset($result['code']) )
+                    Mage::throwException(mb_convert_encoding($result['message'],'UTF-8','auto'));
+                if(!isset($result['code'])){
+                    $payment->setTransactionId($result['number']);
+                    $payment->setIsTransactionClosed(1);
+                }
+
+            }
+        }
+        return $this;
+    }
+
+    public function refund(Varien_Object $payment, $amount)
+    {
+        if(Mage::getStoreConfig('billmate/settings/activation') && Mage::getStoreConfig('payment/billmatecardpay/payment_action') == 'authorize') {
+            $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
+            $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+            $values = array(
+                'number' => $invoiceId
+            );
+            $paymentInfo = $k->getPaymentInfo($values);
+            if ($paymentInfo['PaymentData']['status'] == 'Paid') {
+                $values['partcredit'] = false;
+                $result = $k->creditPayment(array('PaymentData' => $values));
+                if(isset($result['code']) )
+                    Mage::throwException(mb_convert_encoding($result['message'],'UTF-8','auto'));
+                if(!isset($result['code'])){
+                    $payment->setTransactionId($result['number']);
+                    $payment->setIsTransactionClosed(1);
+                }
+                Mage::log('result' . print_r($result, true));
+            }
+            Mage::log(print_r($paymentInfo,true));
+        } else {
+            $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+            $payment->setTransactionId($invoiceId);
+            $payment->setIsTransactionClosed(1);
+        }
+        return $this;
     }
 
     public function getConfig()
