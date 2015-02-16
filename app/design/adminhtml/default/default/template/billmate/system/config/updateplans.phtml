@@ -20,7 +20,7 @@ if (strlen($code = Mage::app()->getRequest()->getParam('store'))) { // store lev
                 if(transport.responseText) {
                     var response = transport.responseText.evalJSON();
                     if (response.success){
-                        $('payment_partpayment_view_pclass').down('#value').down('#grid').html(response.content)
+                        $('row_payment_partpayment_view_pclass').down('.value').down('.grid').update(response.content)
                         alert('Updated Paymentplans');
                     }
                     else
