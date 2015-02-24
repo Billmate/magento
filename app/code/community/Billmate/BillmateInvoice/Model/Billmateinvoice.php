@@ -54,7 +54,7 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
 
                 $result = $k->activatePayment(array('PaymentData' => $values));
                 if(isset($result['code']) )
-                    Mage::throwException(mb_convert_encoding($result['message'],'UTF-8','auto'));
+                    Mage::throwException(utf8_encode($result['message']));
                 if(!isset($result['code'])){
                     $payment->setTransactionId($result['number']);
                     $payment->setIsTransactionClosed(1);
@@ -79,7 +79,7 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
                 $values['partcredit'] = false;
                 $result = $k->creditPayment(array('PaymentData' => $values));
                 if(isset($result['code']) )
-                    Mage::throwException(mb_convert_encoding($result['message'],'UTF-8','auto'));
+                    Mage::throwException(utf8_encode($result['message']));
                 if(!isset($result['code'])){
                     $payment->setTransactionId($result['number']);
                     $payment->setIsTransactionClosed(1);

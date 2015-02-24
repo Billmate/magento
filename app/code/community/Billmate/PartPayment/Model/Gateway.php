@@ -55,10 +55,10 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         $bill = $Billing->getStreet();
 
         foreach($bill_address as $key => $col ){
-            $bill_address[$key] = mb_convert_encoding($col,'UTF-8','auto');
+            $bill_address[$key] = utf8_encode($col);
         }
         foreach($ship_address as $key => $col ){
-            $ship_address[$key] = mb_convert_encoding($col,'UTF-8','auto');
+            $ship_address[$key] = utf8_encode($col);
         }
 
 
@@ -310,7 +310,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
 
         if(isset($result['code'])){
 
-            Mage::throwException(mb_convert_encoding($result['message'],'UTF-8','auto'));
+            Mage::throwException(utf8_encode($result['message']));
         } else {
             $session = Mage::getSingleton('core/session', array('name' => 'frontend'));
             $session->setData('billmateinvoice_id', $result['number']);
@@ -344,16 +344,16 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             $addr = $k->getAddress(array('pno' =>$pno));
 
             if(!is_array($addr)){
-                Mage::throwException( Mage::helper('payment')->__(mb_convert_encoding($addr,'UTF-8','auto')));
+                Mage::throwException( Mage::helper('payment')->__(utf8_encode($addr)));
             }
 
             if( isset($addr['code']) ){
 
-                Mage::throwException(mb_convert_encoding($addr['message'],'UTF-8','auto'));
+                Mage::throwException(utf8_encode($addr['message']));
 
             }
             foreach( $addr as $key => $col ){
-                $addr[$key] = mb_convert_encoding($col,'UTF-8','auto');
+                $addr[$key] = utf8_encode($col);
             }
             if( empty( $addr['firstname'] ) ){
                 $this->firstname = $Billing->getFirstname();
