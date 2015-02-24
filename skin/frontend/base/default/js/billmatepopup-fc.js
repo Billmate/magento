@@ -400,6 +400,12 @@ function SaveAddress(){
         }
     });
 }
+function addTerms(){
+
+        jQuery(document).Terms("villkor",{invoicefee:0},'#terms');
+        jQuery(document).Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34},"#terms-delbetalning");
+
+}
 AddEvent(window, 'load', function(){
     match_media_mount();
 
@@ -409,9 +415,22 @@ AddEvent(window, 'load', function(){
         changeBillEvent();
     }
     modalWin = new CreateModalPopUpObject();
-    jQuery.getScript('https://efinance.se/billmate/base_jquery.js', function() {
-        jQuery("#terms").Terms("villkor",{invoicefee:0});
-        jQuery("#terms-delbetalning").Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34});
+    jQuery.getScript('https://efinance.se/billmate/base_jquery.js',function(){addTerms();})
+
+    $$('input[name="payment[method]"]').each(function(el) {
+        el.observe('click', function() {
+            console.log('test');
+            console.log(this.id);
+
+            if ('p_method_billmateinvoice' == this.id || 'p_method_partpayment' == this.id) {
+                console.log(this);
+                setTimeout(function(){
+                    //jQuery('#terms').Terms("villkor",{invoicefee:0},jQuery('terms'));
+                    //jQuery('#terms-delbetalning').Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34}); console.log(jQuery('#terms'));
+                    },500);
+            }
+
+        });
     });
     if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
         SaveAddress();
@@ -490,3 +509,5 @@ function EnrollLater(){
     modalWin.HideModalPopUp();
     modalWin.ShowMessage(msg,200,400,'User Information',null,null);
 }
+
+
