@@ -55,10 +55,10 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         $bill = $Billing->getStreet();
 
         foreach($bill_address as $key => $col ){
-            $bill_address[$key] = utf8_encode($col);
+            $bill_address[$key] = mb_convert_encoding($col,'UTF-8','auto');
         }
         foreach($ship_address as $key => $col ){
-            $ship_address[$key] = utf8_encode($col);
+            $ship_address[$key] = mb_convert_encoding($col,'UTF-8','auto');
         }
 
 
@@ -353,7 +353,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
 
             }
             foreach( $addr as $key => $col ){
-                $addr[$key] = utf8_encode($col);
+                $addr[$key] = mb_convert_encoding($col,'UTF-8','auto');
             }
             if( empty( $addr['firstname'] ) ){
                 $this->firstname = $Billing->getFirstname();
