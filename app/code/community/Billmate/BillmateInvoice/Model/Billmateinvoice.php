@@ -95,11 +95,11 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
         parent::validate();
         $payment = $_POST['payment'];
         if(Mage::getStoreConfig('billmate/settings/firecheckout')){
-            if( empty( $payment['person_number'] ) ){
+            if( empty( $payment['person_number'] ) && empty( $payment['billmateinvoice_pno'] )){
                 Mage::throwException(Mage::helper('payment')->__('Missing Personal number') );
             }
         } else {
-            if( empty( $payment['billmateinvoice_pno'] ) ){
+            if( empty( $payment['billmateinvoice_pno'] )){
                 Mage::throwException(Mage::helper('payment')->__('Missing Personal number') );
             }
         }
