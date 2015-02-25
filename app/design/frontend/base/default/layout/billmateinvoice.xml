@@ -40,8 +40,8 @@ var oldurl = null;
     </checkout_onepage_index>
     <firecheckout_index_index>
         <reference name="head">
-            <action method="removeItem" ifconfig="billmate/settings/firecheckout"><type>skin_css</type><name>css/billmatestyle.css</name></action>
-            <action method="addItem" ifconfig="billmate/settings/firecheckout">
+            <action method="removeItem" ifconfig="firecheckout/general/enabled"><type>skin_css</type><name>css/billmatestyle.css</name></action>
+            <action method="addItem" ifconfig="firecheckout/general/enabled">
                 <type>skin_css</type>
                 <name>css/billmatestyle-fc.css</name>
             </action>

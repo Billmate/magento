@@ -389,7 +389,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 			    'city'      => $this->city,
 			    'country_id'   => strtoupper($this->country),
 			);
-            if(Mage::getStoreConfig('billing/settings/firecheckout')){
+            if(Mage::getStoreConfig('firecheckout/general/enabled')){
                 $data['person_number'] = $pno;
             }
 
