@@ -7,13 +7,13 @@ Test Mode,Testläge
 Available Countries,Tillgängliga länder
 New Order Status,Ny orderstatus
 Saved Pclases,Sparade delbetalningsalternativ
-"My email, <b>%1$s</b> is accurate and can be used for billing. I confirm the","Min e-postadress, %1$s, är korrekt och får användas för fakturering. Jag bekräftar även"
+"My email, <b>%1$s</b>, is accurate and can be used for billing. I confirm the","Min e-postadress, %1$s, är korrekt och får användas för fakturering. Jag bekräftar även"
 Shipping fee,Fraktavgift
 You must enter a valid social security number, Du måste ange ett giltigt personnummer
 Retreiving your addresses...,Hämtar dina adresser
 "Discount","Rabatt"
 Personal Number,Personnummer/Organisationsnummer
-My email <b>%1$s</b> is accurate and can be used for billing,Min e-postadress, <b>%1$s</b>, är korrekt och får användas för fakturering.
+My email ,<b>%1$s</b>, is accurate and can be used for billing,Min e-postadress, <b>%1$s</b>, är korrekt och får användas för fakturering.
 Your Billing address is wrong.,Din angivna adress kan inte användas. Köp mot faktura kan bara faktureras och levereras till din bokföringsadress.
 Correct Address is :,Din bokföringsadress är
 "Click Yes to continue with new address, No to choose other payment method","Klicka på Ja för att fortsätta med den nya adressen, Nej för att välja ett annat betalningssätt"
@@ -54,4 +54,4 @@ Sort Order,Sorteringsordning
 "Yes, make purchase with this address","Ja, genomför köp med denna adress"
 "No, I want to specify a different number or change payment method","Nej jag vill ange ett annat personnummer eller byta betalsätt"
 "Billmate Invoice","Billmate Faktura"
-"Terms of invoice","K&#246;pvillkoren."
+"Terms of invoice.","K&#246;pvillkoren."
