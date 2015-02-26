@@ -25,7 +25,7 @@
                             $('billing:street1').value = result.data.street;
                             $('billing:city').value = result.data.city;
                             $('billing:postcode').value = result.data.zip;
-                            $('billing:country').value = result.data.country;
+                            $('billing:country_id').setValue(result.data.country);
                         }
                     }
                 })
