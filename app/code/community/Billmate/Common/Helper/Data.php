@@ -12,6 +12,9 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 {
     public function getBillmate()
     {
+        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.0');
+        $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
+        if(!defined('BILLMATE_LANGUAGE'))define('BILLMATE_LANGUAGE',$lang[0]);
         $eid = Mage::getStoreConfig('billmate/credentials/eid');
         $secret = Mage::getStoreConfig('billmate/credentials/secret');
         return new Billmate($eid, $secret, true, false,false);
@@ -46,13 +49,19 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 
         $result = $billmate->GetAddress($values);
         if(!isset($result['code'])){
+
+            $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
             $countryIso = '';
             if(isset($result['country'])) {
                 $countryCollection = Mage::getModel('directory/country')->getCollection();
                 foreach ($countryCollection as $country) {
-                    $this->_locale = new Zend_Locale('en_US');
-                    $countryName = $this->_locale->getTranslation($country->getId(),'country','en_US');
-                    Mage::log('countryName'.$countryName);
+                    $countryName = $country->getName();
+                    if($lang[0] != 'sv') {
+
+                        $this->_locale = new Zend_Locale('en_US');
+                        $countryName = $this->_locale->getTranslation($country->getId(), 'country', 'en_US');
+                        Mage::log('countryName' . $countryName);
+                    }
                     if (strtolower($result['country']) == strtolower($countryName)) {
                         $countryIso = $country->getIso2Code();
                         break;
