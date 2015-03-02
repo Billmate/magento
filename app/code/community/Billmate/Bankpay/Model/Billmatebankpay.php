@@ -117,7 +117,10 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
 
             $paymentInfo = $k->getPaymentInfo($values);
             if ($paymentInfo['PaymentData']['status'] == 'Created') {
-
+                $boTotal = $paymentInfo['Cart']['Total']['withtax']/100;
+                if($amount != $boTotal){
+                    Mage::throwException(Mage::helper('billmatecommon')->__('The amounts don\'t match. Billmate Online %s and Store %s. Activate manually in Billmate.',$boTotal,$amount));
+                }
                 $result = $k->activatePayment(array('PaymentData' => $values));
                 if(isset($result['code']) )
                     Mage::throwException(utf8_encode($result['message']));

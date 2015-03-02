@@ -55,7 +55,27 @@
             </adminhtml>
         </routers>
     </admin>
+    <adminhtml>
+        <translate>
+            <modules>
+                <billmate_common>
+                    <files>
+                        <default>Billmate_Common.csv</default>
+                    </files>
+                </billmate_common>
+            </modules>
+        </translate>
+    </adminhtml>
     <frontend>
+        <translate>
+            <modules>
+                <billmate_common>
+                    <files>
+                        <default>Billmate_Common.csv</default>
+                    </files>
+                </billmate_common>
+            </modules>
+        </translate>
         <routers>
             <billmatecommon>
                 <use>standard</use>
