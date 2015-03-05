@@ -47,7 +47,7 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
 
         //Set the invoice fee included tax value
         $info->setAdditionalInformation('billmateinvoice_fee',$quote->getFeeAmount());
-
+		$info->setAdditionalInformation('billmateinvoice_fee_tax',$quote->getFeeTaxAmount());
         $info->save();
     }
 

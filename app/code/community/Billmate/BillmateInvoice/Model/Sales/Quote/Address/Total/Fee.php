@@ -45,8 +45,9 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
 				Mage::getStoreConfig('payment/billmateinvoice/billmate_fee') 
 			);
 		
-		
+
         $exist_amount = $quote->getFeeAmount();
+
 		
 		if(Mage::getStoreConfig('payment/billmateinvoice/tax_class')){
 			$data = Mage::helper('billmateinvoice')->getInvoiceFeeArray($invoiceFee, $address, $quote->getCustomerTaxClassId());
@@ -69,7 +70,6 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
 		$rate          = $calc->getRate($addressTaxRequest);
 		$taxAmount     = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
 		$baseTaxAmount = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
-
 		$address->setPaymentTaxAmount($taxAmount);
 		$address->setBasePaymentTaxAmount($baseTaxAmount);
 //
@@ -78,10 +78,16 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
 		/* clime: tax calculation end */
 		
 		
-		$address->setFeeAmount($baseInvoiceFee+$taxAmount);
+		$address->setFeeAmount($baseInvoiceFee);
 		$address->setBaseFeeAmount($baseInvoiceFee);
-        
-        $quote->setFeeAmount($baseInvoiceFee+$taxAmount); 
+	    $address->setFeeTaxAmount($taxAmount);
+	    $address->setBaseFeeTaxAmount($baseTaxAmount);
+
+	    $totInv = $baseInvoiceFee+$taxAmount;
+
+        Mage::log('invFee'.$totInv);
+        $quote->setFeeAmount($baseInvoiceFee+$taxAmount);
+	    $quote->setFeeTaxAmount($taxAmount);
 
         $address->setGrandTotal($address->getGrandTotal() + $address->getBaseFeeAmount() );
         $address->setBaseGrandTotal($address->getBaseGrandTotal() + $address->getBaseFeeAmount() );
@@ -104,8 +110,9 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
         $amt = $address->getFeeAmount();
 
 		$extra = '';
-		if(Mage::getStoreConfig('payment/billmateinvoice/tax_class') && $amt > $address->getBaseFeeAmount()){
+		if(Mage::getStoreConfig('payment/billmateinvoice/tax_class') && $address->getFeeTaxAmount() > 0){
 			$extra = ' (Incl. Vat)';
+			$amt += $address->getFeeTaxAmount();
 		}else{
 			$extra = ' (Excl. Vat)';
 		}

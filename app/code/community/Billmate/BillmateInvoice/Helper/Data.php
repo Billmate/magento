@@ -67,13 +67,13 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
 
         if ($VatOptions == 1) {
             //Catalog prices are set to include taxes
-            $value = $calc->calcTaxAmount($base, $rate, true, false);
-            $excl = ($base - $value);
+            $value = $calc->calcTaxAmount($base, $rate, false, false);
+            $excl = $base;
             return array(
                 'excl' => $excl,
                 'base_excl' => $this->calcBaseValue($excl),
-                'incl' => $base,
-                'base_incl' => $this->calcBaseValue($base),
+                'incl' => $base + $value,
+                'base_incl' => $this->calcBaseValue($base + $value),
                 'taxamount' => $value,
                 'base_taxamount' => $this->calcBaseValue($value),
                 'rate' => $rate
@@ -105,15 +105,8 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
     {
         $baseCurrencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
         $currentCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
-
-        if ($currentCurrencyCode !== $baseCurrencyCode) {
-            $currencyModel = Mage::getModel('directory/currency');
-            $currencyRates = $currencyModel->getCurrencyRates(
-                $baseCurrencyCode, array($currentCurrencyCode)
-            );
-            return ($value / $currencyRates[$currentCurrencyCode]);
-        }
-        return $value;
+		$value = Mage::helper('directory')->currencyConvert($value,$currentCurrencyCode,$baseCurrencyCode);
+	    return $value;
     }
 	function getInvoiceTaxClass($store)
     {

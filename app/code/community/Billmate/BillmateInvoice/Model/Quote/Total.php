@@ -60,7 +60,6 @@ class Billmate_BillmateInvoice_Model_Quote_Total extends Mage_Sales_Model_Quote_
         $fee = Mage::getStoreConfig('payment/billmateinvoice/billmate_fee', Mage::app()->getStore()->getId());
 
 		$fee = Mage::helper('billmateinvoice')->replaceSeparator($fee);
-
         $this->address->setBaseInvoiceFee($fee);
         $this->address->setInvoiceFee($fee);
 
