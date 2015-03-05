@@ -135,7 +135,13 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
         $configSku = false;
         $discounts = array();
 
-        foreach( $quote->getAllItems() as $_item){
+
+
+
+		/** @var Mage_Sales_Model_Quote_Item $_item */
+	    foreach( $quote->getAllItems() as $_item){
+
+
             // Continue if bundleArr contains item parent id, no need for get price then.
             if( in_array($_item->getParentItemId(),$bundleArr)){
                 continue;
@@ -181,6 +187,11 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
                 $temp = $total;
                 $totalValue += $temp;
                 $totalTax += $temp * ($percent/100);
+				if(isset($discounts[$percent]))
+	                $discounts[$percent] += $temp;
+	            else
+		            $discounts[$percent] = $temp;
+
 
             }
             if($_item->getSku() == $configSku){
@@ -243,6 +254,10 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
                 $temp = $total;
                 $totalValue += $temp;
                 $totalTax += $temp * ($percent/100);
+	            if(isset($discounts[$percent]))
+		            $discounts[$percent] += $temp;
+	            else
+		            $discounts[$percent] = $temp;
             }
         }
 
@@ -251,23 +266,26 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
 		//print_r($quote1['subtotal']->getData());
 
         if(isset($totals['discount']) && !$discountAdded) {
+	        $totalDiscountInclTax = $totals['discount']->getValue();
+	        $subtotal = $totalValue;
+	        foreach($discounts as $percent => $amount) {
+		        $discountPercent = $amount / $subtotal;
+		        $floor    = 1 + ( $percent / 100 );
+		        $marginal = 1 / $floor;
+		        $discountAmount = $discountPercent * $totalDiscountInclTax;
+		        $orderValues['Articles'][] = array(
+			        'quantity'   => (int) 1,
+			        'artnr'      => 'discount',
+			        'title'      => Mage::helper( 'payment' )->__( 'Discount' ),
+			        'aprice'     => round( ($discountAmount * $marginal ) * 100 ),
+			        'taxrate'    => (float) $percent,
+			        'discount'   => 0.0,
+			        'withouttax' => round( ($discountAmount * $marginal ) * 100 ),
 
-            $floor = 1+($percent/100);
-            $marginal = 1 / $floor;
-            $price = $totals['discount']->getValue() * $marginal;
-
-            $orderValues['Articles'][] = array(
-                'quantity'   => (int)1,
-                'artnr'    => 'discount',
-                'title'    => Mage::helper('payment')->__('Discount'),
-                'aprice'    => round(($totals['discount']->getValue()*$marginal)*100),
-                'taxrate'      => (float)$percent,
-                'discount' => 0.0,
-                'withouttax'    => round(($totals['discount']->getValue()*$marginal)*100),
-
-            );
-            $totalValue += (1 * round(($totals['discount']->getValue()* $marginal)*100));
-            $totalTax += (1 * round(($totals['discount']->getValue()*$marginal)*100) * ($percent/100));
+		        );
+		        $totalValue += ( 1 * round( $discountAmount * $marginal * 100 ) );
+		        $totalTax += ( 1 * round( ( $discountAmount * $marginal ) * 100 ) * ( $percent / 100 ) );
+	        }
         }
         /*
         if(isset($totals['discount']) && $discountAdded) {
