@@ -231,7 +231,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Varien_Object{
 			    $orderValues['Articles'][] = array(
 				    'quantity'   => (int) 1,
 				    'artnr'      => 'discount',
-				    'title'      => Mage::helper( 'payment' )->__( 'Discount' ),
+				    'title'      => Mage::helper( 'payment' )->__( 'Discount' ).' '. Mage::helper('billmateinvoice')->__('%s Vat',$percent),
 				    'aprice'     => round( ($discountAmount * $marginal ) * 100 ),
 				    'taxrate'    => (float) $percent,
 				    'discount'   => 0.0,

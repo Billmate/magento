@@ -2,7 +2,7 @@
     // if Firecheckout active
     <?php if(Mage::getStoreConfig('firecheckout/general/enabled')){?>
     // If billmateLoaded == false
-    if(!window.billmateLoaded){
+    if(!window.billmatepopupLoaded){
         var jq = document.createElement('script');
         jq.type = "text/javascript";
         jq.src = "/skin/frontend/base/default/js/billmatepopup-fc.js";
@@ -10,7 +10,7 @@
     }
     <?php } else { ?>
         // If billmateLoaded == false
-        if(!window.billmateLoaded){
+        if(!window.billmatepopupLoaded){
             var jq = document.createElement('script');
             jq.type = "text/javascript";
             jq.src = "/skin/frontend/base/default/js/billmatepopup.js";

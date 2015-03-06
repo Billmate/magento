@@ -1,5 +1,5 @@
 //https://github.com/paulirish/matchMedia.js/
-window.billmateLoaded = true;
+window.billmatepopupLoaded = true;
 function match_media_mount(){
     window.matchMedia = window.matchMedia || (function(doc, undefined){
 
@@ -415,23 +415,8 @@ AddEvent(window, 'load', function(){
         changeBillEvent();
     }
     modalWin = new CreateModalPopUpObject();
-    jQuery.getScript('https://efinance.se/billmate/base_jquery.js',function(){addTerms();})
+    jQuery.getScript('https://efinance.se/billmate/base_jquery.js',function(){addTerms();});
 
-    $$('input[name="payment[method]"]').each(function(el) {
-        el.observe('click', function() {
-            console.log('test');
-            console.log(this.id);
-
-            if ('p_method_billmateinvoice' == this.id || 'p_method_partpayment' == this.id) {
-                console.log(this);
-                setTimeout(function(){
-                    //jQuery('#terms').Terms("villkor",{invoicefee:0},jQuery('terms'));
-                    //jQuery('#terms-delbetalning').Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34}); console.log(jQuery('#terms'));
-                    },500);
-            }
-
-        });
-    });
     if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
         SaveAddress();
         $checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;

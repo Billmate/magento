@@ -277,7 +277,7 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
 			    $orderValues['Articles'][] = array(
 				    'quantity'   => (int) 1,
 				    'artnr'      => 'discount',
-				    'title'      => Mage::helper( 'payment' )->__( 'Discount' ),
+				    'title'      => Mage::helper( 'payment' )->__( 'Discount' ).' '. Mage::helper('billmatecardpay')->__('%s Vat',$percent),
 				    'aprice'     => round( ($discountAmount * $marginal ) * 100 ),
 				    'taxrate'    => (float) $percent,
 				    'discount'   => 0.0,

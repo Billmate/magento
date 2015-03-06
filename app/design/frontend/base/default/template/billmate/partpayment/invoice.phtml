@@ -40,7 +40,7 @@ if (Mage::getStoreConfig('firecheckout/general/enabled') && !Mage::getSingleton(
 			</select>
         </div>
     </li>
-    <li>
+    <li style="display:inline-flex">
 		<input type="checkbox" onchange="checkAddress(this)" checked="checked" id="<?php echo $_code ?>_phone" name="payment[<?php echo $_code;?>_phone]" title="<?php echo $this->__('Phone Number') ?>" class="required-entry" value="on" style="float:left;margin:3px;" />
         <label class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email, <b>%1$s</b>, is accurate and can be used for billing. I confirm the', $customerData['email'] ) ?> <a id="terms-delbetalning"><?php echo $this->__('Terms of partpayment.'); ?></a></label>
     </li>
