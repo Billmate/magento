@@ -10,7 +10,9 @@ $customerData['email'] = Mage::getSingleton('checkout/session')
 }
 if (Mage::getStoreConfig('firecheckout/general/enabled') && !Mage::getSingleton('customer/session')->isLoggedIn()){
     $visuality = 'display:none';
+	$padding = 'margin-right: 10px;';
 } else {
+	$padding = '';
     $visuality = 'display:block';
 }
  ?>
@@ -26,7 +28,7 @@ if (Mage::getStoreConfig('firecheckout/general/enabled') && !Mage::getSingleton(
         </div>
     </li>
     <li style="display:inline-flex">
-		<input type="checkbox" checked="checked" id="<?php echo $_code ?>_phone" name="payment[<?php echo $_code;?>_phone]" title="<?php echo $this->__('Phone Number') ?>" class="required-entry" value="on" style="float:left;margin:3px;" />
+		<input type="checkbox" checked="checked" id="<?php echo $_code ?>_phone" name="payment[<?php echo $_code;?>_phone]" title="<?php echo $this->__('Phone Number') ?>" class="required-entry" value="on" style="float:left;margin:3px; <?php echo $padding; ?>" />
         <label class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email, <b>%1$s</b>, is accurate and can be used for billing. I confirm the', $customerData['email'] ) ?>  <a id="terms"><?php echo $this->__('Terms of invoice.'); ?></a></label>
     </li>
     <?php echo $this->getChildHtml() ?>
