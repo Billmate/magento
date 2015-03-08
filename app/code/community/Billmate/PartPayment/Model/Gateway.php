@@ -311,6 +311,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             $session = Mage::getSingleton('core/session', array('name' => 'frontend'));
             $session->setData('billmateinvoice_id', $result['number']);
             $session->setData('billmateorder_id', $result['orderid']);
+	        return $result['number'];
         }
     }
 
@@ -363,6 +364,8 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             $this->street = $addr['street'];
             $this->postcode = $addr['zip'];
             $this->city = $addr['city'];
+	        if(Mage::getSingleton('customer/session')->isLoggedIn())
+		        $this->telephone = $Billing->getTelephone();
             $this->country = (BillmateCountry::getCode( $addr['country'] ) != '') ? BillmateCountry::getCode( $addr['country'] ) : 'se';
             $this->country_name = Mage::getModel('directory/country')->loadByCode($this->country)->getName();
 

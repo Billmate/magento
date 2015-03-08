@@ -22,7 +22,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
         try{
 
-
+	        $payment = $order->getPayment();
             $status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
             if( $order->getStatus() == $status ){
                 $session->setOrderId($quote->getReservedOrderId());
@@ -30,11 +30,12 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
                 $order->sendNewOrderEmail();
 
+
                 $this->_redirect('checkout/onepage/success', array('_secure'=>true));
                 return;
             }
 
-            $payment = $order->getPayment();
+
             $info = $payment->getMethodInstance()->getInfoInstance();
             $info->setAdditionalInformation('invoiceid',$data['number']);
 
@@ -46,7 +47,12 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by ipn.'));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data1['status']));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
-
+	        $payment->setTransactionId($data['number']);
+	        $payment->setIsTransactionClosed(0);
+	        $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH,null,false, false);
+	        $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
+	                    ->save();
+	        $payment->save();
             $isCustomerNotified = false;
             $order->setState($status, $status, '', $isCustomerNotified);
             $order->save();
@@ -207,7 +213,12 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed.'));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment status: #'.$data1['status']));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
-
+	        $payment->setTransactionId($data['number']);
+	        $payment->setIsTransactionClosed(0);
+	        $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH,null,false, false);
+	        $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
+	                    ->save();
+	        $payment->save();
 			$order->save();
 
             $session->setQuoteId($session->getBillmateStandardQuoteId(true));

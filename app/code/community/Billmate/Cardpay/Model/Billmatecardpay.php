@@ -40,11 +40,33 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
 		return false;
     }
 
-    /*public function processInvoice($invoice, $payment)
-    {
-        $invoice->setTransactionId(time());
-        return $this;
-    }*/
+	public function cancel( Varien_Object $payment )
+	{
+
+		$this->void($payment);
+		return $this;
+	}
+
+	public function void( Varien_Object $payment )
+	{
+		$k = Mage::helper('billmateinvoice')->getBillmate(true,false);
+		$invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+		$values = array(
+			'number' => $invoiceId
+		);
+		$paymentInfo = $k->getPaymentInfo($values);
+		if($paymentInfo['PaymentData']['status'] == 'Created'){
+			$result = $k->cancelPayment($values);
+			if(isset($result['code'])){
+				Mage::throwException($result['message']);
+			}
+			$payment->setTransactionId($result['number']);
+			$payment->setIsTransactionClosed(1);
+		}
+
+		return $this;
+	}
+
 
     public function capture(Varien_Object $payment, $amount)
     {
@@ -170,12 +192,14 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
         $session = Mage::getSingleton('checkout/session');
         $session->setBillmateQuoteId($session->getQuoteId());
         $gateway = Mage::getSingleton('billmatecardpay/gateway');
-        $redirectUrl = $gateway->makePayment();
-        return $redirectUrl;
+
+        $result = $gateway->makePayment();
+
+
+        return $result['url'];
     }
-    
-    /*public function authorize(Varien_Object $payment, $amount){
-    }
+
+	/*
     public function validate(){
     }*/
 }

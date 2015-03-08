@@ -30,10 +30,40 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
 		}
 		return false;
     }
+
+	public function cancel( Varien_Object $payment )
+	{
+
+		$this->void($payment);
+		return $this;
+	}
+
+	public function void( Varien_Object $payment )
+	{
+		$k = Mage::helper('billmateinvoice')->getBillmate(true,false);
+		$invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+		$values = array(
+			'number' => $invoiceId
+		);
+		$paymentInfo = $k->getPaymentInfo($values);
+		if($paymentInfo['PaymentData']['status'] == 'Created'){
+			$result = $k->cancelPayment($values);
+			if(isset($result['code'])){
+				Mage::throwException($result['message']);
+			}
+			$payment->setTransactionId($result['number']);
+			$payment->setIsTransactionClosed(1);
+		}
+
+		return $this;
+	}
+
     public function authorize(Varien_Object $payment, $amount)
     {
        $gateway =  Mage::getSingleton('billmateinvoice/gateway');
-       $gateway->makePayment();
+       $invoiceId = $gateway->makePayment();
+	    $payment->setTransactionId($invoiceId);
+	    $payment->setIsTransactionClosed(0);
     }
     public function getTitle(){
         return (strlen(Mage::getStoreConfig('payment/billmateinvoice/title')) > 0) ? Mage::helper('billmateinvoice')->__(Mage::getStoreConfig('payment/billmateinvoice/title')) : Mage::helper('billmateinvoice')->__('Billmate Invoice');

@@ -19,12 +19,38 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
 
     public function initialize($paymentAction, $stateObject)
     {
-        Mage::log('initialize');
         $state = Mage_Sales_Model_Order::STATE_PENDING_PAYMENT;
         $stateObject->setState($state);
         $stateObject->setStatus('pending_payment');
         $stateObject->setIsNotified(false);
     }
+
+	public function cancel( Varien_Object $payment )
+	{
+
+		$this->void($payment);
+		return $this;
+	}
+
+	public function void( Varien_Object $payment )
+	{
+		$k = Mage::helper('billmateinvoice')->getBillmate(true,false);
+		$invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+		$values = array(
+			'number' => $invoiceId
+		);
+		$paymentInfo = $k->getPaymentInfo($values);
+		if($paymentInfo['PaymentData']['status'] == 'Created'){
+			$result = $k->cancelPayment($values);
+			if(isset($result['code'])){
+				Mage::throwException($result['message']);
+			}
+			$payment->setTransactionId($result['number']);
+			$payment->setIsTransactionClosed(1);
+		}
+
+		return $this;
+	}
 
     public function isAvailable($quote = null)
     {
@@ -102,10 +128,14 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
         //when you click on place order you will be redirected on this url, if you don't want this action remove this method
         $session = Mage::getSingleton('checkout/session');
         $session->setBillmateQuoteId($session->getQuoteId());
+
         $gateway = Mage::getSingleton('billmatebankpay/gateway');
-        $redirectUrl = $gateway->makePayment();
-        return $redirectUrl;
+        $result = $gateway->makePayment();
+
+        return $result['url'];
     }
+
+
     public function capture(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {

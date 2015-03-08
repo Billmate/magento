@@ -49,6 +49,14 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data1['status']));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
 
+	        $payment->setTransactionId($data['number']);
+	        $payment->setIsTransactionClosed(0);
+	        $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH,null,false, false);
+	        $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
+	                    ->save();
+	        $payment->save();
+
+
             $isCustomerNotified = false;
             $order->setState($status, $status, '', $isCustomerNotified);
             $order->save();
@@ -214,6 +222,13 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by accept.'));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data1['status']));
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
+
+	        $payment->setTransactionId($data['number']);
+	        $payment->setIsTransactionClosed(0);
+	        $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH,null,false, false);
+	        $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
+	                    ->save();
+	        $payment->save();
 
 			$order->save();
             $session->setQuoteId($session->getBillmateQuoteId(true));

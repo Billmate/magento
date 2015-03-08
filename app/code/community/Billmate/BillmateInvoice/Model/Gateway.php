@@ -337,6 +337,7 @@
 				$session = Mage::getSingleton( 'core/session', array( 'name' => 'frontend' ) );
 				$session->setData( 'billmateinvoice_id', $result['number'] );
 				$session->setData( 'billmateorder_id', $result['orderid'] );
+				return $result['number'];
 			}
 		}
 
@@ -387,7 +388,9 @@
 				$this->street       = $addr['street'];
 				$this->postcode     = $addr['zip'];
 				$this->city         = $addr['city'];
-				$this->telephone = $Billing->getTelephone();
+
+				if(Mage::getSingleton('customer/session')->isLoggedIn())
+					$this->telephone = $Billing->getTelephone();
 				$this->country      = ( BillmateCountry::getCode( $addr['country'] ) != '' ) ? strtoupper(BillmateCountry::getCode( $addr['country'] )) : strtoupper('se');
 				$this->country_name = Mage::getModel( 'directory/country' )->loadByCode( $this->country )->getName();
 
@@ -441,6 +444,7 @@
 					'country_id' => strtoupper( $this->country ),
 					'telephone' => $Billing->getTelephone()
 				);
+
 				if ( Mage::getStoreConfig( 'firecheckout/general/enabled' ) )
 				{
 					$data['person_number'] = $pno;

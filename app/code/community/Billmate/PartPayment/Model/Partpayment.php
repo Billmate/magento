@@ -54,6 +54,34 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 		}
 		return $avail;
     }
+
+	public function cancel( Varien_Object $payment )
+	{
+
+		$this->void($payment);
+		return $this;
+	}
+
+	public function void( Varien_Object $payment )
+	{
+		$k = Mage::helper('billmateinvoice')->getBillmate(true,false);
+		$invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+		$values = array(
+			'number' => $invoiceId
+		);
+		$paymentInfo = $k->getPaymentInfo($values);
+		if($paymentInfo['PaymentData']['status'] == 'Created'){
+			$result = $k->cancelPayment($values);
+			if(isset($result['code'])){
+				Mage::throwException($result['message']);
+			}
+			$payment->setTransactionId($result['number']);
+			$payment->setIsTransactionClosed(1);
+		}
+
+		return $this;
+	}
+
     public function getTitle()
     {
 	        
@@ -116,7 +144,6 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
                     $payment->setTransactionId($result['number']);
                     $payment->setIsTransactionClosed(1);
                 }
-                Mage::log('result' . print_r($result, true));
             }
         }
         return $this;
@@ -126,7 +153,9 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     {
     	
        $gateway =  Mage::getSingleton('partpayment/gateway');
-       $gateway->makePayment();
+       $invoiceId = $gateway->makePayment();
+	    $payment->setTransactionId($invoiceId);
+	    $payment->setIsTransactionClosed(0);
     }
     public function validate()
     {

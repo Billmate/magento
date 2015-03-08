@@ -322,6 +322,6 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
             $session->setData('billmateinvoice_id', $result['number']);
             $session->setData('billmateorder_id', $result['orderid']);
         }
-        return $result['url'];
+        return $result;
     }
 }
