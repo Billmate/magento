@@ -276,23 +276,6 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
 			    $totalTax += ( 1 * round( ( $discountAmount * $marginal ) * 100 ) * ( $percent / 100 ) );
 		    }
 	    }
-        /*
-        if(isset($totals['discount']) && $discountAdded) {
-            foreach ($discounts as $percent => $value){
-                $orderValues['Articles'][] = array(
-                    'quantity' => (int)1,
-                    'artnr' => 'discount',
-                    'title' => Mage::helper('payment')->__('Discount').' - '. Mage::helper('payment')->__('Vat'). $percent.'%',
-                    'aprice' => -round((abs($value)) * 100),
-                    'taxrate' => (float)$percent,
-                    'discount' => 0.0,
-                    'withouttax' => -round(abs($value) * 100),
-
-                );
-                $totalValue -= round((abs($value)) * 100);
-                $totalTax -= round((abs($value)) * 100) * ($percent / 100);
-            }
-        }*/
 
 
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
