@@ -1,7 +1,7 @@
 <script type="text/javascript">
     <?php if(Mage::getStoreConfig('billmate/settings/getaddress')){?>
         document.observe('dom:loaded',function(){
-            <?php if(!Mage::getStoreConfig('billmate/settings/firecheckout')){ ?>
+            <?php if(!Mage::getStoreConfig('firecheckout/general/enabled')){ ?>
                 var pno = '<li class="fields"><div class="getaddress"><div class="pno"><label for="pno"><?php echo Mage::helper('billmateinvoice')->__('Person Number'); ?></label><div class="input-box"><input type="text" name="billmate_pno" id="person_number" class="input-text"/></div></div><div class="fetch"><div class="input-box"><button id="billmategetaddress"><?php echo Mage::helper('billmatecommon')->__('Get Address'); ?></button></div></div></div></li>';
                 $('billing-new-address-form').down('ul').innerHTML = pno + $('billing-new-address-form').down('ul').innerHTML;
             <?php } ?>
