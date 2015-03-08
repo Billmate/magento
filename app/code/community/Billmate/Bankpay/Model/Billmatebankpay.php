@@ -87,7 +87,7 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
     
    
     public function getTitle(){
-        return Mage::helper('billmatebankpay')->__(Mage::getStoreConfig('payment/billmatebankpay/title'));
+        return (strlen(Mage::getStoreConfig('payment/billmatebankpay/title')) > 0) ? Mage::helper('billmatebankpay')->__(Mage::getStoreConfig('payment/billmatebankpay/title')) : Mage::helper('billmatebankpay')->__('Billmate Bank');
     }
     public function getBillmateUrl(){
         

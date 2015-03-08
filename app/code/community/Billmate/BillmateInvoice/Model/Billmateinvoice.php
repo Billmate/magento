@@ -36,7 +36,7 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
        $gateway->makePayment();
     }
     public function getTitle(){
-        return Mage::helper('billmateinvoice')->__(Mage::getStoreConfig('payment/billmateinvoice/title'));
+        return (strlen(Mage::getStoreConfig('payment/billmateinvoice/title')) > 0) ? Mage::helper('billmateinvoice')->__(Mage::getStoreConfig('payment/billmateinvoice/title')) : Mage::helper('billmateinvoice')->__('Billmate Invoice');
     }
 
     public function capture(Varien_Object $payment, $amount)

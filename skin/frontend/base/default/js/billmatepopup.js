@@ -400,7 +400,7 @@ AddEvent(window, 'load', function(){
 	if(typeof checkout!= 'undefined' && typeof checkout.form == 'undefined'){
 		changeBillEvent();
 	}
-	jQuery.getScript('https://efinance.se/billmate/base_jquery.js', function() {addTerms();});
+	jQuery.getScript('https://billmate.se/billmate/base_jquery.js', function() {addTerms();});
 
 	modalWin = new CreateModalPopUpObject();
 	if( $$('#checkout-review-submit .btn-checkout').length > 0 ){

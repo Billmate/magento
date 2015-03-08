@@ -415,7 +415,7 @@ AddEvent(window, 'load', function(){
         changeBillEvent();
     }
     modalWin = new CreateModalPopUpObject();
-    jQuery.getScript('https://efinance.se/billmate/base_jquery.js',function(){addTerms();});
+    jQuery.getScript('https://billmate.se/billmate/base_jquery.js',function(){addTerms();});
 
     if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
         SaveAddress();
