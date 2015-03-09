@@ -2,12 +2,17 @@
 <layout version="0.1.0">
     <default>
         <reference name="head">
-
-			<action method="addItem"><type>skin_css</type><name>css/billmatestyle.css</name></action>
-			<block type="core/text" name="billmate.inline.javascript">
-				<action method="setText">
-					<text>
-					<![CDATA[
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/billmatestyle.css</name>
+            </action>
+            <action method="addItem" ifconfig="billmate/settings/customcss">
+                <type>skin_css</type>
+                <name>css/billmatestyle-custom.css</name>
+            </action>
+            <block type="core/text" name="billmate.inline.javascript">
+                <action method="setText">
+                    <text><![CDATA[
 					<script type="text/javascript">
                             if (!window.jQuery){
                                 var jq = document.createElement('script');
@@ -15,43 +20,59 @@
                                 jq.src = "/skin/frontend/base/default/js/jquery.js";
                                 document.getElementsByTagName('head')[0].appendChild(jq);
                             }
-					</script>
 
-<script type="text/javascript" src="https://efinance.se/billmate/base_jquery.js"></script>					
+					</script>
 <script type="text/javascript">
 var oldurl = null;
 </script>
 ]]>
 </text>
-				</action>
-			</block>
-			<block type="core/template" template="billmate/billmatescript.phtml" />
-		</reference>
+                </action>
+            </block>
+
+            <block type="core/template" template="billmate/billmatescript.phtml"/>
+        </reference>
     </default>
+    <checkout_onepage_index>
+        <reference name="head">
+            <block type="core/template" template="billmate/getaddress.phtml"/>
+        </reference>
+    </checkout_onepage_index>
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="removeItem" ifconfig="firecheckout/general/enabled"><type>skin_css</type><name>css/billmatestyle.css</name></action>
+            <action method="addItem" ifconfig="firecheckout/general/enabled">
+                <type>skin_css</type>
+                <name>css/billmatestyle-fc.css</name>
+            </action>
+            <block type="core/template" template="billmate/firecheckout.phtml"/>
+            <block type="core/template" template="billmate/getaddress.phtml"/>
+        </reference>
+    </firecheckout_index_index>
     <billmateinvoice_index_index>
         <remove name="head"/>
         <remove name="footer"/>
-		<remove name="right"/>
+        <remove name="right"/>
         <remove name="left"/>
-		
+
         <reference name="root">
             <action method="setTemplate">
                 <template>page/ajax.phtml</template>
             </action>
         </reference>
         <reference name="content">
-            <block type="billmateinvoice/changeaddress" name="billmate_invoice"></block>
+            <block type="billmateinvoice/changeaddress" name="billmate_invoice"/>
         </reference>
     </billmateinvoice_index_index>
-	
+
     <billmateinvoice_index_getinfo>
-		<reference name="root">
+        <reference name="root">
             <action method="setTemplate">
                 <template>page/2columns-left.phtml</template>
             </action>
         </reference>
         <reference name="content">
-            <block type="core/template" name="billmate_invoice_info" template='billmate/info.phtml'></block>
+            <block type="core/template" name="billmate_invoice_info" template='billmate/info.phtml'/>
         </reference>
     </billmateinvoice_index_getinfo>
 
@@ -64,10 +85,10 @@ var oldurl = null;
             </action>
         </reference>
         <reference name="content">
-            <block type="billmateinvoice/changeaddress" name="billmate_invoice"></block>
+            <block type="billmateinvoice/changeaddress" name="billmate_invoice"/>
         </reference>
     </billmateinvoice_index_updateaddress>
-    
+
     <sales_order_print>
         <reference name="order_totals">
             <block name="billmateinvoice_fee" type="billmateinvoice/order_totals_fee" before="tax"/>

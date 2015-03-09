@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<config>
+    <tabs>
+        <billmate_tab translate="label">
+            <label>Billmate</label>
+            <sort_order>60</sort_order>
+        </billmate_tab>
+    </tabs>
+    <sections>
+        <billmate translate="label">
+            <label>Billmate</label>
+            <tab>billmate_tab</tab>
+            <sort_order>1000</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <settings translate="label">
+                    <label>Billmate Common settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1000</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <customcss translate="label comment">
+                            <label>Use custom stylesheet</label>
+                            <comment>Activate if you want to use a custom stylesheet, add a file in directory : /skin/frontend/base/default/css named billmatestyle-custom.css</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </customcss>
+                        <getaddress translate="label comment">
+                            <label>Use GetAddress</label>
+                            <comment>Activate if you want to get Addresses from Personal number</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </getaddress>
+                        <activation translate="label comment">
+                            <label>Activate Invoice in Billmate Online</label>
+                            <comment>Activate to activate invoice in Billmate Online when you creates the invoice in Magento</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </activation>
+                    </fields>
+                </settings>
+                <credentials translate="label">
+                    <label>Billmate Credentials</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>2000</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <eid translate="label comment tooltip">
+                            <label>Eid</label>
+                            <sort_order>5</sort_order>
+                            <tooltip><![CDATA[This your billmate merchant id. This should be valid.]]></tooltip>
+                            <comment><![CDATA[Your Merchant Id here.]]></comment>
+                            <show_in_default>1</show_in_default>
+                            <show_in_store>1</show_in_store>
+                            <show_in_website>1</show_in_website>
+                            <frontend_type>text</frontend_type>
+                        </eid>
+                        <secret translate="label">
+                            <label>Secret Key</label>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_store>1</show_in_store>
+                            <show_in_website>1</show_in_website>
+                            <frontend_type>text</frontend_type>
+                        </secret>
+                        <verify translate="label">
+                            <label>Verify</label>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>button</frontend_type>
+                            <frontend_model>billmatecommon/adminhtml_system_config_form_verify</frontend_model>
+                        </verify>
+                    </fields>
+                </credentials>
+            </groups>
+        </billmate>
+    </sections>
+</config>

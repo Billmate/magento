@@ -7,7 +7,7 @@ class Billmate_PartPayment_Model_Observer extends Mage_Core_Model_Abstract
     {   
         $enabled = (int)$_POST['groups']['partpayment']['fields']['active']['value'];
         if($enabled){
-            $collection = Mage::getModel('partpayment/pclass')->getCollection();
+            /*$collection = Mage::getModel('partpayment/pclass')->getCollection();
             foreach( $collection as $item ){
                 $item->delete();
             }
@@ -33,12 +33,19 @@ class Billmate_PartPayment_Model_Observer extends Mage_Core_Model_Abstract
 			} else {
 	            $testmode=$_POST['groups']['partpayment']['fields']['test_mode']['value'];
 	     	}
-			$countries = array('SE');
+            if( isset($_POST['groups']['partpayment']['fields']['countries']['inherit'])){
+                $countryData = explode(',', Mage::getStoreConfig('payment/partpayment/countries'));
+            } else {
+                $countryData = $_POST['groups']['partpayment']['fields']['countries']['value'];
+            }
+			//$countries = array('SE');
+
+            $countries = $countryData;
             $gateway = Mage::helper("partpayment");
 			
             foreach( $countries as $country ){
                 $gateway->savePclasses($eid, $secret, $country, $testmode);
-            }
+            }*/
         }
     }
 }

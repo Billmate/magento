@@ -1,6 +1,6 @@
 <?php
 if(!function_exists('getCountryID')){
-	define('BILLPLUGIN_VERSION', '1.25');
+	define('BILLPLUGIN_VERSION', '2.0');
 	define('BILLMATE_VERSION',  "PHP:Magento:".BILLPLUGIN_VERSION );
 
 	function getCountryID(){
@@ -767,7 +767,7 @@ class BillmateCountry {
      *
      * @var int
      */
-    const DK = 59;
+    const DK = 'Denmark';
 
     /**
      * Country constant for Finland (FI).<br>
@@ -775,7 +775,7 @@ class BillmateCountry {
      *
      * @var int
      */
-    const FI = 73;
+    const FI = 'Finland';
 
     /**
      * Country constant for Germany (DE).<br>
@@ -783,7 +783,7 @@ class BillmateCountry {
      *
      * @var int
      */
-    const DE = 81;
+    const DE = 'Germany';
 
     /**
      * Country constant for Netherlands (NL).<br>
@@ -791,7 +791,7 @@ class BillmateCountry {
      *
      * @var int
      */
-    const NL = 154;
+    const NL = 'Netherlands';
 
     /**
      * Country constant for Norway (NO).<br>
@@ -799,7 +799,7 @@ class BillmateCountry {
      *
      * @var int
      */
-    const NO = 164;
+    const NO = 'Norway';
 
     /**
      * Country constant for Sweden (SE).<br>
@@ -807,7 +807,7 @@ class BillmateCountry {
      *
      * @var int
      */
-    const SE = 209;
+    const SE = 'Sweden';
 
     /**
      * Class constructor.
@@ -930,6 +930,20 @@ class BillmateCountry {
 				break;
 		}
 		return array('country'=>$country,'language'=> $language, 'encoding' => $encoding,'currency' => $currency );
+    }
+
+    public static function fromLocale($locale)
+    {
+        switch($locale){
+            case 'sv_SE':
+                return 'sv';
+            case 'da_DK':
+                return 'da';
+            case 'nn_NO':
+                return 'no';
+            case (preg_match('/^en_.*/i',$locale) ? true : false):
+                return 'en';
+        }
     }
 
 } 

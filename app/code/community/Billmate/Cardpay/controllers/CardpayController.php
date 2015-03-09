@@ -2,9 +2,81 @@
 
 class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Action{
     /**
-     * When a customer chooses Paypal on Checkout/Payment page
+     * When a customer chooses Billmate on Checkout/Payment page
      *
      */
+
+    public function notifyAction(){
+        $_POST = file_get_contents('php://input');
+        $k = Mage::helper('billmatecardpay')->getBillmate(true,false);
+        $session = Mage::getSingleton('checkout/session');
+        $data = $k->verify_hash($_POST);
+
+        $quote = Mage::getModel('sales/quote')->load($data['orderid']);
+
+        $session->setData('last_real_order_id', $quote->getReservedOrderId());
+
+
+        $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
+
+        try{
+
+
+            $status = Mage::getStoreConfig('payment/billmatecardpay/order_status');
+
+            if( $order->getStatus() == $status ){
+
+                $session->setLastSuccessQuoteId($quote->getId());
+                $session->setOrderId($quote->getReservedOrderId());
+                $session->setQuoteId($quote->getId());
+                Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
+                $order->sendNewOrderEmail();
+                $this->_redirect('checkout/onepage/success', array('_secure'=>true));
+
+                return;
+            }
+            $payment = $order->getPayment();
+            $info = $payment->getMethodInstance()->getInfoInstance();
+            $info->setAdditionalInformation('invoiceid',$data['number']);
+
+            $values['PaymentData'] = array(
+                'number' => $data['number'],
+                'orderid' => $order->getIncrementId()
+            );
+            $data1 = $k->updatePayment($values);
+
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by ipn.'));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data1['status']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
+
+	        $payment->setTransactionId($data['number']);
+	        $payment->setIsTransactionClosed(0);
+	        $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH,null,false, false);
+	        $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
+	                    ->save();
+	        $payment->save();
+
+
+            $isCustomerNotified = false;
+            $order->setState($status, $status, '', $isCustomerNotified);
+            $order->save();
+            $this->clearAllCache();
+
+        }catch(Exception $ex){
+            Mage::log($ex->getMessage());
+        }
+    }
+
+    function clearAllCache(){
+        try {
+            $cacheTypes = Mage::app()->useCache();
+            foreach ($cacheTypes as $type => $option) {
+                Mage::app()->getCacheInstance()->cleanType($type);
+            }
+        } catch (Exception $e) {
+            Mage::log($e->getMessage());
+        }
+    }
 
     public function redirectAction()
     {
@@ -68,6 +140,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 					$quote->setIsActive(false)->save();
 					$this->_redirect('/');
 				}
+                $quote->setReservedOrderId(null);
 				$quote->collectTotals()->save();
 			}
         }
@@ -89,37 +162,74 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
      */
     public function successAction()
     {
+        $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
         $session = Mage::getSingleton('checkout/session');
         $orderIncrementId = $session->getBillmateQuoteId();
-        $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
+        $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());
+
+
+        $status = Mage::getStoreConfig('payment/billmatecardpay/order_status');
 
 		$session->setLastSuccessQuoteId($session->getBillmateQuoteId());
         $session->setLastQuoteId($session->getBillmateQuoteId());
         $session->setLastOrderId($session->getLastOrderId());
 
-		if(empty($_POST)) $_POST = $_GET;		
+		if(empty($_POST)) $_POST = $_GET;
+        $data = $k->verify_hash($_POST);
+        if( $order->getState() == $status ){
+
+            $session->setLastSuccessQuoteId($session->getLastRealOrderId());
+            $session->setOrderId($data['orderid']);
+            $session->setQuoteId($session->getBillmateQuoteId(true));
+            Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
+            $order->sendNewOrderEmail();
+            $this->_redirect('checkout/onepage/success', array('_secure'=>true));
+
+            return;
+        }
         
-        if( !empty($_POST['status']) && $_POST['status'] != 0 ){
+        if(isset($data['code']) || isset($data['error'])){
             
             $status = 'pending_payment';
-            $comment = $this->__('Unable to complete order, Reason : ').$_POST['error_message'] ;
+            $comment = $this->__('Unable to complete order, Reason : ').$data['message'] ;
             $isCustomerNotified = true;
             $order->setState('new', $status, $comment, $isCustomerNotified);
             $order->save();
             $order->sendOrderUpdateEmail(true, $comment);
             
-            Mage::getSingleton('core/session')->addError($this->__('Unable to process with payment gateway :').$_POST['error_message']);
+            Mage::getSingleton('core/session')->addError($this->__('Unable to process with payment gateway :').$data['message']);
+            if(isset($data['code'])){
+                Mage::log('hash:'.$data['hash'].' recieved'.$data['hash_received']);
+            }
 
             $this->_redirect(Mage::getStoreConfig('payment/billmatecardpay/card_error_page'));
         }else{
-            
-            $gateway =  Mage::getSingleton('billmatecardpay/gateway');
-            $gateway->makePayment($order);
-			
+
 			$status = Mage::getStoreConfig('payment/billmatecardpay/order_status');
 			
 			$isCustomerNotified = false;
 			$order->setState('new', $status, '', $isCustomerNotified);
+            $payment = $order->getPayment();
+            $info = $payment->getMethodInstance()->getInfoInstance();
+            $info->setAdditionalInformation('invoiceid',$data['number']);
+
+
+            $values['PaymentData'] = array(
+                'number' => $data['number'],
+                'orderid' => $order->getIncrementId()
+            );
+            $data1 = $k->updatePayment($values);
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Order completed by accept.'));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment Status: #'.$data1['status']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
+
+	        $payment->setTransactionId($data['number']);
+	        $payment->setIsTransactionClosed(0);
+	        $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH,null,false, false);
+	        $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
+	                    ->save();
+	        $payment->save();
+
 			$order->save();
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();

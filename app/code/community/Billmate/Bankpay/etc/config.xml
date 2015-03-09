@@ -39,16 +39,16 @@
                     <communication_error translate="label">
                         <label><![CDATA[Communication Error]]></label>
                     </communication_error>
-                    <states>
-                        <billmatebankpay>
-                            <label>Billmate Bankpay</label>
-                            <statuses>
-                                <communication_error default="10" />
-                            </statuses>
-                            <visible_on_front/>
-                        </billmatebankpay>
-                    </states>
                 </statuses>
+                <states>
+                    <billmatebankpay>
+                        <label>Billmate Bankpay</label>
+                        <statuses>
+                            <communication_error default="10" />
+                        </statuses>
+                        <visible_on_front/>
+                    </billmatebankpay>
+                </states>
             </order>
         </sales>
     </global>
@@ -57,7 +57,7 @@
             <billmatebankpay>
                 <model>billmatebankpay/billmatebankpay</model>
                 <countries>SE,DE,NL</countries>
-                <title>Billmate Bankpay</title>
+                <title>Billmate Bank</title>
 				<bank_error_page>home</bank_error_page>
                 <eid>7270</eid>
                 <secret>606250886062</secret>

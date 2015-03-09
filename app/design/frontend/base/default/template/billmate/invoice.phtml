@@ -8,7 +8,13 @@ $customerData['email'] = Mage::getSingleton('checkout/session')
 	->getBillingAddress()
 	->email;
 }
-
+if (Mage::getStoreConfig('firecheckout/general/enabled') && !Mage::getSingleton('customer/session')->isLoggedIn()){
+    $visuality = 'display:none';
+	$padding = 'margin-right: 10px;';
+} else {
+	$padding = '';
+    $visuality = 'display:block';
+}
  ?>
 
 
@@ -18,15 +24,15 @@ $customerData['email'] = Mage::getSingleton('checkout/session')
     <li>
         <img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) ?>/billmate/images/bm_faktura_l.png" />
     </li>
-    <li>
+    <li style="<?php echo $visuality; ?>">
         <label for="<?php echo $_code ?>_pno" class="required"><em>*</em><?php echo $this->__('Personal Number') ?></label>
         <div class="input-box">
             <input type="text" title="<?php echo $this->__('Personal Number') ?>" class="input-text required-entry" id="<?php echo $_code ?>_pno" name="payment[<?php echo $_code ?>_pno]" />
         </div>
     </li>
-    <li>
-		<input type="checkbox" checked="checked" id="<?php echo $_code ?>_phone" name="payment[<?php echo $_code;?>_phone]" title="<?php echo $this->__('Phone Number') ?>" class="required-entry" value="on" style="float:left;margin:3px;" />
-        <label for="<?php echo $_code ?>_phone" class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email <b>%1$s</b> is accurate and can be used for billing', $customerData['email'] ) ?>  <a id="terms"><?php echo $this->__('K&#246;pvillkor'); ?></a></label>
+    <li style="display:inline-flex">
+		<input type="checkbox" checked="checked" id="<?php echo $_code ?>_phone" name="payment[<?php echo $_code;?>_phone]" title="<?php echo $this->__('Phone Number') ?>" class="required-entry" value="on" style="float:left;margin:3px; <?php echo $padding; ?>" />
+        <label class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email, <b>%1$s</b>, is accurate and can be used for billing. I confirm the', $customerData['email'] ) ?>  <a id="terms"><?php echo $this->__('Terms of invoice.'); ?></a></label>
     </li>
     <?php echo $this->getChildHtml() ?>
 </ul>

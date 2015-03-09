@@ -1,17 +1,19 @@
 <?php
 class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
     function getBillmate($ssl = true, $debug = false ){
-
-        require_once Mage::getBaseDir('lib').'/Billmate/BillMate.php';
+        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.0');
+        $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
+        //if(!defined('BILLMATE_LANGUAGE'))define('BILLMATE_LANGUAGE',$lang[0]);
+        require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
         require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
-        include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
-        include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
+        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
+        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
 
 
-        $eid = (int)Mage::getStoreConfig('payment/partpayment/eid');
-        $secret=(float)Mage::getStoreConfig('payment/partpayment/secret');
+        $eid = (int)Mage::getStoreConfig('billmate/credentials/eid');
+        $secret=(float)Mage::getStoreConfig('billmate/credentials/secret');
         $testmode=(boolean)Mage::getStoreConfig('payment/partpayment/test_mode');
-        return new Billmate($eid, $secret, $ssl, $debug, $testmode);
+        return new Billmate($eid, $secret, $ssl, $testmode,$debug);
     }
     private function getLowestPaymentAccount($country) {
         switch ($country) {
@@ -41,83 +43,155 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 
         return $amount;
     }
-    function savePclasses($eid, $secret, $countrycode, $testmode ){
-    
-        require_once Mage::getBaseDir('lib').'/Billmate/BillMate.php';
-        require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
-        include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
-        include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
 
+    /**
+     * Check if Paymentplans is more than a week old.
+     * If they are refresh.
+     *
+     * @throws Exception
+     */
+    public function checkPclasses($frondend = false){
+        $collection = Mage::getModel('partpayment/pclass')->getCollection();
+        $collection->addFieldToFilter('store_id',($frondend) ? Mage::app()->getStore()->getId() :Mage::helper('partpayment')->getStoreIdForConfig());
+        $first = $collection->getFirstItem();
+
+        if($collection->getSize() == 0 || (strtotime($first->getCreated() <= strtotime('-1 week')))){
+            $collectionPclass = Mage::getModel('partpayment/pclass')->getCollection();
+            $collectionPclass->addFieldToFilter('store_id',($frondend) ? Mage::app()->getStore()->getId() :Mage::helper('partpayment')->getStoreIdForConfig());
+            if($collection->getSize() > 0) {
+                foreach ($collectionPclass as $row) {
+                    $row->delete();
+                }
+            }
+
+            // Fetch new Pclasses
+            $countries = explode(',',Mage::getStoreConfig('payment/partpayment/countries'));
+            $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
+            $eid = (int)Mage::getStoreConfig('billmate/credentials/eid');
+            $secret=(float)Mage::getStoreConfig('billmate/credentials/secret');
+            $testMode=(boolean)Mage::getStoreConfig('payment/partpayment/test_mode');
+
+
+            foreach($countries as $country)
+                $this->savePclasses($eid, $secret, $country, $testMode,$lang[0]);
+
+            return;
+        }
+        return;
+
+    }
+    public function getStoreIdForConfig()
+    {
+        if(strlen($code = Mage::getSingleton('adminhtml/config_data')->getStore()))
+        {
+            Mage::log('code1'.$code);
+            $store_id = Mage::getModel('core/store')->load($code)->getId();
+        }
+        elseif(strlen($code = Mage::getSingleton('adminhtml/config_data')->getWebsite())){
+            Mage::log('code2'.$code);
+            $website_id = Mage::getModel('core/website')->load($code)->getId();
+            Mage::log('website'.$website_id);
+            $store_id = Mage::app()->getWebsite($website_id)->getDefaultStore()->getId();
+        }
+        else{
+            $store_id = 0;
+        }
+
+
+        return $store_id;
+    }
+
+    /**
+     * Save Paymentplans
+     * @param $eid
+     * @param $secret
+     * @param $countrycode
+     * @param $testmode
+     * @param $lang
+     */
+    function savePclasses($eid, $secret, $countrycode, $testmode ,$lang, $store = false){
+    
+        require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
+        require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
+        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
+        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
+        $store_id = Mage::app()->getStore()->getId();
 
         $eid = (int)$eid;
         $secret=(float)$secret;
         $ssl=true;
         $debug = false;
-        $billmate = new Billmate($eid, $secret, $ssl, $debug, $testmode);
+        $billmate = new Billmate($eid, $secret, $ssl, $testmode, $debug);
 
 		switch ($countrycode) {
 			// Sweden
 			case 'SE':
 				$country = 209;
-				$language = 138;
+				$language = 'sv';
 				$encoding = 2;
-				$currency = 0;
+				$currency = 'SEK';
 				break;
 			// Finland
 			case 'FI':
 				$country = 73;
-				$language = 37;
+				$language = 'fi';
 				$encoding = 4;
-				$currency = 2;
+				$currency = 'EUR';
 				break;
 			// Denmark
 			case 'DK':
 				$country = 59;
-				$language = 27;
+				$language = 'da';
 				$encoding = 5;
-				$currency = 3;
+				$currency = 'DKK';
 				break;
 			// Norway	
 			case 'NO':
 				$country = 164;
-				$language = 97;
+				$language = 'no';
 				$encoding = 3;
-				$currency = 1;
+				$currency = 'NOK';
 
 				break;
 			// Germany	
 			case 'DE':
 				$country = 81;
-				$language = 28;
+				$language = 'de';
 				$encoding = 6;
-				$currency = 2;
+				$currency = 'EUR';
 				break;
 			// Netherlands															
 			case 'NL':
 				$country = 154;
-				$language = 101;
+				$language = 'nl';
 				$encoding = 7;
-				$currency = 2;
+				$currency = 'EUR';
 				break;
 		}
         
-        $additionalinfo = array(
+        $additionalinfo['PaymentData'] = array(
 	        "currency"=>$currency,//SEK
-	        "country"=>$country,//Sweden
-	        "language"=>$language,//Swedish
+	        "country"=>strtolower($countrycode),//Sweden
+	        "language"=>$lang,//Swedish
         );
 
-        $data = $billmate->FetchCampaigns($additionalinfo);
+        $data = $billmate->getPaymentplans($additionalinfo);
+        if(!isset($data['code'])) {
 
-        array_walk($data, array($this,'correct_lang_billmate'));
+            array_walk($data, array($this, 'correct_lang_billmate'));
+            foreach ($data as $_row) {
+                $_row['eid'] = $eid;
+                $_row['country_code'] = (string)$countrycode;
+                $_row['paymentplanid'] = (string)$_row['paymentplanid'];
+                $_row['currency'] = (string)$_row['currency'];
+                $_row['language'] = (string)$_row['language'];
+                $_row['country'] = (string)$_row['country'];
+                $_row['store_id'] = ($store != false) ? $store :$store_id;
 
-//        $model = Mage::getModel('partpayment/pclass');
-        foreach($data as $_row ){
-            $_row['eid'] = $eid;
-            $_row['country_code'] = (string)$countrycode ;
-            Mage::getModel('partpayment/pclass')
-            ->addData($_row)
-            ->save();
+                Mage::getModel('partpayment/pclass')
+                    ->addData($_row)
+                    ->save();
+            }
         }
 
     }
@@ -131,11 +205,18 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
        $quote = Mage::getSingleTon('checkout/session')->getQuote();
 	   $address = $quote->getShippingAddress();
 	   $isoCode3 =  'SWE';//Mage::getModel('directory/country')->load($address->getCountryId())->getIso3Code();
-	   $isoCode2 =  'SE'; //Mage::getModel('directory/country')->load($address->getCountryId())->getIso2Code();
+	   $isoCode2 =  Mage::getModel('directory/country')->load($address->getCountryId())->getIso2Code();
 	   $collection = Mage::getModel('partpayment/pclass')
 	   		   ->getCollection()
-	   		   ->addFieldToFilter('country_code', $isoCode2 );
+	   		   ->addFieldToFilter('country', $isoCode2 )
+                ->addFieldToFilter('store_id',Mage::app()->getStore()->getId());
 
+        if($collection->getSize() == 0) {
+            $collection = Mage::getModel('partpayment/pclass')
+                ->getCollection()
+                ->addFieldToFilter('country', $isoCode2)
+                ->addFieldToFilter('store_id', 0);
+        }
 		// Maps countries to currencies
 		$country_to_currency = array(
 			'NOR' => 'NOK',
@@ -154,10 +235,9 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 			'DEU' => 'EUR',
 			'NLD' => 'EUR'
 		);
-		
 
 		foreach ($collection as $pclass) {
-	
+
 			// 0 - Campaign
 			// 1 - Account
 			// 2 - Special
@@ -181,7 +261,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 					$lowest_payment = $this->getLowestPaymentAccount($isoCode3);
 					$monthly_cost = 0;
 	
-					$monthly_fee = $pclass->getInvoicefee();
+					$monthly_fee = $pclass->getHandlingfee();
 					$start_fee = $pclass->getStartfee();
 	
 					$sum += $start_fee;
@@ -190,14 +270,14 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 	
 					$minimum_payment = ($pclass->getType() === 1) ? $this->getLowestPaymentAccount($isoCode3) : 0;
 	
-					if ($pclass->getMonths() == 0) {
+					if ($pclass->getNbrofmonths() == 0) {
 						$payment = $sum;
 					} elseif ($pclass->getInterestrate() == 0) {
-						$payment = $sum / $pclass->getMonths();
+						$payment = $sum / $pclass->getNbrofonths();
 					} else {
-						$interest_rate = $pclass->getInterestrate() / (100.0 * 12);
-						
-						$payment = $sum * $interest_rate / (1 - pow((1 + $interest_rate), -$pclass->getMonths()));
+						// Because Interest rate is in decimal for example 0.12 no need to multiply by 100
+						$interest_rate = $pclass->getInterestrate() / 12;
+						$payment = $sum * $interest_rate / (1 - pow((1 + $interest_rate), -$pclass->getNbrofmonths()));
 					}
 	
 					$payment += $monthly_fee;
@@ -205,10 +285,11 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 					$balance = $sum;
 					$pay_data = array();
 	
-					$months = $pclass->getMonths();
+					$months = $pclass->getNbrofmonths();
 					
 					while (($months != 0) && ($balance > 0.01)) {
-						$interest = $balance * $pclass->getInterestrate() / (100.0 * 12);
+						// Because Interest rate is in decimal for example 0.12 no need to multiply by 100
+						$interest = $balance * $pclass->getInterestrate()/ 12;
 						$new_balance = $balance + $interest + $monthly_fee;
 	
 						if ($minimum_payment >= $new_balance || $payment >= $new_balance) {
@@ -228,8 +309,8 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 						
 						$months -= 1;
 					}
-	
-					$monthly_cost = round(isset($pay_data[0]) ? ($pay_data[0]) : 0, 2);
+
+					$monthly_cost = round(isset($pay_data[0]) ? ($pay_data[0]) : 0, 0);
 	
 					if ($monthly_cost < 0.01) {
 						continue;
@@ -246,19 +327,20 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 			}
 			$monthly_cost = $_directory->currencyConvert($monthly_cost,$baseCurrencyCode,$currentCurrencyCode);
 	
-			$payment_option[$pclass['pclassid']]['monthly_cost'] = round($monthly_cost,2);
-			$payment_option[$pclass['pclassid']]['pclass_id'] = $pclass->getPclassid();
-			$payment_option[$pclass['pclassid']]['months'] = $pclass->getMonths();
-			$payment_option[$pclass['pclassid']]['description'] = $pclass->getDescription();
+			$payment_option_temp['monthly_cost'] = $monthly_cost;
+            $payment_option_temp['nbrofmonths'] = $pclass->getNbrofmonths();
+			$payment_option_temp['pclass_id'] = $pclass->getPaymentplanid();
+			$payment_option_temp['months'] = $pclass->getNbrofmonths();
+			$payment_option_temp['description'] = $pclass->getDescription();
+            $payment_option[] = $payment_option_temp;
 		}
 		
 		return $payment_option;
     }
     function getLowPclass($total){
         $method = array();
-	   		   		
+        $this->checkPclasses(true);
 		$payment_option = $this->getPlclass($total);
-		
 		$status = true;
 		if (!$payment_option) {
 			$status = false;
@@ -276,20 +358,20 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 		if ($status) {
 			$currency = Mage::app()->getStore()->getCurrentCurrencyCode(); 
 			$price = round(Mage::helper('core')->currency($payment_option[0]['monthly_cost'], false, true),2);
-			$title = ' '.$price.' '.$currency.' / per '. Mage::helper('payment')->__('Month');
+			$title = ' '.$price.' '.$currency.' / '. Mage::helper('payment')->__('Month');
 		}
 		return $title;
     }
     function correct_lang_billmate(&$item, $index){
-        $keys = array('pclassid', 'description','months', 'startfee','invoicefee','interestrate', 'minamount', 'country', 'type', 'expire', 'maxamount' );
-        $item[1] = utf8_encode($item[1]);
+        //$keys = array('paymentplanid', 'description','nbrofmonths', 'startfee','handlingfee','interestrate', 'minamount', 'country', 'type', 'expirydate','currency', 'maxamount','language' );
+
         if( !is_array($item ) ){
             Mage::log('Not and array');
             Mage::log($item);
         }
-        $item = array_combine( $keys, $item );
+        //$item = array_combine( $keys, $item );
         $item['startfee'] = $item['startfee'] / 100;
-        $item['invoicefee'] = $item['invoicefee'] / 100;
+        $item['handlingfee'] = $item['handlingfee'] / 100;
         $item['interestrate'] = $item['interestrate'] / 100;
         $item['minamount'] = $item['minamount'] / 100;
         $item['maxamount'] = $item['maxamount'] / 100;

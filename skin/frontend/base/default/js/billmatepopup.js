@@ -1,5 +1,5 @@
 //https://github.com/paulirish/matchMedia.js/
-
+window.billmatepopupLoaded = true;
 function match_media_mount(){
 window.matchMedia = window.matchMedia || (function(doc, undefined){
 
@@ -376,7 +376,7 @@ function ShowMessage(content,wtitle){
 	if(matchMedia('(max-width: 800px)').matches){
 		modalWin.ShowMessage(content,370,250,wtitle);
 	}else if(matchMedia('(min-width: 800px)').matches){
-		modalWin.ShowMessage(content,240,500,wtitle);
+		modalWin.ShowMessage(content,280,500,wtitle);
 	}else{
 	}
 }
@@ -389,16 +389,18 @@ AddEvent(window,'resize',function(){
 		}
 	}
 });
+function addTerms(){
 
+    jQuery(document).Terms("villkor",{invoicefee:0},'#terms');
+    jQuery(document).Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34},"#terms-delbetalning");
+
+}
 AddEvent(window, 'load', function(){
 	match_media_mount();
 	if(typeof checkout!= 'undefined' && typeof checkout.form == 'undefined'){
 		changeBillEvent();
 	}
-	jQuery.getScript('https://efinance.se/billmate/base_jquery.js', function() {
-		jQuery("#terms").Terms("villkor",{invoicefee:0});
-		jQuery("#terms-delbetalning").Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34});;
-	});
+	jQuery.getScript('https://billmate.se/billmate/base_jquery.js', function() {addTerms();});
 
 	modalWin = new CreateModalPopUpObject();
 	if( $$('#checkout-review-submit .btn-checkout').length > 0 ){

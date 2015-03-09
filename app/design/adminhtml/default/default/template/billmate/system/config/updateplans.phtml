@@ -1,0 +1,34 @@
+<?php
+if (strlen($code = Mage::app()->getRequest()->getParam('store'))) { // store level
+    $store_id = Mage::getModel('core/store')->load($code)->getId();
+} elseif (strlen($code = $code = Mage::app()->getRequest()->getParam('website'))) { // website level
+    $website_id = Mage::getModel('core/website')->load($code)->getId();
+    $store_id = Mage::app()->getWebsite($website_id)->getDefaultStore()->getId();
+} else { // default level
+    $store_id = 0;
+}
+
+?>
+
+<script type="text/javascript">
+    function updateplans(){
+
+        console.log('test');
+        new Ajax.Request('<?php echo $this->getAjaxCheckUrl().'?store='.$store_id ?>',{
+            method: 'get',
+            onSuccess: function(transport){
+                if(transport.responseText) {
+                    var response = transport.responseText.evalJSON();
+                    if (response.success){
+                        $('row_payment_partpayment_view_pclass').down('.value').update(response.content)
+                        alert('Updated Paymentplans');
+                    }
+                    else
+                        alert('Couldnt update paymentplans');
+                }
+            }
+        })
+    }
+</script>
+
+<?php echo $this->getButtonHtml(); ?>
