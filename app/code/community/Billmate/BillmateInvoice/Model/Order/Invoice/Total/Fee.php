@@ -7,6 +7,11 @@ class Billmate_BillmateInvoice_Model_Order_Invoice_Total_Fee extends Mage_Sales_
         $feeAmountLeft = $order->getFeeAmount() - $order->getFeeAmountInvoiced();
         $baseFeeAmountLeft = $order->getBaseFeeAmount() - $order->getBaseFeeAmountInvoiced();
 
+	    if($order->getFeeTaxAmount() > 0 && version_compare(Mage::getVersion(),'1.9.0.0','<')){
+		    $feeAmountLeft += $order->getFeeTaxAmount();
+		    $baseFeeAmountLeft += $order->getBaseFeeTaxAmount();
+	    }
+
         if($baseFeeAmountLeft > 0 || abs($baseFeeAmountLeft) < $invoice->getBaseGrandTotal()){
             $invoice->setGrandTotal($invoice->getGrandTotal() + $feeAmountLeft);
             $invoice->setBaseGrandTotal($invoice->getBaseGrandTotal() + $baseFeeAmountLeft);

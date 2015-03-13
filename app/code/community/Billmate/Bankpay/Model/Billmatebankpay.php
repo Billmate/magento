@@ -98,7 +98,7 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
             ->setCurrencyCode($order->getOrderCurrencyCode())
             //->setPaymentAction()
             ->setOrder($order)
-            ->setNotifyUrl('http://api.billmate.se/callback.php')
+            ->setNotifyUrl(Mage::getUrl('bankpay/bankpay/notify'))
             ->setReturnUrl(Mage::getUrl('bankpay/bankpay/success'))
             ->setCancelUrl(Mage::getUrl('bankpay/bankpay/cancel'));
             

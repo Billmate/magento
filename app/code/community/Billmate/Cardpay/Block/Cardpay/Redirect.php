@@ -18,8 +18,8 @@ class Billmate_Cardpay_Block_Cardpay_Redirect extends Mage_Core_Block_Abstract
         }
         
         $session = Mage::getSingleton('checkout/session');
-        $orderIncrementId = $session->getPaypalStandardQuoteId();
-        $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());;
+        $orderIncrementId = $session->getLastRealOrderId();
+        $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
 
 		$gateway =  Mage::getSingleton('billmatecardpay/gateway');
 		$gateway->makePayment($order, true);

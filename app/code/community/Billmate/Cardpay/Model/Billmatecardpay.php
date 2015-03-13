@@ -70,7 +70,7 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
 
     public function capture(Varien_Object $payment, $amount)
     {
-        if(Mage::getStoreConfig('billmate/settings/activation')) {
+        if(Mage::getStoreConfig('billmate/settings/activation') && Mage::getStoreConfig('payment/billmatecardpay/payment_action') == 'authorize') {
             $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
@@ -91,13 +91,17 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
                 }
 
             }
+        } else {
+	        $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+	        $payment->setTransactionId($invoiceId);
+	        $payment->setIsTransactionClosed(1);
         }
         return $this;
     }
 
     public function refund(Varien_Object $payment, $amount)
     {
-        if(Mage::getStoreConfig('billmate/settings/activation') && Mage::getStoreConfig('payment/billmatecardpay/payment_action') == 'authorize') {
+        if(Mage::getStoreConfig('billmate/settings/activation')) {
             $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
@@ -161,7 +165,7 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
 			->setReturnMethod('GET')
 			->setPromptNameEntry($prompt_name)
 			->setDo3dSecure($do3dsecure)
-            ->setNotifyUrl('http://api.billmate.se/callback.php')
+            ->setNotifyUrl(Mage::getUrl('cardpay/cardpay/notify'))
             ->setReturnUrl(Mage::getUrl('cardpay/cardpay/success'))
             ->setCancelUrl(Mage::getUrl('cardpay/cardpay/cancel'));
             
