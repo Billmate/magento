@@ -92,30 +92,30 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             'nr' => $customerId,
             'pno' => (empty($payment[$methodname.'_pno'])) ? $payment['person_number'] : $payment[$methodname.'_pno']
         );
-        $orderValues['Customer']['Billing'] = array(
-            'firstname' => $Billing->getFirstname(),
-            'lastname' => $Billing->getLastname(),
-            'company' => $Billing->getCompany(),
-            'street' => $bill[0],
-            'street2' => isset($bill[1]) ? $bill[1] : '',
-            'zip' => $Billing->getPostcode(),
-            'city' => $Billing->getCity(),
-            'country' => BillmateCountry::fromCode($Billing->getCountry()),
-            'phone' => $Billing->getTelephone(),
-            'email' => $Billing->email
-        );
+	    $orderValues['Customer']['Billing'] = array(
+		    'firstname' => $Billing->getFirstname(),
+		    'lastname'  => $Billing->getLastname(),
+		    'company'   => $Billing->getCompany(),
+		    'street'    => $bill[0],
+		    'street2'   => isset( $bill[1] ) ? $bill[1] : '',
+		    'zip'       => $Billing->getPostcode(),
+		    'city'      => $Billing->getCity(),
+		    'country'   => Mage::getModel('directory/country')->load($Billing->getCountry())->getName(),
+		    'phone'     => $Billing->getTelephone(),
+		    'email'     => $Billing->email
+	    );
 
-        $orderValues['Customer']['Shipping'] = array(
-            'firstname' => $Shipping->getFirstname(),
-            'lastname' => $Shipping->getLastname(),
-            'company' => $Shipping->getCompany(),
-            'street' => $shipp[0],
-            'street2' => isset($shipp[1]) ? $shipp[1] : '',
-            'zip' => $Shipping->getPostcode(),
-            'city' => $Shipping->getCity(),
-            'country' => BillmateCountry::fromCode($Shipping->getCountry()),
-            'phone' => $Shipping->getTelephone()
-        );
+	    $orderValues['Customer']['Shipping'] = array(
+		    'firstname' => $Shipping->getFirstname(),
+		    'lastname'  => $Shipping->getLastname(),
+		    'company'   => $Shipping->getCompany(),
+		    'street'    => $shipp[0],
+		    'street2'   => isset( $shipp[1] ) ? $shipp[1] : '',
+		    'zip'       => $Shipping->getPostcode(),
+		    'city'      => $Shipping->getCity(),
+		    'country'   => Mage::getModel('directory/country')->load($Shipping->getCountry() )->getName(),
+		    'phone'     => $Shipping->getTelephone()
+	    );
 
         // Create Array to save ParentId when bundle is fixed prised
         $bundleArr = array();
