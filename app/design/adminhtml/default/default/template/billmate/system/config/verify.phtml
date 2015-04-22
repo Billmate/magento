@@ -12,10 +12,18 @@
             onSuccess: function(transport){
                 if(transport.responseText){
                     var response = transport.responseText.evalJSON();
-                    if(response.success)
-                        alert('Verified');
-                    else
-                        alert('Cant verify credentials');
+                    if(response.success){
+                        if($('error'))
+                            $('error').remove();
+                        $('billmatecommon_verify').insert({after:'<h3 id="verified" style="color:green;"><?php echo Mage::helper('billmatecommon')->__('Verified'); ?></h3>'})
+
+                    } else {
+                        if($('verified'))
+                            $('verified').remove();
+                        $('billmatecommon_verify').insert({after:'<h3 id="error" style="color:red;"><?php echo Mage::helper('billmatecommon')->__('Invalid credentials'); ?></h3>'})
+
+                    }
+
                 }
             }
         })
