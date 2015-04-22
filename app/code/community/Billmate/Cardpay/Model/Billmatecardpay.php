@@ -14,8 +14,6 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
     protected $_canVoid                 = true;
     protected $_canUseInternal          = false;
     protected $_canUseCheckout          = true;
-    protected $_liveurl                 = 'https://cardpay.billmate.se/pay';
-    protected $_testurl                 = 'https://cardpay.billmate.se/pay/test';
 
     public function initialize($paymentAction, $stateObject)
     {
@@ -23,6 +21,33 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
         $stateObject->setState($state);
         $stateObject->setStatus('pending_payment');
         $stateObject->setIsNotified(false);
+    }
+
+    public function cancel( Varien_Object $payment )
+    {
+
+        $this->void($payment);
+        return $this;
+    }
+
+    public function void( Varien_Object $payment )
+    {
+        $k = Mage::helper('billmateinvoice')->getBillmate(true,false);
+        $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+        $values = array(
+            'number' => $invoiceId
+        );
+        $paymentInfo = $k->getPaymentInfo($values);
+        if($paymentInfo['PaymentData']['status'] == 'Created'){
+            $result = $k->cancelPayment($values);
+            if(isset($result['code'])){
+                Mage::throwException($result['message']);
+            }
+            $payment->setTransactionId($result['number']);
+            $payment->setIsTransactionClosed(1);
+        }
+
+        return $this;
     }
 
     public function isAvailable($quote = null)
@@ -39,34 +64,6 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
 		}
 		return false;
     }
-
-	public function cancel( Varien_Object $payment )
-	{
-
-		$this->void($payment);
-		return $this;
-	}
-
-	public function void( Varien_Object $payment )
-	{
-		$k = Mage::helper('billmateinvoice')->getBillmate(true,false);
-		$invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
-		$values = array(
-			'number' => $invoiceId
-		);
-		$paymentInfo = $k->getPaymentInfo($values);
-		if($paymentInfo['PaymentData']['status'] == 'Created'){
-			$result = $k->cancelPayment($values);
-			if(isset($result['code'])){
-				Mage::throwException($result['message']);
-			}
-			$payment->setTransactionId($result['number']);
-			$payment->setIsTransactionClosed(1);
-		}
-
-		return $this;
-	}
-
 
     public function capture(Varien_Object $payment, $amount)
     {
@@ -128,68 +125,15 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
         return $this;
     }
 
-    public function getConfig()
-    {
-        if (null === $this->_config) {
-            $params = array($this->_code);
-            if ($store = $this->getStore()) {
-                $params[] = is_object($store) ? $store->getId() : $store;
-            }
-            $this->_config = Mage::getModel('billmatecardpay/config', $params);
-        }
-        return $this->_config;
-    }
-
     public function getCheckout()
     {
         return Mage::getSingleton('checkout/session');
     }
-    
-    public function getStandardCheckoutFormFields(){
 
-		$session = Mage::getSingleton("core/session",  array("name"=>"frontend"));
-        $session->unsetData('card_api_called');
-        
-        $orderIncrementId = $this->getCheckout()->getLastRealOrderId();
-        $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
-        /* @var $api Billmate_Cardpay_Model_Api_Standard */
-
-		$prompt_name = Mage::getStoreConfig('payment/billmatecardpay/prompt_name') == 1 ? 'YES' : 'NO';
-		$do3dsecure = Mage::getStoreConfig('payment/billmatecardpay/do_3d_secure') == 0 ? 'NO' : 'YES';
-
-        $api = Mage::getModel('billmatecardpay/api_standard')->setConfigObject($this->getConfig());
-        $api->setOrderId($orderIncrementId)
-            ->setCurrencyCode($order->getOrderCurrencyCode())
-            //->setPaymentAction()
-            ->setOrder($order)
-			->setReturnMethod('GET')
-			->setPromptNameEntry($prompt_name)
-			->setDo3dSecure($do3dsecure)
-            ->setNotifyUrl(Mage::getUrl('cardpay/cardpay/notify'))
-            ->setReturnUrl(Mage::getUrl('cardpay/cardpay/success'))
-            ->setCancelUrl(Mage::getUrl('cardpay/cardpay/cancel'));
-            
-        // add cart totals and line items
-        $api->setBillmateCart(Mage::getModel('paypal/cart', array($order)))
-            ->setIsLineItemsEnabled($this->_config->lineItemsEnabled);
-        
-        $result = $api->getStandardCheckoutRequest();
-
-        return $result;        
-    }
-    
-   
     public function getTitle(){
         return (strlen(Mage::getStoreConfig('payment/billmatecardpay/title')) > 0) ? Mage::helper('billmatecardpay')->__(Mage::getStoreConfig('payment/billmatecardpay/title')) : Mage::helper('billmatecardpay')->__('Billmate Cardpay');
     }
-    public function getBillmateUrl(){
-        
-        if( Mage::getStoreConfig('payment/billmatecardpay/test_mode') == '1'){
-            return $this->_testurl;
-        } else {
-            return $this->_liveurl;
-        }
-    }
+
     public function getOrderPlaceRedirectUrl()
     {
         //when you click on place order you will be redirected on this url, if you don't want this action remove this method

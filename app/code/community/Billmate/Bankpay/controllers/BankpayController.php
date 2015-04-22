@@ -201,7 +201,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             
 			$status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
 			
-			$isCustomerNotified = false;
+			$isCustomerNotified = true;
 			$order->setState('new', $status, '', $isCustomerNotified);
             $payment = $order->getPayment();
             $info = $payment->getMethodInstance()->getInfoInstance();
@@ -213,8 +213,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             );
             $data1 = $k->updatePayment($values);
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed.'));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment status: #'.$data1['status']));
-            $order->addStatusHistoryComment(Mage::helper('payment')->__('Billmate Id: #'.$data1['number']));
+            $order->addStatusHistoryComment(Mage::helper('payment')->__('Payment status: #'.$data1['status'].' - '.'Transaction ID: '.$data1['number']));
 	        $payment->setTransactionId($data['number']);
 	        $payment->setIsTransactionClosed(0);
 	        $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH,null,false, false);
