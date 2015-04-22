@@ -12,6 +12,7 @@
                 new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/getaddress'); ?>',{
                     method: 'post',
                     parameters: {billmate_pno: person_number},
+                    encoding: 'UTF-8',
                     onSuccess: function(transport){
                         var result = transport.responseText.evalJSON();
 
@@ -26,6 +27,8 @@
                             $('billing:city').value = result.data.city;
                             $('billing:postcode').value = result.data.zip;
                             $('billing:country_id').setValue(result.data.country);
+                        } else {
+                            $('person_number').insert({after:'<div class="validation-advice">'+result.message+'</div>'});
                         }
                     }
                 })

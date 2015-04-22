@@ -17,13 +17,13 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
         if(!defined('BILLMATE_LANGUAGE'))define('BILLMATE_LANGUAGE',$lang[0]);
         $eid = Mage::getStoreConfig('billmate/credentials/eid');
         $secret = Mage::getStoreConfig('billmate/credentials/secret');
-        return new Billmate($eid, $secret, true, false,false);
+        return new BillMate($eid, $secret, true, false,false);
     }
 
     public function verifyCredentials($eid,$secret)
     {
 
-        $billmate = new Billmate($eid, $secret, true, false,false);
+        $billmate = new BillMate($eid, $secret, true, false,false);
 
         $additionalinfo['PaymentData'] = array(
             "currency"=> 'SEK',//SEK
@@ -47,7 +47,8 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
             'pno' => $pno
         );
 
-        $result = $billmate->GetAddress($values);
+        $result = $billmate->getAddress($values);
+
         if(!isset($result['code'])){
 
             $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
@@ -73,7 +74,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
             return $result;
         }
         else {
-            return false;
+            return $result;
         }
     }
 

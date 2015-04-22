@@ -13,8 +13,10 @@ class Billmate_Common_GetaddressController extends Mage_Core_Controller_Front_Ac
     {
         $pno = $this->getRequest()->getParam('billmate_pno');
         $data = Mage::helper('billmatecommon')->getAddress($pno);
-        $status = ($data) ? true : false;
+
+        $status = (!isset($data['code'])) ? true : false;
         $result['success'] = $status;
+        $result['message'] = (isset($data['code'])) ? utf8_encode($data['message']) : '';
         $result['data'] = $data;
 
         $this->getResponse()->setBody(Zend_Json::encode($result));
