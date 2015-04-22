@@ -206,7 +206,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 
 			$status = Mage::getStoreConfig('payment/billmatecardpay/order_status');
 			
-			$isCustomerNotified = false;
+			$isCustomerNotified = true;
 			$order->setState('new', $status, '', $isCustomerNotified);
             $payment = $order->getPayment();
             $info = $payment->getMethodInstance()->getInfoInstance();
