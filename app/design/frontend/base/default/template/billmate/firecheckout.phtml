@@ -5,11 +5,11 @@ if (Mage::getStoreConfig('firecheckout/general/enabled')) ?>
         document.observe('dom:loaded',function(){
             var getaddress = '';
             <?php if(Mage::getStoreConfig('billmate/settings/getaddress')){ ?>
-                getaddress = '<button id="billmategetaddress"><?php echo Mage::helper('billmatecommon')->__('Get Address'); ?></div>';
+                getaddress = '<button class="button" style="float:right;" id="billmategetaddress"><?php echo Mage::helper('billmatecommon')->__('Get Address'); ?></div>';
 
 
             var pno ="<li class=\"wide\"><label for=\"person_number\"><?php echo Mage::helper('billmateinvoice')->__('Person Number'); ?></label>"
-            +'<div class="input-box"><input type="text" class="input-text" name="payment[person_number]" id="person_number" title="<?php echo Mage::helper('billmateinvoice')->__('Person number'); ?>"/> '+ getaddress +'</div></li>';
+            +'<div class="input-box"><input style="width:65%;float:left;" type="text" class="input-text" name="payment[person_number]" id="person_number" title="<?php echo Mage::helper('billmateinvoice')->__('Person number'); ?>"/> '+ getaddress +'</div></li>';
             //$('billing-new-address-form').down('ul').innerHTML = pno + $('billing-new-address-form').down('ul').innerHTML;
             $('billing-new-address-form').down('ul').down('li').insert({before: pno});
             <?php } ?>
