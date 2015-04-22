@@ -1,4 +1,5 @@
 <?php $_code=$this->getMethodCode();
+$lang = explode('_',Mage::app()->getLocale()->getLocaleCode());
 $customerData['email'] = '';
 if($customer = Mage::getSingleton('customer/session')->isLoggedIn()) {
     $customerData = Mage::getModel('customer/customer')->load(Mage::getSingleton('customer/session')->getId())->getData();
@@ -19,7 +20,7 @@ if (Mage::getStoreConfig('firecheckout/general/enabled') && !Mage::getSingleton(
 
 <ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none;">
     <li>
-        <img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) ?>/billmate/images/bm_faktura_l.png" />
+        <img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) ?>/billmate/images/<?php echo $lang[0] == 'sv' ? $lang[0] : 'en'; ?>/invoice.png" />
     </li>
     <li style="<?php echo $visuality; ?>">
         <label for="<?php echo $_code ?>_pno" class="required"><em>*</em><?php echo $this->__('Personal Number') ?></label>
