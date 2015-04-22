@@ -358,7 +358,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 		if ($status) {
 			$currency = Mage::app()->getStore()->getCurrentCurrencyCode(); 
 			$price = round(Mage::helper('core')->currency($payment_option[0]['monthly_cost'], false, true),2);
-			$title = ' '.$price.' '.$currency.' / '. Mage::helper('payment')->__('Month');
+			$title = ' '.$price.' '.$currency.' / '. Mage::helper('payment')->__('month');
 		}
 		return $title;
     }
