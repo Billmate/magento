@@ -193,7 +193,9 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             if(isset($data['error'])){
                 Mage::log('hash:'.$data['hash'].' recieved'.$data['hash_recieved']);
             }
-            $this->_redirect(Mage::getStoreConfig('payment/billmatebankpay/bank_error_page'));
+            $checkouturl = $session->getBillmateCheckOutUrl();
+            $checkouturl = empty($checkouturl)?Mage::helper('checkout/url')->getCheckoutUrl():$checkouturl;
+            $this->_redirect($checkouturl);
         }else{
 
             

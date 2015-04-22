@@ -201,8 +201,9 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             if(isset($data['code'])){
                 Mage::log('hash:'.$data['hash'].' recieved'.$data['hash_received']);
             }
-
-            $this->_redirect(Mage::getStoreConfig('payment/billmatecardpay/card_error_page'));
+            $checkouturl = $session->getBillmateCheckOutUrl();
+            $checkouturl = empty($checkouturl)?Mage::helper('checkout/url')->getCheckoutUrl():$checkouturl;
+            $this->_redirect($checkouturl);
         }else{
 
 			$status = Mage::getStoreConfig('payment/billmatecardpay/order_status');
