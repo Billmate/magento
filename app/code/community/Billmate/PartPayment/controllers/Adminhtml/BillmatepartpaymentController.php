@@ -58,13 +58,15 @@ class Billmate_PartPayment_Adminhtml_BillmatepartpaymentController extends Mage_
                 $html.='<tr class="'.$class.' pointer"><td>'.$id.'</td><td>'.$typ.'</td><td>'.$des.'</td><td class="a-center">'.$mont.'</td><td>'.$int.'</td><td>'.$fee.'</td><td>'.$startfee.'</td><td>'.$min.'</td><td>'.$max.'</td><td>'.$exp.'</td><td>'.$country.'</td></tr>';
             }
             $html.='</table></div>';
+            $status = true;
         } else {
             $html = '<b>'.$this->__('No Pclasses found').'</b>';
+            $status = false;
         }
 
 
         $response['content'] = $html;
-        $response['success'] = true;
+        $response['success'] = $status;
         $this->getResponse()->setBody(Zend_Json::encode($response));
     }
 }
