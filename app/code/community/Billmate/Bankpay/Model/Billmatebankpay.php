@@ -137,7 +137,6 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
                     $payment->setTransactionId($result['number']);
                     $payment->setIsTransactionClosed(1);
                 }
-                Mage::log('result' . print_r($result, true));
             }
         }
         return $this;

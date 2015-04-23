@@ -84,13 +84,11 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
     {
         if(strlen($code = Mage::getSingleton('adminhtml/config_data')->getStore()))
         {
-            Mage::log('code1'.$code);
             $store_id = Mage::getModel('core/store')->load($code)->getId();
         }
         elseif(strlen($code = Mage::getSingleton('adminhtml/config_data')->getWebsite())){
-            Mage::log('code2'.$code);
+
             $website_id = Mage::getModel('core/website')->load($code)->getId();
-            Mage::log('website'.$website_id);
             $store_id = Mage::app()->getWebsite($website_id)->getDefaultStore()->getId();
         }
         else{
@@ -365,10 +363,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
     function correct_lang_billmate(&$item, $index){
         //$keys = array('paymentplanid', 'description','nbrofmonths', 'startfee','handlingfee','interestrate', 'minamount', 'country', 'type', 'expirydate','currency', 'maxamount','language' );
 
-        if( !is_array($item ) ){
-            Mage::log('Not and array');
-            Mage::log($item);
-        }
+
         //$item = array_combine( $keys, $item );
         $item['startfee'] = $item['startfee'] / 100;
         $item['handlingfee'] = $item['handlingfee'] / 100;

@@ -13,15 +13,12 @@ class Billmate_PartPayment_Adminhtml_BillmatepartpaymentController extends Mage_
     {
         $collection = Mage::getModel('partpayment/pclass')->getCollection();
         $store = $this->getRequest()->getParam('store');
-        Mage::log('getStore'.$store);
         $collection->addFieldToFilter('store_id',$store);
         foreach( $collection as $item ){
             $item->delete();
         }
 
         $countries = explode(',',Mage::getStoreConfig('payment/partpayment/countries'));
-        Mage::log('appstore '.Mage::app()->getStore()->getId());
-        Mage::log('store_id '.Mage::helper('partpayment')->getStoreIdForConfig());
         $lang = explode('_',Mage::getStoreConfig('general/locale/code',$store));
 
         $eid = Mage::getStoreConfig('billmate/credentials/eid');
@@ -35,7 +32,6 @@ class Billmate_PartPayment_Adminhtml_BillmatepartpaymentController extends Mage_
             $gateway->savePclasses($eid, $secret, $country, $testmode, $lang[0],$store);
 
         $pclass = Mage::getModel('partpayment/pclass')->getCollection();
-        Mage::log('store'.Mage::helper('partpayment')->getStoreIdForConfig());
         $pclass->addFieldToFilter('store_id',Mage::helper('partpayment')->getStoreIdForConfig());
 
         if( $pclass->count() > 0 ){

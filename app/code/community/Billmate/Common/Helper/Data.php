@@ -61,7 +61,6 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 
                         $this->_locale = new Zend_Locale('en_US');
                         $countryName = $this->_locale->getTranslation($country->getId(), 'country', 'en_US');
-                        Mage::log('countryName' . $countryName);
                     }
                     if (strtolower($result['country']) == strtolower($countryName)) {
                         $countryIso = $country->getIso2Code();

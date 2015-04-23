@@ -38,12 +38,14 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $payment = $order->getPayment();
             $info = $payment->getMethodInstance()->getInfoInstance();
             $info->setAdditionalInformation('invoiceid',$data['number']);
-
-            $values['PaymentData'] = array(
-                'number' => $data['number'],
-                'orderid' => $order->getIncrementId()
-            );
-            $data1 = $k->updatePayment($values);
+            $data1 = $data;
+            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action')) {
+                $values['PaymentData'] = array(
+                    'number' => $data['number'],
+                    'orderid' => $order->getIncrementId()
+                );
+                $data1 = $k->updatePayment($values);
+            }
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed'.'<br/>Billmate status: '.$data1['status'].'<br/>'.'Transaction ID: '.$data1['number']));
 
 
@@ -211,13 +213,15 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $payment = $order->getPayment();
             $info = $payment->getMethodInstance()->getInfoInstance();
             $info->setAdditionalInformation('invoiceid',$data['number']);
+            $data1 = $data;
+            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action')) {
+                $values['PaymentData'] = array(
+                    'number' => $data['number'],
+                    'orderid' => $order->getIncrementId()
+                );
+                $data1 = $k->updatePayment($values);
+            }
 
-
-            $values['PaymentData'] = array(
-                'number' => $data['number'],
-                'orderid' => $order->getIncrementId()
-            );
-            $data1 = $k->updatePayment($values);
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed'.'<br/>Billmate status: '.$data1['status'].'<br/>'.'Transaction ID: '.$data1['number']));
 
             $payment->setTransactionId($data['number']);

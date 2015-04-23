@@ -116,9 +116,7 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
                     $payment->setTransactionId($result['number']);
                     $payment->setIsTransactionClosed(1);
                 }
-                Mage::log('result' . print_r($result, true));
             }
-            Mage::log(print_r($paymentInfo,true));
         } else {
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $payment->setTransactionId($invoiceId);

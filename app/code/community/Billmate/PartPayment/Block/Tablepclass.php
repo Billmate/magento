@@ -6,7 +6,6 @@ class Billmate_Partpayment_Block_TablePclass extends Mage_Adminhtml_Block_System
     public function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
         $pclass = Mage::getModel('partpayment/pclass')->getCollection();
-        Mage::log('store'.Mage::helper('partpayment')->getStoreIdForConfig());
         $pclass->addFieldToFilter('store_id',Mage::helper('partpayment')->getStoreIdForConfig());
         $this->setElement($element);
         if( $pclass->count() > 0 ){

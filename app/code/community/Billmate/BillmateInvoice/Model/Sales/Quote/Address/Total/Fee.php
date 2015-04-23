@@ -85,7 +85,6 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
 
 	    $totInv = $baseInvoiceFee+$taxAmount;
 
-        Mage::log('invFee'.$totInv);
         $quote->setFeeAmount($baseInvoiceFee+$taxAmount);
 	    $quote->setFeeTaxAmount($taxAmount);
 
