@@ -32,22 +32,24 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
 
 	public function void( Varien_Object $payment )
 	{
-		$k = Mage::helper('billmateinvoice')->getBillmate(true,false);
-		$invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
-		$values = array(
-			'number' => $invoiceId
-		);
-		$paymentInfo = $k->getPaymentInfo($values);
-		if($paymentInfo['PaymentData']['status'] == 'Created'){
-			$result = $k->cancelPayment($values);
-			if(isset($result['code'])){
-				Mage::throwException($result['message']);
-			}
-			$payment->setTransactionId($result['number']);
-			$payment->setIsTransactionClosed(1);
-		}
+        if(Mage::getStoreConfig('billmate/settings/activation')) {
+            $k = Mage::helper('billmateinvoice')->getBillmate(true, false);
+            $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+            $values = array(
+                'number' => $invoiceId
+            );
+            $paymentInfo = $k->getPaymentInfo($values);
+            if ($paymentInfo['PaymentData']['status'] == 'Created') {
+                $result = $k->cancelPayment($values);
+                if (isset($result['code'])) {
+                    Mage::throwException($result['message']);
+                }
+                $payment->setTransactionId($result['number']);
+                $payment->setIsTransactionClosed(1);
+            }
 
-		return $this;
+            return $this;
+        }
 	}
 
     public function isAvailable($quote = null)
