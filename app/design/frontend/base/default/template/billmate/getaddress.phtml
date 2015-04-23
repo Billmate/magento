@@ -17,6 +17,8 @@
                         var result = transport.responseText.evalJSON();
 
                         if(result.success){
+                            if($('getaddress_failure'))
+                                $('getaddress_failure').remove();
                             if(typeof result.data.company != undefined) {
                                 $('billing:firstname').value = result.data.firstname;
                                 $('billing:lastname').value = result.data.lastname;
@@ -28,7 +30,7 @@
                             $('billing:postcode').value = result.data.zip;
                             $('billing:country_id').setValue(result.data.country);
                         } else {
-                            $('person_number').insert({after:'<div class="validation-advice">'+result.message+'</div>'});
+                            $('billmategetaddress').insert({after:'<div class="validation-advice" id="getaddress_failure">'+result.message+'</div>'});
                         }
                     }
                 })

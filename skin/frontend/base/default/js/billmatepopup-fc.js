@@ -423,18 +423,25 @@ AddEvent(window, 'load', function(){
         $$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ onchange_person_number = false; checkAddress(); };
     }
 
-    $('p_method_billmateinvoice').observe('click',function(e){
-        console.log('test');
-
-    });
-
-    $('p_method_partpayment').observe('click',function(e){
-        if($('person_number')){
-            $('person_number').up().insert('<em>*</em>')
-            $('person_number').up('label').class = 'required';
-        }
-
-    });
+    if($('p_method_partpayment') || $('p_method_billmateinvoice')) {
+        jQuery(document).on('click','input[name="payment[method]"]',function(e){
+            if(e.target.id == 'p_method_partpayment' || e.target.id == 'p_method_billmateinvoice') {
+                if ($('person_number')) {
+                    if (!$('person_number').up('div').previous().down('em')) {
+                        $('person_number').up('div').previous().insert('<em>*</em>')
+                        $('person_number').up('div').previous().addClassName('required');
+                    }
+                }
+            } else {
+                if($('person_number')){
+                    if ($('person_number').up('div').previous().down('em')) {
+                        $('person_number').up('div').previous().down('em').remove();
+                        $('person_number').up('div').previous().removeClassName('required');
+                    }
+                }
+            }
+        })
+    }
 
 });
 function billmateGetAddress(e){
