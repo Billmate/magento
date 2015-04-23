@@ -13,7 +13,6 @@ if (strlen($code = Mage::app()->getRequest()->getParam('store'))) { // store lev
 <script type="text/javascript">
     function updateplans(){
 
-        console.log('test');
         new Ajax.Request('<?php echo $this->getAjaxCheckUrl().'?store='.$store_id ?>',{
             method: 'get',
             onSuccess: function(transport){
@@ -21,10 +20,21 @@ if (strlen($code = Mage::app()->getRequest()->getParam('store'))) { // store lev
                     var response = transport.responseText.evalJSON();
                     if (response.success){
                         $('row_payment_partpayment_view_pclass').down('.value').update(response.content)
-                        alert('Updated Paymentplans');
+                        if($('updated'))
+                            $('updated').remove();
+                        if($('updateerror'))
+                            $('updateerror').remove();
+
+                        $('partpayment_update').insert({after: '<h3 style="color:green;" id="updated"><?php echo Mage::helper('partpayment')->__('Updated paymentplans'); ?></h3>'})
                     }
-                    else
-                        alert('Couldnt update paymentplans');
+                    else{
+                        if($('updateerror'))
+                            $('updateerror').remove();
+                        if($('updated'))
+                            $('updated').remove();
+                        $('partpayment_update').insert({after: '<h3 style="color:red;" id="updateerror"><?php echo Mage::helper('partpayment')->__('Couldnt update paymentplans'); ?></h3>'})
+                    }
+
                 }
             }
         })
