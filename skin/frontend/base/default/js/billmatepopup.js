@@ -93,7 +93,7 @@ function CreateModalPopUpObject() {
 }
 
 function ModalPopupWindow() {
-    var strOverLayHTML = '<div id="divOverlay" style="position:absolute;z-index:1011; background-color:WHITE; filter: alpha(opacity = 70);opacity:0.7;"></div><div id="divFrameParent" style="position:absolute;z-index:1012; display:none;background-color:white;border:1px solid;-moz-box-shadow: 0 0 10px 10px #BBB;-webkit-box-shadow: 0 0 10px 10px #BBB;box-shadow: 0 0 10px 10px #BBB;padding:10px;line-height:21px;font-size:15px;color:#000;font-family:Arial,Helvetica,sans-serif;"	class="Example_F"><div class="checkout-heading" id="spanOverLayTitle"></div><div id="divMessage" style="display:none;"><span id="spanMessage"></span></div><span id="spanLoading"></span></div>'
+    var strOverLayHTML = '<div id="divOverlay" style="position:absolute;z-index:1011; background-color:WHITE; filter: alpha(opacity = 70);opacity:0.7;"></div><div id="divFrameParent" style="position:absolute;z-index:1012; display:none;background-color:white;border:1px solid;-moz-box-shadow: 0 0 10px 10px #BBB;-webkit-box-shadow: 0 0 10px 10px #BBB;box-shadow: 0 0 10px 10px #BBB;padding:10px;line-height:21px;font-size:15px;color:#000;font-family:Arial,Helvetica,sans-serif;"	class="Example_F"><div class="checkout-heading" id="spanOverLayTitle"></div><div id="divMessage" style="display:none;"><span id="spanMessage"></span></div><span id="spanLoading"></span></div>';
     var orginalHeight;
     var orginalWidth;
     var btnStyle="";
@@ -121,19 +121,19 @@ function ModalPopupWindow() {
         divFrameParent.style.height = height + "px";
         divFrameParent.style.width = width + "px";
 		ShowDivInCenter("divFrameParent");
-    }
+    };
     var onPopUpCloseCallBack = null;
     var callbackArray = null;
     this.SetLoadingImagePath = function (imagePath) {
         document.getElementById("imgOverLayLoading").src = imagePath;
-    }
+    };
     this.SetCloseButtonImagePath = function (imagePath) {
         //document.getElementById("imgOverLayClose").src = imagePath;
-    }
+    };
 
     this.SetButtonStyle = function (_btnStyle) {
       btnStyle =_btnStyle;
-    }
+    };
     
     function ApplyBtnStyle(){
     }
@@ -170,7 +170,7 @@ function ModalPopupWindow() {
         callbackArray = null;
     }
     this.ShowURL = function (url, height, width, title, onCloseCallBack, callbackFunctionArray, maxmizeBtn) {
-    }
+    };
     this.ShowMessage = function (message, height, width, title) {
 		popupshowed = true;
         __InitModalPopUp(height, width, title);
@@ -179,7 +179,7 @@ function ModalPopupWindow() {
         document.getElementById("spanLoading").style.display = "none";
         ApplyBtnStyle();
 		ShowDivInCenter("divFrameParent");
-    }
+    };
     this.ShowConfirmationMessage = function (message, height, width, title, onCloseCallBack, firstButtonText, onFirstButtonClick, secondButtonText, onSecondButtonClick) {
         this.ShowMessage(message, height, width, title);
         var maxWidth = 100;
@@ -190,7 +190,7 @@ function ModalPopupWindow() {
             onPopUpCloseCallBack = onCloseCallBack;
         }
         ApplyBtnStyle();
-    }
+    };
 
     function ShowLoading() {
         document.getElementById("spanLoading").style.display = "";
@@ -204,13 +204,13 @@ function ModalPopupWindow() {
         if (onPopUpCloseCallBack != null && onPopUpCloseCallBack != '') {
             onPopUpCloseCallBack();
         }
-    }
+    };
     this.CallCallingWindowFunction = function (index, para) {
         callbackArray[index](para);
-    }
+    };
     this.ChangeModalPopUpTitle = function (title) {
         document.getElementById("spanOverLayTitle").innerHTML = title;
-    }
+    };
 
     function setParentVariable(variableName, variableValue) {
         window[String(variableName)] = variableValue;
@@ -275,7 +275,7 @@ function updateAddress(){
 		payment.onComplete = function(res){
 			eval(res.responseText);
 			modalWin.HideModalPopUp();
-		}
+		};
 		payment.save();
 	}
 }
@@ -313,7 +313,7 @@ function checkAddress(psn){
 	isNotCheckout = typeof checkout == 'undefined' || typeof checkout.form == 'undefined';
 	isNotCheckoutForm = typeof checkoutForm == 'undefined' || typeof checkoutForm.form.id == 'undefined';
 	if( isNotCheckoutForm && isNotCheckout){ // for only onestep checkout
-		Billmate.checkoutType = 'onestep'
+		Billmate.checkoutType = 'onestep';
 		checkoutForm = new VarienForm('onestep_form');
 		Billmate.step = 'review';
 	}else{

@@ -19,7 +19,7 @@ if (strlen($code = Mage::app()->getRequest()->getParam('store'))) { // store lev
                 if(transport.responseText) {
                     var response = transport.responseText.evalJSON();
                     if (response.success){
-                        $('row_payment_partpayment_view_pclass').down('.value').update(response.content)
+                        $('row_payment_partpayment_view_pclass').down('.value').update(response.content);
                         if($('updated'))
                             $('updated').remove();
                         if($('updateerror'))
