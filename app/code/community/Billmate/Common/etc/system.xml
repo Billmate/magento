@@ -87,6 +87,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Note that you have to save the config.]]></comment>
                             <frontend_type>button</frontend_type>
                             <frontend_model>billmatecommon/adminhtml_system_config_form_verify</frontend_model>
                         </verify>

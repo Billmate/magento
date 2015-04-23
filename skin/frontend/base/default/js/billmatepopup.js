@@ -407,6 +407,7 @@ AddEvent(window, 'load', function(){
 		$checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
 		$$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ checkAddress(); return false;};
 	}
+
 });
 function ShowDivInCenter(divId)
 {
@@ -452,6 +453,8 @@ function ShowDivInCenter(divId)
     }
     catch (e) {}
 }
+
+
 
 function Action1(){
 alert('Action1 is excuted');

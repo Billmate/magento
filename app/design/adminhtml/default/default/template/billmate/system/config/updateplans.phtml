@@ -32,7 +32,7 @@ if (strlen($code = Mage::app()->getRequest()->getParam('store'))) { // store lev
                             $('updateerror').remove();
                         if($('updated'))
                             $('updated').remove();
-                        $('partpayment_update').insert({after: '<h3 style="color:red;" id="updateerror"><?php echo Mage::helper('partpayment')->__('Couldnt update paymentplans'); ?></h3>'})
+                        $('partpayment_update').insert({after: '<h3 style="color:red;" id="updateerror"><?php echo Mage::helper('partpayment')->__('Couldn’t update Paymentplans'); ?></h3>'})
                     }
 
                 }

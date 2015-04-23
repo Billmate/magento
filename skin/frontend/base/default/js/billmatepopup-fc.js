@@ -423,6 +423,19 @@ AddEvent(window, 'load', function(){
         $$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ onchange_person_number = false; checkAddress(); };
     }
 
+    $('p_method_billmateinvoice').observe('click',function(e){
+        console.log('test');
+
+    });
+
+    $('p_method_partpayment').observe('click',function(e){
+        if($('person_number')){
+            $('person_number').up().insert('<em>*</em>')
+            $('person_number').up('label').class = 'required';
+        }
+
+    });
+
 });
 function billmateGetAddress(e){
     Event.stop(e);

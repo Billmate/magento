@@ -29,7 +29,7 @@ class Billmate_PartPayment_Block_Adminhtml_System_Config_Form_Updateplans extend
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
                 'id' => 'partpayment_update',
-                'label' => $this->helper('adminhtml')->__('Updateplans'),
+                'label' => $this->helper('adminhtml')->__('Update'),
                 'onclick' => 'javascript:updateplans(); return false'
             ));
         return $button->toHtml();
