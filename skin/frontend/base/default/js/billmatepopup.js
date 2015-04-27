@@ -401,7 +401,26 @@ AddEvent(window, 'load', function(){
 		changeBillEvent();
 	}
 	jQuery.getScript('https://billmate.se/billmate/base_jquery.js', function() {addTerms();});
+    if(typeof $('person_number') != 'undefined'){
+        jQuery(document).on('click','#p_method_partpayment',function(){
 
+            var pno = $('person_number').value;
+            if(typeof $('partpayment_pno') != 'undefined'){
+                $('partpayment_pno').enable();
+                jQuery('#partpayment_pno').val(pno);
+            }
+
+        });
+        jQuery(document).on('click','#p_method_billmateinvoice',function(){
+            var pno = $('person_number').value;
+            if(typeof $('billmateinvoice_pno') != 'undefined'){
+                $('billmateinvoice_pno').enable();
+                jQuery('#billmateinvoice_pno').val(pno);
+
+            }
+        })
+
+    }
 	modalWin = new CreateModalPopUpObject();
 	if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
 		$checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;

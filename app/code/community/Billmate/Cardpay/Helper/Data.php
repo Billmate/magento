@@ -8,8 +8,8 @@ class Billmate_Cardpay_Helper_Data extends Mage_Core_Helper_Abstract
         require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
         require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
 
-        $eid = (int)Mage::getStoreConfig('billmate/credentials/eid');
-        $secret=(float)Mage::getStoreConfig('billmate/credentials/secret');
+        $eid = Mage::getStoreConfig('billmate/credentials/eid');
+        $secret=Mage::getStoreConfig('billmate/credentials/secret');
         $testmode =(float)Mage::getStoreConfig('payment/billmatecardpay/test_mode');
         
         return new Billmate($eid, $secret, $ssl, $testmode, $debug);
