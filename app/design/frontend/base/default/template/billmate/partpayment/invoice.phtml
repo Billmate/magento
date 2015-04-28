@@ -45,7 +45,7 @@ if (Mage::getStoreConfig('firecheckout/general/enabled') && Mage::getStoreConfig
     </li>
     <li style="display:inline-flex">
 		<input type="checkbox" onchange="checkAddress(this)" checked="checked" id="<?php echo $_code ?>_phone" name="payment[<?php echo $_code;?>_phone]" title="<?php echo $this->__('Phone Number') ?>" class="required-entry" value="on" style="float:left;margin:3px; <?php echo $padding; ?>" />
-        <label class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email%1$s is accurate and can be used for billing. I confirm the',($customerData['email'] != '') ? ', <b>'.$customerData['email'].'</b>,' :'') ?> <a id="terms-delbetalning" style="float:none!important;   margin-left: 0px!important;"><?php echo $this->__('terms of partpayment.'); ?></a></label>
+        <label class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email%1$s is accurate and can be used for billing. I confirm the',($customerData['email'] != '') ? ', <b>'.$customerData['email'].'</b>,' :'') ?> <a id="terms-delbetalning" style="float:none!important;   margin-left: 0px!important;"><?php echo $this->__('terms of partpayment'); ?></a> <?php echo $this->__('and accept the liability.'); ?> </label>
     </li>
     <?php echo $this->getChildHtml() ?>
 	<input type="hidden" name="<?php echo $_code ?>_index" value="<?php echo Mage::getUrl('partpayment/index') ?>"/>
