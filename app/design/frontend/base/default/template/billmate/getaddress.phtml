@@ -37,6 +37,8 @@
                             $('billing:postcode').value = result.data.zip;
                             $('billing:country_id').setValue(result.data.country);
                         } else {
+	                        if($('getaddress_failure'))
+		                        $('getaddress_failure').remove();
                             $('billmategetaddress').insert({after:'<div class="validation-advice" id="getaddress_failure">'+result.message+'</div>'});
                         }
                     }

@@ -422,7 +422,13 @@ AddEvent(window, 'load', function(){
         $checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
         $$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ onchange_person_number = false; checkAddress(); };
     }
-
+    var selectedmethod = $$('input:checked[type="radio"][name="payment[method]"]').pluck('value');
+    if ($('person_number') && (selectedmethod == 'billmateinvoice' || selectedmethod == 'partpayment')) {
+        if (!$('person_number').up('div').previous().down('em')) {
+            $('person_number').up('div').previous().insert('<em>*</em>');
+            $('person_number').up('div').previous().addClassName('required');
+        }
+    }
     if($('p_method_partpayment') || $('p_method_billmateinvoice')) {
         jQuery(document).on('click','input[name="payment[method]"]',function(e){
             if(e.target.id == 'p_method_partpayment' || e.target.id == 'p_method_billmateinvoice') {
