@@ -329,15 +329,40 @@ function checkAddress(psn){
 	} else if(typeof checkout.form != 'undefined'){
 		params = Form.serialize(checkout.form);
 	}
-	checkout.setLoadWaiting(Billmate.getStep());
-	new Ajax.Request(billmateindexurl, {
-		method: 'post',
-		parameters: params,
-		onSuccess: function(res) {
-			checkout.setLoadWaiting(false);
-			eval(res.responseText);
-		}
-	});
+
+
+    if ($('person_number') && $('person_number').value == '') {
+        if ($('getaddress_failure'))
+            $('getaddress_failure').remove();
+        $('person_number').addClassName('validation-failed');
+        $('billmategetaddress').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'})
+        checkout.setLoadWaiting(false);
+
+    }else if(!$('person_number') && $(selectedmethod+'_pno').value == ''){
+        $(selectedmethod+'_pno').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'});
+        $(selectedmethod+'_pno').addClassName('validation-failed');
+        checkout.setLoadWaiting(false);
+    }
+    else if(($('person_number') && $('person_number').value != '') || ($(selectedmethod+'_pno').value != '')) {
+        $('person_number').removeClassName('validation-failed');
+        $(selectedmethod+'_pno').removeClassName('validation-failed');
+
+
+        if ($('getaddress_failure')) {
+            $('getaddress_failure').remove();
+        }
+        checkout.setLoadWaiting(Billmate.getStep());
+        new Ajax.Request(url, {
+            method: 'post',
+            parameters: params,
+            onSuccess: function (res) {
+                checkout.setLoadWaiting(false);
+
+                console.log(res.responseText);
+                eval(res.responseText);
+            }
+        });
+    }
 }
 function paymentSave(){
 	if( typeof checkout.LightcheckoutSubmit == 'function'){

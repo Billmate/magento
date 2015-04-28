@@ -292,41 +292,67 @@ function reviewstep(){
 }
 String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
 
-function checkAddress(){
+function checkAddress() {
     var paymentInputObjects = $$('[name="payment[method]"]:checked');
     var selectedGateway = paymentInputObjects.length > 0 ? paymentInputObjects[0].value : '';
 
-    if( selectedGateway != 'billmateinvoice' && selectedGateway!='partpayment' && !onchange_person_number){
+    if (selectedGateway != 'billmateinvoice' && selectedGateway != 'partpayment' && !onchange_person_number) {
         afterSave();
         return;
     }
 
-    if(
+    if (
         ( typeof checkout == 'undefined' || typeof checkout.form == 'undefined' )
         && ( typeof checkoutForm == 'undefined' || typeof checkoutForm.form.id == 'undefined' )
-    ){
+    ) {
         return false;
     }
-    if( typeof checkout.form == 'undefined'){
+    if (typeof checkout.form == 'undefined') {
         params = Form.serialize(checkoutForm.form.id);
-    } else if(typeof checkout.form != 'undefined'){
+    } else if (typeof checkout.form != 'undefined') {
         params = Form.serialize(checkout.form);
     }
 
     checkout.setLoadWaiting(true);
 
     url = billmateindexurl;
-    if( onchange_person_number ) {
+    if (onchange_person_number) {
         params += '&pophide=true';
     }
-    new Ajax.Request(url, {
-        method: 'post',
-        parameters: params,
-        onSuccess: function(res) {
-            checkout.setLoadWaiting(false);
-            eval(res.responseText);
+    var selectedmethod = $$('input:checked[type="radio"][name="payment[method]"]').pluck('value');
+
+    if ($('person_number') && $('person_number').value == '') {
+        if ($('getaddress_failure'))
+            $('getaddress_failure').remove();
+        $('person_number').addClassName('validation-failed');
+        $('billmategetaddress').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'})
+        checkout.setLoadWaiting(false);
+
+    }else if(!$('person_number') && $(selectedmethod+'_pno').value == ''){
+        $(selectedmethod+'_pno').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'});
+        $(selectedmethod+'_pno').addClassName('validation-failed');
+        checkout.setLoadWaiting(false);
+    }
+    else if(($('person_number') && $('person_number').value != '') || ($(selectedmethod+'_pno').value != '')) {
+        $('person_number').removeClassName('validation-failed');
+        $(selectedmethod+'_pno').removeClassName('validation-failed');
+
+
+        if ($('getaddress_failure')) {
+            $('getaddress_failure').remove();
         }
-    });
+
+        new Ajax.Request(url, {
+            method: 'post',
+            parameters: params,
+            onSuccess: function (res) {
+                checkout.setLoadWaiting(false);
+
+                console.log(res.responseText);
+                eval(res.responseText);
+            }
+        });
+    }
 }
 var onchange_person_number = false;
 function paymentSave(){
