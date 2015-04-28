@@ -25,6 +25,13 @@
                             } else {
                                 $('billing:company').value = result.data.company;
                             }
+	                        if(result.data.email != ''){
+
+		                        $('billing:email').value = result.data.email;
+	                        }
+	                        if(result.data.phone != ''){
+		                        $('billing:telephone').value = result.data.phone;
+	                        }
                             $('billing:street1').value = result.data.street;
                             $('billing:city').value = result.data.city;
                             $('billing:postcode').value = result.data.zip;

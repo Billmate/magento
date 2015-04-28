@@ -5,7 +5,7 @@ if (Mage::getStoreConfig('firecheckout/general/enabled')) ?>
         document.observe('dom:loaded',function(){
             var getaddress = '';
             <?php if(Mage::getStoreConfig('billmate/settings/getaddress')){ ?>
-                getaddress = '<button class="button" style="float:right;" id="billmategetaddress"><?php echo Mage::helper('billmatecommon')->__('Get Address'); ?></div>';
+                getaddress = '<button class="button" style="float:right;" id="billmategetaddress"><span><span><?php echo Mage::helper('billmatecommon')->__('Get Address'); ?></span></span></div>';
 
 
             var pno ="<li class=\"wide\"><label for=\"person_number\"><?php echo Mage::helper('billmateinvoice')->__('Person Number'); ?></label>"
