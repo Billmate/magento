@@ -334,7 +334,8 @@ function checkAddress() {
         checkout.setLoadWaiting(false);
     }
     else if(($('person_number') && $('person_number').value != '') || ($(selectedmethod+'_pno').value != '')) {
-        $('person_number').removeClassName('validation-failed');
+        if($('person_number'))
+            $('person_number').removeClassName('validation-failed');
         $(selectedmethod+'_pno').removeClassName('validation-failed');
 
 
