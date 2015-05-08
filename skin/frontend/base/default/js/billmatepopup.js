@@ -344,7 +344,8 @@ function checkAddress(psn){
         checkout.setLoadWaiting(false);
     }
     else if(($('person_number') && $('person_number').value != '') || ($(selectedmethod+'_pno').value != '')) {
-        $('person_number').removeClassName('validation-failed');
+        if($('person_number'))
+            $('person_number').removeClassName('validation-failed');
         $(selectedmethod+'_pno').removeClassName('validation-failed');
 
 
@@ -426,7 +427,7 @@ AddEvent(window, 'load', function(){
 		changeBillEvent();
 	}
 	jQuery.getScript('https://billmate.se/billmate/base_jquery.js', function() {addTerms();});
-    if(typeof $('person_number') != 'undefined'){
+    if($('person_number')){
         jQuery(document).on('click','#p_method_partpayment',function(){
 
             var pno = $('person_number').value;
