@@ -10,13 +10,12 @@ Billmate Gateway is a plugin that extends Magento, allowing your customers to ge
 
 ## Installation
 
-Read following information to install the plugin.
-
-* XXX
-* XXX
-
-* You will find four plugins, billmateinvoice, billmatepartpayment, billmatecardpay & billmatebank
-* Extract zip file under prestashop_root/modules
+1. Download the latest release zip file.
+2. Extract the zip file.
+3. Upload the zip files contents into the Magento root.
+4. Configure the general settings under "System" --> "Configuration" --> "Billmate general settings". 
+5. Configure payment method specific settings under "System" --> "Configuration" --> "Payment Methods".
+6. Make a test purchase for every payment method to verify that you have made the correct settings.
 
 ## Known issues
 * Magento version 1.6 does not support different VAT rates on product the correct way and therefor Billmate Payment Gateway does not support it.
