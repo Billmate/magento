@@ -100,8 +100,8 @@
                             <show_in_store>0</show_in_store>
                         </min_amount>
                         <max_amount translate="label comment" module="cms">
-                            <label>Update paymentplans</label>
-                            <comment>Update paymentplans to refresh plans.</comment>
+                            <label>Max total order amount</label>
+                            <comment><![CDATA[The order amount can't exceed this amount. If order amount goes above the entered amount the payment option becomes unavailable.<br/>Set to 0 or leave empty to disable.]]></comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>70</sort_order>
                             <show_in_default>1</show_in_default>
