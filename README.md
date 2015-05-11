@@ -45,9 +45,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
-### 2.0 (2015-04-22)
+### 2.0 (2015-05-11)
 Total rewrite of the plugin. The plugin now works with Billmate API version 2.0, [http://billmate.se/api-integration/](http://billmate.se/api-integration/ "http://billmate.se/api-integration/").
-Total of XX issues closed and XX commits.
+Total of 82 issues closed and 154 commits.
 
 * Feature - Manually fetch new PClasses
 * Feature - Automaticlly fetch new PClasses once a week and if they are out of date.
