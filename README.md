@@ -20,6 +20,7 @@ Read following information to install the plugin.
 
 ## Known issues
 * Magento version 1.6 does not support different VAT rates on product the correct way and therefor Billmate Payment Gateway does not support it.
+* I entered the correct credentials but still get error code "9011 Invalid credentials". This could be due to that the current store config is not correct. [Follow this guide to resolve it.](https://github.com/Billmate/magento/wiki/Common-issues,errors-&-solutions#user-content-cant-place-orders-even-though-you-have-entered-the-correct-credentials)
 
 
 ##How to place Billmate logo on your site.
