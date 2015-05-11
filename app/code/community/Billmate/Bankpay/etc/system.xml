@@ -5,7 +5,7 @@
             <groups>
                 <billmatebankpay translate="label" module="billmatebankpay">
                     <label>Billmate Bank</label>
-                    <sort_order>670</sort_order>
+                    <sort_order>13</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_store>1</show_in_store>
                     <show_in_website>1</show_in_website>
@@ -17,13 +17,13 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <sort_order>1</sort_order>
+                            <sort_order>20</sort_order>
                         </active>
                         <test_mode translate="label">
                             <label>Test Mode</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>2</sort_order>
+                            <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -34,19 +34,20 @@
 								<model>billmatebankpay/adminhtml_comment</model>
 							</comment>
                             <frontend_type>text</frontend_type>
-                            <sort_order>3</sort_order>
+                            <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </title>
-                        <countries translate="label">
+                        <countries translate="label comment">
                             <label>Available Countries</label>
+                            <comment><![CDATA[Payment gateway will only be available in the selected countries.]]></comment>
                             <frontend_type>multiselect</frontend_type>
                             <show_in_default>1</show_in_default>
                             <show_in_store>1</show_in_store>
                             <show_in_website>1</show_in_website>
-                            <sort_order>4</sort_order>
-                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <sort_order>80</sort_order>
+                            <source_model>billmatebankpay/adminhtml_system_config_source_country</source_model>
                         </countries>
                         <!--<eid translate="label">
                             <label>Merchant Id</label>
@@ -68,16 +69,15 @@
                             <label>New Order Status</label>
                             <frontend_type>select</frontend_type>
                             <source_model>billmatebankpay/adminhtml_status</source_model>
-                            <sort_order>7</sort_order>
+                            <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </order_status>
                         <payment_action translate="label">
-                            <label>Payment Action</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>billmatecardpay/paymentAction</source_model>
-                            <sort_order>8</sort_order>
+                            <label><![CDATA[Payment Action <style>#row_payment_billmatebankpay_payment_action{display:none;}</style>]]></label>
+                            <frontend_type>hidden</frontend_type>
+                            <sort_order>200</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -88,20 +88,22 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <sort_order>9</sort_order>
+                            <sort_order>50</sort_order>
                         </sort_order>
-                        <min_amount translate="label" module="cms">
-                            <label>Minimum Total</label>
+                        <min_amount translate="label comment" module="cms">
+                            <label>Minimum total order amount</label>
+                            <comment><![CDATA[The order amount that needs to be reached before payment option becomes available in checkout.<br/>Set to 0 or leave empty to disable.]]></comment>
                             <frontend_type>text</frontend_type>
-                            <sort_order>10</sort_order>
+                            <sort_order>60</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </min_amount>
-                        <max_amount translate="label" module="cms">
-                            <label>Maximum Total</label>
+                        <max_amount translate="label comment" module="cms">
+                            <label>Update paymentplans</label>
+                            <comment>Update paymentplans to refresh plans.</comment>
                             <frontend_type>text</frontend_type>
-                            <sort_order>11</sort_order>
+                            <sort_order>70</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>

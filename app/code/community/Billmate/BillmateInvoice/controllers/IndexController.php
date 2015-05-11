@@ -17,8 +17,7 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
                 }
                 if(Mage::getStoreConfig('firecheckout/general/enabled')) {
                     if (empty($payment['person_number']) && empty($payment[$payment['method'].'_pno'])) {
-
-                        die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
+						die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
                     }
                 }
                 else {

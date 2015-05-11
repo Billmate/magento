@@ -4,7 +4,7 @@ class Billmate_PartPayment_Model_Adminhtml_System_Config_Source_Country extends 
 {
     public function toOptionArray($isMultiselect=false)
     {
-        $countries = array('SE','NO','DK','FI','DE','NL');
+        $countries = array('SE');
         
         if (!$this->_options) {
             $this->_options = Mage::getResourceModel('directory/country_collection')->loadData()->toOptionArray(false);

@@ -47,10 +47,22 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 		} 
         if( $avail ){
             $total = $quote->getSubtotal();
+            $status = false;
 			$min_total = Mage::getStoreConfig('payment/partpayment/min_amount');
 			$max_total = Mage::getStoreConfig('payment/partpayment/max_amount');
+            if(!empty($min_total) && $min_total > 0){
+                
+                $status = $total >= $min_total;
 
-			return $total >= $min_total && $total <= $max_total;
+            } else {
+                $status = true;
+            }
+
+            if($status && (!empty($max_total) && $max_total > 0))
+                $status = $total <= $max_total;
+            else
+                $status = $status;
+            return $status;
 		}
 		return $avail;
     }

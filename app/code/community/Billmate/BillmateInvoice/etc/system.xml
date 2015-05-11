@@ -5,7 +5,7 @@
             <groups>
                 <billmateinvoice translate="label" module="billmateinvoice">
                     <label>Billmate Invoice</label>
-                    <sort_order>670</sort_order>
+                    <sort_order>10</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_store>1</show_in_store>
                     <show_in_website>1</show_in_website>
@@ -17,7 +17,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <sort_order>1</sort_order>
+                            <sort_order>20</sort_order>
                         </active>
                         <test_mode translate="label">
                             <label>Test Mode</label>
@@ -26,7 +26,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <sort_order>2</sort_order>
+                            <sort_order>30</sort_order>
                         </test_mode>
                         <title translate="label">
                             <label>Title</label>
@@ -35,37 +35,40 @@
 							<comment>
 								<model>billmateinvoice/adminhtml_comment</model>
 							</comment>
-                            <sort_order>3</sort_order>
+                            <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </title>
-                        <countries translate="label">
+                        <countries translate="label comment">
                             <label>Available Countries</label>
+                            <comment><![CDATA[Payment gateway will only be available in the selected countries.]]></comment>
                             <frontend_type>multiselect</frontend_type>
                             <show_in_default>1</show_in_default>
                             <show_in_store>1</show_in_store>
                             <show_in_website>1</show_in_website>
-                            <sort_order>4</sort_order>
+                            <sort_order>400</sort_order>
                             <source_model>billmateinvoice/adminhtml_system_config_source_country</source_model>
                         </countries>
-                        <billmate_fee translate="label">
+                        <billmate_fee translate="label comment tooltip">
                             <label>Invoice Fee</label>
+                            <comment>Specified in base currency.</comment>
+                            <tooltip><![CDATA[The invoice fee will be automaticlly converted into the used currency for the end customer.]]></tooltip>
                             <frontend_type>text</frontend_type>
                             <show_in_store>1</show_in_store>
                             <show_in_website>1</show_in_website>
                             <show_in_default>1</show_in_default>
-                            <sort_order>5</sort_order>
+                            <sort_order>50</sort_order>
                         </billmate_fee>
 						<tax_class translate="label">
                             <label>Invoice fee tax class</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_shipping_taxclass</source_model>
-                            <sort_order>6</sort_order>
+                            <sort_order>60</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_store>1</show_in_store>
                             <show_in_website>1</show_in_website>
-                            <comment>The tax class to use to calculate the invoice fee tax</comment>
+                            <comment>Select the tax class to be used for the invoice fee.</comment>
                         </tax_class>
                         <!--<eid translate="label">
                             <label>Merchant Id</label>
@@ -87,7 +90,7 @@
                             <label>New Order Status</label>
                             <frontend_type>select</frontend_type>
                             <source_model>billmateinvoice/adminhtml_system_config_source_status</source_model>
-                            <sort_order>9</sort_order>
+                            <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -98,20 +101,22 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <sort_order>10</sort_order>
+                            <sort_order>100</sort_order>
                         </sort_order>
-                         <min_amount translate="label" module="cms">
-                            <label>Minimum Total</label>
+                         <min_amount translate="label comment" module="cms">
+                            <label>Minimum total order amount</label>
+                            <comment><![CDATA[The order amount that needs to be reached before payment option becomes available in checkout.<br/>Set to 0 or leave empty to disable.]]></comment>
                             <frontend_type>text</frontend_type>
-                            <sort_order>11</sort_order>
+                            <sort_order>110</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </min_amount>
-                        <max_amount translate="label" module="cms">
-                            <label>Maximum Total</label>
+                        <max_amount translate="label comment" module="cms">
+                            <label>Max total order amount</label>
+                            <comment><![CDATA[The order amount can't exceed this amount. If order amount goes above the entered amount the payment option becomes unavailable.<br/>Set to 0 or leave empty to disable.]]></comment>
                             <frontend_type>text</frontend_type>
-                            <sort_order>12</sort_order>
+                            <sort_order>120</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>

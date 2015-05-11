@@ -29,7 +29,7 @@ class Billmate_Common_Block_Adminhtml_System_Config_Form_Verify extends Mage_Adm
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
                 'id' => 'billmatecommon_verify',
-                'label' => $this->helper('adminhtml')->__('Verify credentials'),
+                'label' => $this->helper('adminhtml')->__('Verify'),
                 'onclick' => 'javascript:verify(); return false'
             ));
         return $button->toHtml();
