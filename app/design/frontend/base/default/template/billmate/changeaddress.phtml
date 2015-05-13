@@ -16,7 +16,26 @@ if(strlen($gateway->lastname)>0){
 }
 
 if($this->isMatched()):
-	echo 'if(typeof checkout.form != "undefined"  || typeof checkoutForm != "undefined"){',"\n";
+	echo 'if(typeof streamcheckout != "undefined"){'."\n";
+	if(Mage::getStoreConfig('firecheckout/general/enabled') && Mage::getSingleton('customer/session')->isLoggedIn()){
+		echo 'billing.newAddress(true)'."\n";
+
+	}
+	foreach( $groupname as $group ){
+		foreach($fieldname as $row){
+			echo 'if($$(\'input[name="'.$group.'['.$row.']"]\').size() > 0 ){ $$(\'input[name="'.$group.'['.$row.']"]\')[0].value="'.$address[$row].'";}',"\n";
+
+		}
+		if(Mage::getSingleton('customer/session')->isLoggedIn())
+			echo 'if($$(\'input[name="'.$group.'[telephone]"\').size()>0){ $$(\'input[name="'.$group.'[telephone]\')[0].value="'.$gateway->telephone.'";}',"\n";
+
+		echo 'if($$(\'[name="'.$group.'[country_id]"]\').size()>0){ $$(\'[name="'.$group.'[country_id]"]\')[0].value="'.$gateway->country.'";}'."\n";
+	}
+
+	echo 'closefunc();modalWin.HideModalPopUp();paymentSave();',"\n";
+	echo '}'."\n";
+
+	echo 'if(typeof checkout.form != "undefined"  || typeof checkoutForm != "undefined" || typeof OneStepCheckoutLoginPopup != "undefined"){',"\n";
 	if(Mage::getStoreConfig('firecheckout/general/enabled') && Mage::getSingleton('customer/session')->isLoggedIn()){
 		echo 'billing.newAddress(true)'."\n";
 

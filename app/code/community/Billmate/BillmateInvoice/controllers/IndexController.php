@@ -12,8 +12,11 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
             $pophide = $this->getRequest()->getPost('pophide',false);
             if($pophide === false) {
                 if (!in_array($payment['method'], array('billmateinvoice', 'partpayment'))) {
-                    echo 'payment.saveUrl=oldurl;payment.save();payment.onComplete=function(){checkout.setLoadWaiting(false);payment.saveUrl = billmateindexurl;payment.onComplete = function(res){ checkout.setLoadWaiting(false); eval(res.responseText);}}';
-                    return;
+	                if(Mage::getStoreConfig('streamcheckout/general/enabled'))
+		                echo '$(streamcheckout.container).removeClassName("placing-order");streamcheckout.placeUrl=oldurl;streamcheckout.place()';
+	                else
+		                echo 'payment.saveUrl=oldurl;payment.save();payment.onComplete=function(){checkout.setLoadWaiting(false);payment.saveUrl = billmateindexurl;payment.onComplete = function(res){ checkout.setLoadWaiting(false); eval(res.responseText);}}';
+	                return;
                 }
                 if(Mage::getStoreConfig('firecheckout/general/enabled')) {
                     if (empty($payment['person_number']) && empty($payment[$payment['method'].'_pno'])) {
