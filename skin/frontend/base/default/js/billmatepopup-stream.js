@@ -289,11 +289,8 @@ function updateAddress(){
             onSuccess: function(res) {
                 eval(res.responseText);
                 modalWin.HideModalPopUp();
-            },
-            onComplete: function(res){
-                $(streamcheckout.container).removeClassName('ajax-loading');
-                $(streamcheckout.container).removeClassName('ajax-totals-loading');
             }
+
         });
 
     }else {
@@ -394,6 +391,10 @@ function paymentSave(){
             streamcheckout.onComplete = streamcomplete;
             streamcheckout.place();
             afterSave();
+
+            $(streamcheckout.container).removeClassName('ajax-loading');
+            $(streamcheckout.container).removeClassName('ajax-totals-loading');
+
         }
     }
 }
