@@ -20,12 +20,29 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
                 }
                 if(Mage::getStoreConfig('firecheckout/general/enabled') || Mage::getStoreConfig('streamcheckout/general/enabled')) {
                     if (empty($payment['person_number']) && empty($payment[$payment['method'].'_pno'])) {
-						die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
+                        $stream = Mage::getStoreConfig('streamcheckout/general/enabled') ? '$(streamcheckout.container).removeClassName("placing-order");' : '';
+
+                        $js = 'if($("'.$payment['method'].'_pno").offsetHeight > 0){'."\r".
+                            '$("'.$payment['method'].'_pno").addClassName("validation-failed");'."\r".
+                            '$("'.$payment['method'].'_pno").insert({after: "<div class=\"validation-advice\" id=\"getaddress_failure\">'.Mage::helper('billmatecommon')->__('Missing Personal number').'</div>"})'."\r".
+                            $stream."\r".
+                            '} else {'."\r".
+                            '$("person_number").addClassName("validation-failed")'."\r".
+                            '$("billmategetaddress").insert({after: "<div class=\"validation-advice\" id=\"getaddress_failure\">'.Mage::helper('billmatecommon')->__('Missing Personal number').'</div>"})'."\r".
+                            $stream."\r".
+                            '}';
+                        die($js);
+                        //die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
                     }
                 }
                 else {
                     if (empty($payment[$payment['method'] . '_pno'])) {
-                        die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
+                        $js = 'if($("'.$payment['method'].'_pno").offsetHeight > 0){'."\r".
+                            '$("'.$payment['method'].'_pno").addClassName("validation-failed");'."\r".
+                            '$("'.$payment['method'].'_pno").insert({after: "<div class=\"validation-advice\" id=\"getaddress_failure\">'.Mage::helper('billmatecommon')->__('Missing Personal number').'</div>"})'."\r".
+                            '}';
+                        die($js);
+                        //die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
                     }
                 }
                 if (empty($payment[$payment['method'] . '_phone'])) {
