@@ -1,6 +1,6 @@
 <?php
 
-if (Mage::getStoreConfig('firecheckout/general/enabled')) ?>
+if (Mage::getStoreConfig('firecheckout/general/enabled')){ ?>
     <script>
         document.observe('dom:loaded',function(){
             var getaddress = '';
@@ -15,3 +15,4 @@ if (Mage::getStoreConfig('firecheckout/general/enabled')) ?>
             <?php } ?>
         });
     </script>
+<?php }  ?>

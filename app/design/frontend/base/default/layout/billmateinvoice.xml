@@ -38,6 +38,16 @@ var oldurl = null;
             <block type="core/template" template="billmate/getaddress.phtml"/>
         </reference>
     </checkout_onepage_index>
+    <streamcheckout_index_index>
+        <reference name="head">
+            <block type="core/template" template="billmate/getaddress.phtml"/>
+            <action method="removeItem" ifconfig="streamcheckout/general/enabled"><type>skin_css</type><name>css/billmatestyle.css</name></action>
+            <action method="addItem" ifconfig="streamcheckout/general/enabled">
+                <type>skin_css</type>
+                <name>css/billmatestyle-stream.css</name>
+            </action>
+        </reference>
+    </streamcheckout_index_index>
     <firecheckout_index_index>
         <reference name="head">
             <action method="removeItem" ifconfig="firecheckout/general/enabled"><type>skin_css</type><name>css/billmatestyle.css</name></action>

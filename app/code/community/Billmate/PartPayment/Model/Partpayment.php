@@ -175,7 +175,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     {
         parent::validate();
         $payment = $_POST['payment'];
-        if(Mage::getStoreConfig('firecheckout/general/enabled')){
+        if(Mage::getStoreConfig('firecheckout/general/enabled') || Mage::getStoreConfig('streamcheckout/general/enabled')){
             if( empty( $payment['person_number'] ) && empty( $payment['partpayment_pno'] ) ){
                 Mage::throwException(Mage::helper('payment')->__('Missing Personal number') );
             }

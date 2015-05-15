@@ -18,7 +18,7 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
 		                echo 'payment.saveUrl=oldurl;payment.save();payment.onComplete=function(){checkout.setLoadWaiting(false);payment.saveUrl = billmateindexurl;payment.onComplete = function(res){ checkout.setLoadWaiting(false); eval(res.responseText);}}';
 	                return;
                 }
-                if(Mage::getStoreConfig('firecheckout/general/enabled')) {
+                if(Mage::getStoreConfig('firecheckout/general/enabled') || Mage::getStoreConfig('streamcheckout/general/enabled')) {
                     if (empty($payment['person_number']) && empty($payment[$payment['method'].'_pno'])) {
 						die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
                     }
