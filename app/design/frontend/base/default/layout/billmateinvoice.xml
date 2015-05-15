@@ -55,7 +55,6 @@ var oldurl = null;
                 <type>skin_css</type>
                 <name>css/billmatestyle-fc.css</name>
             </action>
-            <block type="core/template" template="billmate/firecheckout.phtml"/>
             <block type="core/template" template="billmate/getaddress.phtml"/>
         </reference>
     </firecheckout_index_index>
