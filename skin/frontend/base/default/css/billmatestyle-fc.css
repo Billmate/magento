@@ -63,3 +63,11 @@
 .billmate_button:hover{
     background-color:#444444!important;
 }
+.person_number #billmategetaddress{
+    float:right;
+    width: 38%;
+}
+.person_number input#person_number{
+    width:60%;
+    float:left;
+}
