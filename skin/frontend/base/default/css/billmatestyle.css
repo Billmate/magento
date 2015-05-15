@@ -64,10 +64,10 @@
 	background-color:#444444!important;
 }
 /* Billmate Get address styling below */
-.fields .getaddress .pno{
+.fields .billmate-getaddress .pno{
     float:left;
 }
-.fields .getaddress .fetch{
+.fields .billmate-getaddress .fetch{
     float:left;
     padding-top:18px;
     padding-left:5px;

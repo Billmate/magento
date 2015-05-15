@@ -6,14 +6,14 @@
                     getaddress = '<button class="button" id="billmategetaddress"><span><span><?php echo Mage::helper('billmatecommon')->__('Get Address'); ?></span></span></div>';
 
 
-                    var pno ="<li class=\"wide person_number\"><label for=\"person_number\"><?php echo Mage::helper('billmateinvoice')->__('Person Number'); ?></label>"
+                    var pno ="<li class=\"wide person_number billmate-getaddress\"><label for=\"person_number\"><?php echo Mage::helper('billmateinvoice')->__('Person Number'); ?></label>"
                         +'<div class="input-box"><input type="text" class="input-text" name="payment[person_number]" id="person_number" title="<?php echo Mage::helper('billmatecommon')->__('Person number'); ?>"/> '+ getaddress +'</div></li>';
                     //$('billing-new-address-form').down('ul').innerHTML = pno + $('billing-new-address-form').down('ul').innerHTML;
                     $('billing-new-address-form').down('ul').down('li').insert({before: pno});
 
 
             <?php } elseif (Mage::getStoreConfig('streamcheckout/general/enabled')){ ?>
-            var pno =   '<div class="getaddress">'+
+            var pno =   '<div class="billmate-getaddress">'+
                 '<div class="field person-number field-type-text">'+
                 '<div class="input-box">'+
                 '<input placeholder="<?php echo Mage::helper('billmatecommon')->__('Person Number');?>" type="text" id="person_number" name="payment[person_number]" title="<?php echo Mage::helper('billmatecommon')->__('Person Number');?>" class="input-text">'+
@@ -28,7 +28,7 @@
             $('billing-new-address-form').down('fieldset').down('div').insert({before: pno});
             <?php } else { ?>
                 var pno = '<li class="fields">' +
-                                '<div class="getaddress">' +
+                                '<div class="billmate-getaddress">' +
                                     '<div class="pno">' +
                                         '<label for="pno"><?php echo Mage::helper('billmatecommon')->__('Person Number'); ?></label>' +
                                         '<div class="input-box">' +
