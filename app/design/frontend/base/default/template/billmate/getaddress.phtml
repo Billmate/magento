@@ -13,19 +13,19 @@
 
 
             <?php } elseif (Mage::getStoreConfig('streamcheckout/general/enabled')){ ?>
-            var pno =   '<div class="billmate-getaddress">'+
-                '<div class="field person-number field-type-text">'+
-                '<div class="input-box">'+
-                '<input placeholder="<?php echo Mage::helper('billmatecommon')->__('Person Number');?>" type="text" id="person_number" name="payment[person_number]" title="<?php echo Mage::helper('billmatecommon')->__('Person Number');?>" class="input-text">'+
-                '</div>'+
-                '<button class="button" id="billmategetaddress">'+
-                '<span><span><?php echo  Mage::helper('billmatecommon')->__('Get Address');?></span></span>'+
-                '</button>'+
-                '</div>'+
+                    var pno =   '<div class="billmate-getaddress">'+
+                        '<div class="field person-number field-type-text">'+
+                        '<div class="input-box">'+
+                        '<input placeholder="<?php echo Mage::helper('billmatecommon')->__('Person Number');?>" type="text" id="person_number" name="payment[person_number]" title="<?php echo Mage::helper('billmatecommon')->__('Person Number');?>" class="input-text">'+
+                        '</div>'+
 
-                '</div>';
+                        '</div>'+
+                        '<button class="button" id="billmategetaddress">'+
+                        '<span><span><?php echo  Mage::helper('billmatecommon')->__('Get Address');?></span></span>'+
+                        '</button>'+
+                        '</div>';
 
-            $('billing-new-address-form').down('fieldset').down('div').insert({before: pno});
+                    $('billing-new-address-form').down('fieldset').down('div').insert({before: pno});
             <?php } else { ?>
                 var pno = '<li class="fields">' +
                                 '<div class="billmate-getaddress">' +

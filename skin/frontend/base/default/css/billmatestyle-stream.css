@@ -66,11 +66,15 @@
 /* Billmate Get address styling below */
 .field.person-number.field-type-text{
     float:left;
-    width: 48%;
+    width: 58%!important;
+}
+.field.person-number.field-type-text input{
+    background-image: none;
 }
 
-.billmate-getaddress #billmategetaddress{
+button#billmategetaddress{
     float:right;
-    padding-top:18px;
-    padding-left:5px;
+    width:40%!important;
+    height:2em;
+    padding-top: 2px!important;
 }
