@@ -61,7 +61,7 @@
                             if($('getaddress_failure'))
                                 $('getaddress_failure').remove();
 	                        $('person_number').removeClassName('validation-failed');
-                            if(typeof result.data.company != undefined) {
+                            if(typeof result.data.company != 'undefined' && typeof result.data.firstname != 'undefined' && typeof result.data.lastname != 'undefined') {
                                 $('billing:firstname').value = result.data.firstname;
                                 $('billing:lastname').value = result.data.lastname;
                             } else {
