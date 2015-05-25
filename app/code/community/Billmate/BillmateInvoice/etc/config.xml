@@ -146,7 +146,7 @@
                 <countries>SE,DE,NL</countries>
                 <order_status>pending</order_status>
                 <title><![CDATA[
-                Billmate Invoice - %s invoice fee is added to the order
+                Billmate Invoice - %s invoice fee is added to the order.
                 ]]></title>
                 <active>1</active>
                 <min_amount>0</min_amount>
