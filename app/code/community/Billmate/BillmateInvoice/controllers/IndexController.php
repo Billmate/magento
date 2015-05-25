@@ -24,25 +24,25 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
 
                         $js = 'if($("'.$payment['method'].'_pno").offsetHeight > 0){'."\r".
                             '$("'.$payment['method'].'_pno").addClassName("validation-failed");'."\r".
-                            '$("'.$payment['method'].'_pno").insert({after: "<div class=\"validation-advice\" id=\"getaddress_failure\">'.Mage::helper('billmatecommon')->__('Missing Personal number').'</div>"})'."\r".
+                            '$("'.$payment['method'].'_pno").insert({after: "<div class=\"validation-advice\" id=\"getaddress_failure\">'.Mage::helper('billmatecommon')->__('Missing Social Security Number / Corporate Registration Number').'</div>"})'."\r".
                             $stream."\r".
                             '} else {'."\r".
                             '$("person_number").addClassName("validation-failed")'."\r".
-                            '$("billmategetaddress").insert({after: "<div class=\"validation-advice\" id=\"getaddress_failure\">'.Mage::helper('billmatecommon')->__('Missing Personal number').'</div>"})'."\r".
+                            '$("billmategetaddress").insert({after: "<div class=\"validation-advice\" id=\"getaddress_failure\">'.Mage::helper('billmatecommon')->__('Missing Social Security Number / Corporate Registration Number').'</div>"})'."\r".
                             $stream."\r".
                             '}';
                         die($js);
-                        //die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
+                        //die('alert("' . Mage::helper('payment')->__('Missing Social Security Number / Corporate Registration Number') . '")');
                     }
                 }
                 else {
                     if (empty($payment[$payment['method'] . '_pno'])) {
                         $js = 'if($("'.$payment['method'].'_pno").offsetHeight > 0){'."\r".
                             '$("'.$payment['method'].'_pno").addClassName("validation-failed");'."\r".
-                            '$("'.$payment['method'].'_pno").insert({after: "<div class=\"validation-advice\" id=\"getaddress_failure\">'.Mage::helper('billmatecommon')->__('Missing Personal number').'</div>"})'."\r".
+                            '$("'.$payment['method'].'_pno").insert({after: "<div class=\"validation-advice\" id=\"getaddress_failure\">'.Mage::helper('billmatecommon')->__('Missing Social Security Number / Corporate Registration Number').'</div>"})'."\r".
                             '}';
                         die($js);
-                        //die('alert("' . Mage::helper('payment')->__('Missing Personal number') . '")');
+                        //die('alert("' . Mage::helper('payment')->__('Missing Social Security Number / Corporate Registration Number') . '")');
                     }
                 }
                 if (empty($payment[$payment['method'] . '_phone'])) {

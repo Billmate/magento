@@ -23,7 +23,7 @@ if (Mage::getStoreConfig('firecheckout/general/enabled') && Mage::getStoreConfig
         <img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) ?>/billmate/images/<?php echo $lang[0] == 'sv' ? $lang[0] : 'en'; ?>/partpayment.png" />
     </li>
     <li style="<?php echo $visuality; ?>">
-        <label for="<?php echo $_code ?>_pno" class="required"><em>*</em><?php echo $this->__('Personal Number') ?></label>
+        <label for="<?php echo $_code ?>_pno" class="required"><em>*</em><?php echo $this->__('Social Security Number / Corporate Registration Number') ?></label>
         <div class="input-box">
             <input type="text" title="<?php echo $this->__('Personal Number') ?>" class="input-text required-entry" id="<?php echo $_code ?>_pno" name="payment[<?php echo $_code ?>_pno]" value="" />
         </div>
@@ -45,7 +45,7 @@ if (Mage::getStoreConfig('firecheckout/general/enabled') && Mage::getStoreConfig
     </li>
     <li style="display:inline-flex">
 		<input type="checkbox" onchange="checkAddress(this)" checked="checked" id="<?php echo $_code ?>_phone" name="payment[<?php echo $_code;?>_phone]" title="<?php echo $this->__('Phone Number') ?>" class="required-entry" value="on" style="float:left;margin:3px; <?php echo $padding; ?>" />
-        <label class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email%1$s is accurate and can be used for billing. I confirm the',($customerData['email'] != '') ? ', <b>'.$customerData['email'].'</b>,' :'') ?> <a id="terms-delbetalning" style="float:none!important;   margin-left: 0px!important;"><?php echo $this->__('terms of partpayment'); ?></a> <?php echo $this->__('and accept the liability.'); ?> </label>
+        <label class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email%1$s is accurate and can be used for invoicing. I also confirm the',($customerData['email'] != '') ? ', <b>'.$customerData['email'].'</b>,' :'') ?> <a id="terms-delbetalning" style="float:none!important;   margin-left: 0px!important;"><?php echo $this->__('terms and conditions'); ?></a> <?php echo $this->__('and accept the liability.'); ?> </label>
     </li>
     <?php echo $this->getChildHtml() ?>
 	<input type="hidden" name="<?php echo $_code ?>_index" value="<?php echo Mage::getUrl('partpayment/index') ?>"/>
