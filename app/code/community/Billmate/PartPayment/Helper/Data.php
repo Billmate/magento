@@ -1,7 +1,7 @@
 <?php
 class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
     function getBillmate($ssl = true, $debug = false ){
-        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.0');
+        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.0.1');
         $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
         //if(!defined('BILLMATE_LANGUAGE'))define('BILLMATE_LANGUAGE',$lang[0]);
         require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
@@ -356,7 +356,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 		if ($status) {
 			$currency = Mage::app()->getStore()->getCurrentCurrencyCode(); 
 			$price = round(Mage::helper('core')->currency($payment_option[0]['monthly_cost'], false, true),2);
-			$title = ' '.Mage::helper('partpayment')->__('from').' '.$price.' '.$currency.' / '. Mage::helper('payment')->__('month');
+			$title = ' '.Mage::helper('partpayment')->__('from').' '.$price.' '.$currency.' / '. Mage::helper('partpayment')->__('month');
 		}
 		return $title;
     }
