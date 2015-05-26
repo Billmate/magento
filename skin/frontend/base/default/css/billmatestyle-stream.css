@@ -35,7 +35,7 @@
     width:100%!important;
 }
 #payment_form_partpayment input[type=text],#payment_form_partpayment select, #payment_form_billmateinvoice  input[type=text]{
-    width:100%!important
+    width:38%!important
 }
 .billmate_button{
     text-align: center!important;
@@ -63,11 +63,18 @@
 .billmate_button:hover{
     background-color:#444444!important;
 }
-.person_number #billmategetaddress{
-    float:right;
-    width: 38%;
-}
-.person_number input#person_number{
-    width:60%;
+/* Billmate Get address styling below */
+.field.person-number.field-type-text{
     float:left;
+    width: 58%!important;
+}
+.field.person-number.field-type-text input{
+    background-image: none;
+}
+
+button#billmategetaddress{
+    float:right;
+    width:40%!important;
+    height:2em;
+    padding-top: 2px!important;
 }

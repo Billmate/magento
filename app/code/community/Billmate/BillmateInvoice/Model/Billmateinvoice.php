@@ -81,7 +81,27 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
 	    $payment->setIsTransactionClosed(0);
     }
     public function getTitle(){
-        return (strlen(Mage::getStoreConfig('payment/billmateinvoice/title')) > 0) ? Mage::helper('billmateinvoice')->__(Mage::getStoreConfig('payment/billmateinvoice/title')) : Mage::helper('billmateinvoice')->__('Billmate Invoice');
+
+        $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
+        $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
+        $invoiceFee = ($invoiceFee) ? $invoiceFee : 0;
+
+
+        $quote = Mage::getModel('checkout/cart')->getQuote();
+        $Shipping = $quote->getShippingAddress();
+        if($invoiceFee > 0) {
+            $feeinfo = Mage::helper('billmateinvoice')
+                ->getInvoiceFeeArray($invoiceFee, $Shipping, $quote->getCustomerTaxClassId());
+
+            $invFee = (isset($feeinfo['rate']) && $feeinfo['rate'] != 0) ? ($feeinfo['rate'] / 100 + 1) * $invoiceFee : $invoiceFee;
+
+            $invFee = Mage::helper('core')->currency($invFee, true, false);
+            return (strlen(Mage::getStoreConfig('payment/billmateinvoice/title')) > 0) ? Mage::helper('billmateinvoice')->__(Mage::getStoreConfig('payment/billmateinvoice/title'), $invFee) : Mage::helper('billmateinvoice')->__('Billmate Invoice - %s invoice fee is added to the order.', $invFee);
+        } else {
+            return (strlen(Mage::getStoreConfig('payment/billmateinvoice/title')) > 0) ? Mage::helper('billmateinvoice')->__(Mage::getStoreConfig('payment/billmateinvoice/title')) : Mage::helper('billmateinvoice')->__('Billmate Invoice');
+
+        }
+
     }
 
     public function capture(Varien_Object $payment, $amount)
@@ -142,7 +162,7 @@ class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_
 		
         parent::validate();
         $payment = $_POST['payment'];
-        if(Mage::getStoreConfig('firecheckout/general/enabled')){
+        if(Mage::getStoreConfig('firecheckout/general/enabled') || Mage::getStoreConfig('streamcheckout/general/enabled')){
             if( empty( $payment['person_number'] ) && empty( $payment['billmateinvoice_pno'] )){
                 Mage::throwException(Mage::helper('payment')->__('Missing Personal number') );
             }

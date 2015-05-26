@@ -1,3 +1,6 @@
+/**
+ * Created by jesper on 15-05-11.
+ */
 //https://github.com/paulirish/matchMedia.js/
 window.billmatepopupLoaded = true;
 function match_media_mount(){
@@ -246,7 +249,7 @@ function changeBillEvent(){
         oldurl = payment.saveUrl;
         payment.saveUrl = billmateindexurl;
         payment.onComplete = function(res){
-            checkout.setLoadWaiting(false);
+            checkout.setLoadWaiting(Billmate.getStep());
             eval(res.responseText);
         }
     }
@@ -255,18 +258,28 @@ function changeBillEvent(){
 //	}
 }
 function updateAddress(){
-    if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout.form != 'undefined'){
-        if( typeof checkout.form == 'undefined'){
+    var osc = false;
+    if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout != 'undefined' && typeof checkout.form != 'undefined' || typeof checkoutForm!= 'undefined' || typeof OneStepCheckoutLoginPopup != 'undefined'){
+        if( typeof checkout != 'undefined' && typeof checkout.form == 'undefined'){
             params = Form.serialize(checkoutForm.form.id);
-        } else if(typeof checkout.form != 'undefined'){
+        } else if(typeof checkout != 'undefined' && typeof checkout.form != 'undefined'){
             params = Form.serialize(checkout.form);
+        } else {
+            params = Form.serialize('one-step-checkout-form')
+            osc = true;
         }
-        checkout.setLoadWaiting(true);
+        if(!osc)
+            checkout.setLoadWaiting(Billmate.getStep());
+        else
+            reviewLoad();
         new Ajax.Request(billmatesaveurl, {
             method: 'post',
             parameters: params,
             onSuccess: function(res) {
-                checkout.setLoadWaiting(false);
+                if(!osc)
+                    checkout.setLoadWaiting(false);
+                else
+                    reviewShow();
                 eval(res.responseText);
             }
         });
@@ -285,40 +298,56 @@ function afterSave(){
     }
 }
 function closefunc(obj){
-    checkout.setLoadWaiting(false);
+    if(typeof checkout != 'undefined')
+        checkout.setLoadWaiting(false);
     modalWin.HideModalPopUp();
 }
 function reviewstep(){
 }
 String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
 
-function checkAddress() {
-    var paymentInputObjects = $$('[name="payment[method]"]:checked');
-    var selectedGateway = paymentInputObjects.length > 0 ? paymentInputObjects[0].value : '';
+var step = true;
+var Billmate = {
+    checkoutType: '',
+    step: true,
+    getStep: function(){
+        return this.step=='review' ? this.step : !this.step
+    }
+};
+function checkAddress(psn){
 
-    if (selectedGateway != 'billmateinvoice' && selectedGateway != 'partpayment' && !onchange_person_number) {
+    var selectedGateway = $$('[name="payment[method]"]:checked')[0].value;
+
+    if( selectedGateway != 'billmateinvoice' && selectedGateway!='partpayment'){
         afterSave();
         return;
     }
 
-    if (
-        ( typeof checkout == 'undefined' || typeof checkout.form == 'undefined' )
-        && ( typeof checkoutForm == 'undefined' || typeof checkoutForm.form.id == 'undefined' )
-    ) {
+
+    isNotCheckout = typeof checkout == 'undefined' || typeof checkout.form == 'undefined';
+    isNotCheckoutForm = typeof checkoutForm == 'undefined' || typeof checkoutForm.form == 'undefined';
+    if( isNotCheckoutForm && isNotCheckout){ // for only onestep checkout
+        Billmate.checkoutType = 'onestep';
+        checkoutForm = new VarienForm('onestep_form');
+        Billmate.step = 'review';
+    }else{
+        Billmate.step = true;
+    }
+    isNotCheckoutForm = typeof checkoutForm == 'undefined' || typeof checkoutForm.form == 'undefined';
+
+    if( isNotCheckout &&  isNotCheckoutForm ){
         return false;
     }
-    if (typeof checkout.form == 'undefined') {
+    var osc = false;
+    if( typeof checkout != 'undefined' && typeof checkout.form == 'undefined'){
         params = Form.serialize(checkoutForm.form.id);
-    } else if (typeof checkout.form != 'undefined') {
+    } else if(typeof checkout != 'undefined' && typeof checkout.form != 'undefined'){
         params = Form.serialize(checkout.form);
+    } else {
+        params = Form.serialize('one-step-checkout-form');
+        osc = true;
     }
 
-    checkout.setLoadWaiting(true);
-
-    url = billmateindexurl;
-    if (onchange_person_number) {
-        params += '&pophide=true';
-    }
     var selectedmethod = $$('input:checked[type="radio"][name="payment[method]"]').pluck('value');
 
     if ($('person_number') && $('person_number').value == '') {
@@ -326,44 +355,52 @@ function checkAddress() {
             $('getaddress_failure').remove();
         $('person_number').addClassName('validation-failed');
         $('billmategetaddress').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'})
-        checkout.setLoadWaiting(false);
+        if(!osc)
+            checkout.setLoadWaiting(false);
 
     }else if(!$('person_number') && $(selectedmethod+'_pno').value == ''){
         $(selectedmethod+'_pno').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'});
         $(selectedmethod+'_pno').addClassName('validation-failed');
-        checkout.setLoadWaiting(false);
+        if(!osc)
+            checkout.setLoadWaiting(false);
     }
     else if(($('person_number') && $('person_number').value != '') || ($(selectedmethod+'_pno').value != '')) {
-        if($('person_number'))
+        if($('person_number')){
             $('person_number').removeClassName('validation-failed');
+        }
         $(selectedmethod+'_pno').removeClassName('validation-failed');
 
 
         if ($('getaddress_failure')) {
             $('getaddress_failure').remove();
         }
-
+        if(!osc)
+            checkout.setLoadWaiting(Billmate.getStep());
+        else
+            reviewLoad();
         new Ajax.Request(billmateindexurl, {
             method: 'post',
             parameters: params,
             onSuccess: function (res) {
-                checkout.setLoadWaiting(false);
+                if(!osc)
+                    checkout.setLoadWaiting(false);
+                else
+                    reviewShow();
 
-                console.log(res.responseText);
                 eval(res.responseText);
             }
         });
     }
 }
-var onchange_person_number = false;
 function paymentSave(){
-    if( onchange_person_number ) return false;
-
-    if(typeof checkout.form == 'undefined'){
-        checkout.setLoadWaiting(false);
+    if( typeof checkout != 'undefined' && typeof checkout.LightcheckoutSubmit == 'function'){
+        return checkout.LightcheckoutSubmit();
+    }
+    if( typeof checkout != 'undefined' && typeof checkout.form == 'undefined'){
+        checkout.setLoadWaiting(Billmate.getStep());
         payment.saveUrl = oldurl;
         payment.onComplete = function(){
-            checkout.setLoadWaiting(false);
+            checkout.setLoadWaiting(Billmate.getStep());
             payment.saveUrl = billmateindexurl;
             payment.onComplete = function(res){
                 checkout.setLoadWaiting(false);
@@ -372,8 +409,10 @@ function paymentSave(){
         };
         payment.save();
     }else{
-        if( typeof FireCheckout != 'undefined' ){
+        if( typeof FireCheckout != 'undefined' || typeof OPC != 'undefined'){
             checkout.save();
+        } else if(typeof OneStepCheckoutLoginPopup != 'undefined'){
+            afterSave();
         }
     }
 }
@@ -405,84 +444,50 @@ AddEvent(window,'resize',function(){
         }
     }
 });
-
-Element.prototype.triggerEvent = function(eventName)
-{
-    if (document.createEvent)
-    {
-        var evt = document.createEvent('HTMLEvents');
-        evt.initEvent(eventName, true, true);
-        return this.dispatchEvent(evt);
-    }
-    if (this.fireEvent)
-        return this.fireEvent('on' + eventName);
-};
-function SaveAddress(){
-    var a = jQuery.each(jQuery("#billing-address input, #shipping-address input"),function(){
-        if(this.id != 'billing:postcode' && this.id != 'shipping:postcode' && this.id!= 'billing:person_number'){
-            jQuery(this).change(function(){
-                $('billing:postcode').triggerEvent('change');
-                //$('payment-method-reset').triggerEvent('click')
-            });
-        }
-    });
-}
 function addTerms(){
 
-        jQuery(document).Terms("villkor",{invoicefee:0},'#terms');
-        jQuery(document).Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34},"#terms-delbetalning");
+    jQuery(document).Terms("villkor",{invoicefee:0},'#terms');
+    jQuery(document).Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34},"#terms-delbetalning");
 
 }
 AddEvent(window, 'load', function(){
     match_media_mount();
-
-
-
     if(typeof checkout!= 'undefined' && typeof checkout.form == 'undefined'){
         changeBillEvent();
     }
-    modalWin = new CreateModalPopUpObject();
-    jQuery.getScript('https://billmate.se/billmate/base_jquery.js',function(){addTerms();});
-
-    if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
-        SaveAddress();
-        $checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
-        $$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ onchange_person_number = false; checkAddress(); };
-    }
-    var selectedmethod = $$('input:checked[type="radio"][name="payment[method]"]').pluck('value');
-    if ($('person_number') && (selectedmethod == 'billmateinvoice' || selectedmethod == 'partpayment')) {
-        if (!$('person_number').up('div').previous().down('em')) {
-            $('person_number').up('div').previous().insert('<em>*</em>');
-            $('person_number').up('div').previous().addClassName('required');
-        }
-    }
-    if($('p_method_partpayment') || $('p_method_billmateinvoice')) {
-        jQuery(document).on('click','input[name="payment[method]"]',function(e){
-            if(e.target.id == 'p_method_partpayment' || e.target.id == 'p_method_billmateinvoice') {
-                if ($('person_number')) {
-                    if (!$('person_number').up('div').previous().down('em')) {
-                        $('person_number').up('div').previous().insert('<em>*</em>');
-                        $('person_number').up('div').previous().addClassName('required');
-                    }
-                }
-            } else {
-                if($('person_number')){
-                    if ($('person_number').up('div').previous().down('em')) {
-                        $('person_number').up('div').previous().down('em').remove();
-                        $('person_number').up('div').previous().removeClassName('required');
-                    }
-                }
+    jQuery.getScript('https://billmate.se/billmate/base_jquery.js', function() {addTerms();});
+    if($('person_number')){
+        jQuery(document).on('click','#p_method_partpayment',function(){
+            var pno = $('person_number').value;
+            if (typeof $('partpayment_pno') != 'undefined') {
+                $('partpayment_pno').enable();
+                jQuery('#partpayment_pno').val(pno);
             }
+
+        });
+        jQuery(document).on('click','#p_method_billmateinvoice',function(){
+            var pno = $('person_number').value;
+            if (typeof $('billmateinvoice_pno') != 'undefined') {
+                $('billmateinvoice_pno').enable();
+                jQuery('#billmateinvoice_pno').val(pno);
+
+            }
+
         })
+
+    }
+    modalWin = new CreateModalPopUpObject();
+    if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
+        $checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
+        $$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ checkAddress(); return false;};
+    }
+    if( $$('#onestepcheckout-button-place-order').length > 0){
+        $checkoutbtn = $$('#onestepcheckout-button-place-order')[0].onclick;
+        $$('#onestepcheckout-button-place-order')[0].onclick = function(){ checkAddress(); return false;}
+
     }
 
 });
-function billmateGetAddress(e){
-    Event.stop(e);
-    onchange_person_number = true;
-    checkAddress();
-}
-
 function ShowDivInCenter(divId)
 {
     try
@@ -528,6 +533,8 @@ function ShowDivInCenter(divId)
     catch (e) {}
 }
 
+
+
 function Action1(){
     alert('Action1 is excuted');
     modalWin.HideModalPopUp();
@@ -547,5 +554,4 @@ function EnrollLater(){
     modalWin.HideModalPopUp();
     modalWin.ShowMessage(msg,200,400,'User Information',null,null);
 }
-
 

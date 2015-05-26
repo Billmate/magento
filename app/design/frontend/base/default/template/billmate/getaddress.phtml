@@ -1,8 +1,49 @@
 <script type="text/javascript">
     <?php if(Mage::getStoreConfig('billmate/settings/getaddress')){?>
         document.observe('dom:loaded',function(){
-            <?php if(!Mage::getStoreConfig('firecheckout/general/enabled')){ ?>
-                var pno = '<li class="fields"><div class="getaddress"><div class="pno" style="float:left;"><label for="pno"><?php echo Mage::helper('billmateinvoice')->__('Person Number'); ?></label><div class="input-box"><input type="text" name="billmate_pno" id="person_number" class="input-text"/></div></div><div style="float:left; padding-top:18px;padding-left:5px;" class="fetch"><div class="input-box"><button class="button" id="billmategetaddress"><span><?php echo Mage::helper('billmatecommon')->__('Get Address'); ?></span></button></div></div></div></li>';
+            <?php if (Mage::getStoreConfig('firecheckout/general/enabled')){ ?>
+                    var getaddress = '';
+                    getaddress = '<button class="button" id="billmategetaddress"><span><span><?php echo Mage::helper('billmatecommon')->__('Get Address'); ?></span></span></div>';
+
+
+                    var pno ="<li class=\"wide person_number billmate-getaddress\"><label for=\"person_number\"><?php echo Mage::helper('billmateinvoice')->__('Social Security Number / Corporate Registration Number'); ?></label>"
+                        +'<div class="input-box"><input type="text" class="input-text" name="payment[person_number]" id="person_number" title="<?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number'); ?>"/> '+ getaddress +'</div></li>';
+                    //$('billing-new-address-form').down('ul').innerHTML = pno + $('billing-new-address-form').down('ul').innerHTML;
+                    $('billing-new-address-form').down('ul').down('li').insert({before: pno});
+
+
+            <?php } elseif (Mage::getStoreConfig('streamcheckout/general/enabled')){ ?>
+                    var pno =   '<div class="billmate-getaddress">'+
+                        '<div class="field person-number field-type-text">'+
+                        '<div class="input-box">'+
+                        '<input placeholder="<?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number');?>" type="text" id="person_number" name="payment[person_number]" title="<?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number');?>" class="input-text">'+
+                        '</div>'+
+
+                        '</div>'+
+                        '<button class="button" id="billmategetaddress">'+
+                        '<span><span><?php echo  Mage::helper('billmatecommon')->__('Get Address');?></span></span>'+
+                        '</button>'+
+                        '</div>';
+
+                    $('billing-new-address-form').down('fieldset').down('div').insert({before: pno});
+            <?php } else { ?>
+                var pno = '<li class="fields">' +
+                                '<div class="billmate-getaddress">' +
+                                    '<div class="pno">' +
+                                        '<label for="pno"><?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number'); ?></label>' +
+                                        '<div class="input-box">' +
+                                            '<input type="text" name="billmate_pno" id="person_number" class="input-text"/>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div style="float:left; padding-top:18px;padding-left:5px;" class="fetch">' +
+                                            '<div class="input-box">' +
+                                                '<button class="button" id="billmategetaddress">' +
+                                                    '<span><?php echo Mage::helper('billmatecommon')->__('Get Address'); ?></span>' +
+                                                '</button>' +
+                                            '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</li>';
                 $('billing-new-address-form').down('ul').innerHTML = pno + $('billing-new-address-form').down('ul').innerHTML;
             <?php } ?>
 
@@ -20,7 +61,7 @@
                             if($('getaddress_failure'))
                                 $('getaddress_failure').remove();
 	                        $('person_number').removeClassName('validation-failed');
-                            if(typeof result.data.company != undefined) {
+                            if(typeof result.data.company != 'undefined' && typeof result.data.firstname != 'undefined' && typeof result.data.lastname != 'undefined') {
                                 $('billing:firstname').value = result.data.firstname;
                                 $('billing:lastname').value = result.data.lastname;
                             } else {

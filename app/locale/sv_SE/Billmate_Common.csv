@@ -17,3 +17,6 @@
 "This option automates your workflow so that orders are automaticlly activated, credited or aborted through Magento. With this option enabled you don't need to visit Billmate Online to manually activate, credit or abort orders.", "Detta alternativ automatiserar ert arbetsflöde genom att ordrar aktiveras, krediteras och makuleras via Magento. Med detta alternativ aktiverat behöver ni ej besöka Billmate Online för att manuellt aktivera, kreditera och makulera ordrar."
 "Settings","Inställningar"
 "Payment gateway will only be available in the selected countries.","Betalningsmetoden kommer endast att vara tillgänglig i de valda länderna."
+"Get Address", "Hämta address"
+"Social Security Number / Corporate Registration Number","Personnummer / Organisationsnummer"
+"Missing Social Security Number / Corporate Registration Number","Du måste fylla i Personnummer / Organisationsnummer"

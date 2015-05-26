@@ -25,12 +25,12 @@ if (Mage::getStoreConfig('firecheckout/general/enabled') && Mage::getStoreConfig
     <li style="<?php echo $visuality; ?>">
         <label for="<?php echo $_code ?>_pno" class="required"><em>*</em><?php echo $this->__('Personal Number') ?></label>
         <div class="input-box">
-            <input type="text" title="<?php echo $this->__('Personal Number') ?>" class="input-text required-entry" id="<?php echo $_code ?>_pno" name="payment[<?php echo $_code ?>_pno]" />
+            <input type="text" title="<?php echo $this->__('Social Security Number / Corporate Registration Number') ?>" class="input-text required-entry" id="<?php echo $_code ?>_pno" name="payment[<?php echo $_code ?>_pno]" />
         </div>
     </li>
     <li style="display:inline-flex">
 		<input type="checkbox" checked="checked" id="<?php echo $_code ?>_phone" name="payment[<?php echo $_code;?>_phone]" title="<?php echo $this->__('Phone Number') ?>" class="required-entry" value="on" style="float:left;margin:3px; <?php echo $padding; ?>" />
-        <label class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email%1$s is accurate and can be used for billing. I confirm the', ($customerData['email'] != '') ? ', <b>'.$customerData['email'].'</b>,' :'' ) ?>  <a id="terms" style="float:none!important; margin-left: 0px!important;"><?php echo $this->__('terms of invoice.'); ?></a> <?php echo $this->__('and accept the liability.'); ?> </label>
+        <label class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email%1$s is accurate and can be used for invoicing. I also confirm the', ($customerData['email'] != '') ? ', <b>'.$customerData['email'].'</b>,' :'' ) ?>  <a id="terms" style="float:none!important; margin-left: 0px!important;"><?php echo $this->__('terms & conditions'); ?></a> <?php echo $this->__('and accept the liability.'); ?> </label>
     </li>
     <?php echo $this->getChildHtml() ?>
 </ul>
@@ -39,5 +39,5 @@ var billmateindexurl = "<?php echo Mage::getUrl('billmateinvoice/index') ?>";
 var billmatesaveurl  = '<?php echo Mage::getUrl('billmateinvoice/index/updateAddress');?>';
 var skinurl = '<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) ?>';
 var PARTPAYMENT_EID = '<?php echo Mage::getStoreConfig('payment/partpayment/eid'); ?>';
-var PNO_ERROR = '<?php echo $this->__('Missing Personal Number'); ?>';
+var PNO_ERROR = '<?php echo Mage::helper('billmatecommon')->__('Missing Personal number'); ?>';
 </script>
