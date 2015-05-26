@@ -61,12 +61,14 @@
                             if($('getaddress_failure'))
                                 $('getaddress_failure').remove();
 	                        $('person_number').removeClassName('validation-failed');
-                            if(typeof result.data.company != 'undefined' && typeof result.data.firstname != 'undefined' && typeof result.data.lastname != 'undefined') {
+
+                            if(typeof result.data.company != 'undefined') {
+                                $('billing:company').value = result.data.company;
+                            } else {
                                 $('billing:firstname').value = result.data.firstname;
                                 $('billing:lastname').value = result.data.lastname;
-                            } else {
-                                $('billing:company').value = result.data.company;
                             }
+
 	                        if(result.data.email != ''){
 
 		                        $('billing:email').value = result.data.email;
