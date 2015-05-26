@@ -50,7 +50,7 @@ Minor bug fixes and improvements.
 2 issues closed and 17 commits
 
 * Fix - Get adress with company now works as it should.
-* Feature - Invoice fee is dynamicly displayed in the checkout in the title.
+* Feature - Invoice fee is dynamically displayed in the checkout in the title.
 
 ### 2.0 (2015-05-11)
 Total rewrite of the plugin. The plugin now works with Billmate API version 2.0, [http://billmate.se/api-integration/](http://billmate.se/api-integration/ "http://billmate.se/api-integration/").
