@@ -45,6 +45,12 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.0.2 (2015-05-29)
+Minor bug fixes
+0 issues closed and 5 commits
+* Fix - Improvement for how http & https work with the redirection. POST or GET.
+* Fix - Getadress works for person again (bug introduced in 2.0.1)
+
 ### 2.0.1 (2015-05-26)
 Minor bug fixes and improvements.
 2 issues closed and 17 commits
