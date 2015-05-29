@@ -81,10 +81,10 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
         $orderValues['Card'] = array(
             '3dsecure' => $do3dsecure,
             'promptname' => $prompt_name,
-            'accepturl' => Mage::getUrl('cardpay/cardpay/success'),
-            'cancelurl' => Mage::getUrl('cardpay/cardpay/cancel'),
-            'callbackurl' => Mage::getUrl('cardpay/cardpay/notify'),
-            'returnmethod' => 'POST'
+            'accepturl' => Mage::getUrl('cardpay/cardpay/success',array('_secure' => true)),
+            'cancelurl' => Mage::getUrl('cardpay/cardpay/cancel',array('_secure' => true)),
+            'callbackurl' => Mage::getUrl('cardpay/cardpay/notify',array('_secure' => true)),
+            'returnmethod' => (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET'
         );
 
         $orderValues['Customer'] = array(

@@ -78,10 +78,10 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
         );
 
         $orderValues['Card'] = array(
-            'accepturl' => Mage::getUrl('bankpay/bankpay/success'),
-            'cancelurl' => Mage::getUrl('bankpay/bankpay/cancel'),
-            'callbackurl' => Mage::getUrl('bankpay/bankpay/notify'),
-            'returnmethod' => 'POST'
+            'accepturl' => Mage::getUrl('bankpay/bankpay/success',array('_secure' => true)),
+            'cancelurl' => Mage::getUrl('bankpay/bankpay/cancel',array('_secure' => true)),
+            'callbackurl' => Mage::getUrl('bankpay/bankpay/notify',array('_secure' => true)),
+            'returnmethod' => (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET'
         );
 
         $orderValues['Customer'] = array(
