@@ -50,7 +50,7 @@
             $('billmategetaddress').observe('click',function(event){
                 event.preventDefault();
                 var person_number = $('person_number').value;
-                new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/getaddress'); ?>',{
+                new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/getaddress',array('_secure' => true)); ?>',{
                     method: 'post',
                     parameters: {billmate_pno: person_number},
                     encoding: 'UTF-8',
