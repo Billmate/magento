@@ -12,7 +12,9 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 {
     public function getBillmate()
     {
-        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.0');
+        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.0.4');
+        if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.7');
+
         $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
         if(!defined('BILLMATE_LANGUAGE'))define('BILLMATE_LANGUAGE',$lang[0]);
         $eid = Mage::getStoreConfig('billmate/credentials/eid');
@@ -47,34 +49,9 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
             'pno' => $pno
         );
 
-        $result = $billmate->getAddress($values);
+        return $billmate->getAddress($values);
 
-        if(!isset($result['code'])){
 
-            $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
-            $countryIso = '';
-            if(isset($result['country'])) {
-                $countryCollection = Mage::getModel('directory/country')->getCollection();
-                foreach ($countryCollection as $country) {
-                    $countryName = $country->getName();
-                    if($lang[0] != 'sv') {
-
-                        $this->_locale = new Zend_Locale('en_US');
-                        $countryName = $this->_locale->getTranslation($country->getId(), 'country', 'en_US');
-                    }
-                    if (strtolower($result['country']) == strtolower($countryName)) {
-                        $countryIso = $country->getIso2Code();
-                        break;
-                    }
-                }
-                $countryCollection = null;
-                $result['country'] = $countryIso;
-            }
-            return $result;
-        }
-        else {
-            return $result;
-        }
     }
 
 }

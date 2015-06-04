@@ -100,7 +100,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
 		    'street2'   => isset( $bill[1] ) ? $bill[1] : '',
 		    'zip'       => $Billing->getPostcode(),
 		    'city'      => $Billing->getCity(),
-		    'country'   => Mage::getModel('directory/country')->load($Billing->getCountry())->getName(),
+		    'country'   => $Billing->getCountry(),
 		    'phone'     => $Billing->getTelephone(),
 		    'email'     => $Billing->email
 	    );
@@ -113,7 +113,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
 		    'street2'   => isset( $shipp[1] ) ? $shipp[1] : '',
 		    'zip'       => $Shipping->getPostcode(),
 		    'city'      => $Shipping->getCity(),
-		    'country'   => Mage::getModel('directory/country')->load($Shipping->getCountry() )->getName(),
+		    'country'   => $Shipping->getCountry(),
 		    'phone'     => $Shipping->getTelephone()
 	    );
 
@@ -366,7 +366,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             $this->city = $addr['city'];
 	        if(Mage::getSingleton('customer/session')->isLoggedIn())
 		        $this->telephone = $Billing->getTelephone();
-            $this->country = (BillmateCountry::getCode( $addr['country'] ) != '') ? BillmateCountry::getCode( $addr['country'] ) : 'se';
+            $this->country = $addr['country'];
             $this->country_name = Mage::getModel('directory/country')->loadByCode($this->country)->getName();
 
         }catch( Exception $ex ){
@@ -386,7 +386,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         $addressNotMatched = !isEqual($addr['street'], $billingStreet[0] ) ||
             !isEqual($addr['zip'], $Billing->getPostcode()) ||
             !isEqual($addr['city'], $Billing->getCity()) ||
-            !isEqual(strtolower($addr['country']), strtolower(BillmateCountry::fromCode($Billing->getCountryId())));
+            !isEqual(strtolower($addr['country']), $Billing->getCountryId());
 
 
         $shippingStreet = $Shipping->getStreet();
