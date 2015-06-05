@@ -50,7 +50,7 @@
             $('billmategetaddress').observe('click',function(event){
                 event.preventDefault();
                 var person_number = $('person_number').value;
-                new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/getaddress'); ?>',{
+                new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/getaddress',array('_secure' => true)); ?>',{
                     method: 'post',
                     parameters: {billmate_pno: person_number},
                     encoding: 'UTF-8',
@@ -61,12 +61,14 @@
                             if($('getaddress_failure'))
                                 $('getaddress_failure').remove();
 	                        $('person_number').removeClassName('validation-failed');
-                            if(typeof result.data.company != 'undefined' && typeof result.data.firstname != 'undefined' && typeof result.data.lastname != 'undefined') {
+
+                            if(typeof result.data.company != 'undefined') {
+                                $('billing:company').value = result.data.company;
+                            } else {
                                 $('billing:firstname').value = result.data.firstname;
                                 $('billing:lastname').value = result.data.lastname;
-                            } else {
-                                $('billing:company').value = result.data.company;
                             }
+
 	                        if(result.data.email != ''){
 
 		                        $('billing:email').value = result.data.email;

@@ -48,12 +48,12 @@ if (Mage::getStoreConfig('firecheckout/general/enabled') && Mage::getStoreConfig
         <label class="required" style="font-weight:normal"><em>*</em><?php echo $this->__('My email%1$s is accurate and can be used for invoicing. I also confirm the',($customerData['email'] != '') ? ', <b>'.$customerData['email'].'</b>,' :'') ?> <a id="terms-delbetalning" style="float:none!important;   margin-left: 0px!important;"><?php echo $this->__('terms & conditions'); ?></a> <?php echo $this->__('and accept the liability.'); ?> </label>
     </li>
     <?php echo $this->getChildHtml() ?>
-	<input type="hidden" name="<?php echo $_code ?>_index" value="<?php echo Mage::getUrl('partpayment/index') ?>"/>
-	<input type="hidden" name="<?php echo $_code ?>_update" value="<?php echo Mage::getUrl('partpayment/index/updateAddress') ?>"/>
+	<input type="hidden" name="<?php echo $_code ?>_index" value="<?php echo Mage::getUrl('partpayment/index',array('_secure' => true)) ?>"/>
+	<input type="hidden" name="<?php echo $_code ?>_update" value="<?php echo Mage::getUrl('partpayment/index/updateAddress',array('_secure' => true)) ?>"/>
 </ul>
 <script type="text/javascript">
-var billmateindexurl = "<?php echo Mage::getUrl('billmateinvoice/index') ?>";
-var billmatesaveurl  = '<?php echo Mage::getUrl('billmateinvoice/index/updateAddress');?>';
+var billmateindexurl = "<?php echo Mage::getUrl('billmateinvoice/index',array('_secure' => true)) ?>";
+var billmatesaveurl  = '<?php echo Mage::getUrl('billmateinvoice/index/updateAddress',array('_secure' => true));?>';
 var skinurl = '<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) ?>';
 var PARTPAYMENT_EID = '<?php echo Mage::getStoreConfig('payment/partpayment/eid'); ?>';
 var PNO_ERROR = '<?php echo Mage::helper('billmatecommon')->__('Missing Personal number'); ?>';
