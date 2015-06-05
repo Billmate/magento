@@ -75,7 +75,7 @@
 				'street2'   => isset( $bill[1] ) ? $bill[1] : '',
 				'zip'       => $Billing->getPostcode(),
 				'city'      => $Billing->getCity(),
-				'country'   => $Billing->getCountry(),
+				'country'   => $Billing->getCountryId(),
 				'phone'     => $Billing->getTelephone(),
 				'email'     => $Billing->email
 			);
@@ -88,7 +88,7 @@
 				'street2'   => isset( $shipp[1] ) ? $shipp[1] : '',
 				'zip'       => $Shipping->getPostcode(),
 				'city'      => $Shipping->getCity(),
-				'country'   => $Shipping->getCountry(),
+				'country'   => $Shipping->getCountryId(),
 				'phone'     => $Shipping->getTelephone()
 			);
 
@@ -348,7 +348,7 @@
 			$payment = Mage::app()->getRequest()->getPost( 'payment' );
 
 			$methodname = $payment['method'];
-			$k          = Mage::helper( 'billmateinvoice' )->getBillmate( true, false );
+			$k          = Mage::helper('billmateinvoice')->getBillmate( true, false );
 			$quote      = Mage::getSingleton( 'checkout/session' )->getQuote();
 			$Billing    = $quote->getBillingAddress();
 			$Shipping   = $quote->getShippingAddress();

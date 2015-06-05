@@ -98,7 +98,7 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
             'street2' => isset($bill[1]) ? $bill[1] : '',
             'zip' => $Billing->getPostcode(),
             'city' => $Billing->getCity(),
-            'country' => $Billing->getCountry(),
+            'country' => $Billing->getCountryId(),
             'phone' => $Billing->getTelephone(),
             'email' => $Billing->email
         );
@@ -111,7 +111,7 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
             'street2' => isset($shipp[1]) ? $shipp[1] : '',
             'zip' => $Shipping->getPostcode(),
             'city' => $Shipping->getCity(),
-            'country' => BillmateCountry::fromCode($Shipping->getCountry()),
+            'country' => $Shipping->getCountryId(),
             'phone' => $Shipping->getTelephone()
         );
         foreach($bill_address as $key => $col ){
