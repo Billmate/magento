@@ -272,8 +272,8 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 	
 					if ($pclass->getNbrofmonths() == 0) {
 						$payment = $sum;
-					} elseif ($pclass->getInterestrate() == 0) {
-						$payment = $sum / $pclass->getNbrofonths();
+					} elseif ((int)$pclass->getInterestrate() == 0) {
+						$payment = $sum / $pclass->getNbrofmonths();
 					} else {
 						// Because Interest rate is in decimal for example 0.12 no need to multiply by 100
 						$interest_rate = $pclass->getInterestrate() / 12;
