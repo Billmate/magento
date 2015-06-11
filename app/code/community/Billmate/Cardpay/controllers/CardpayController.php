@@ -8,6 +8,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 
     public function notifyAction(){
         $_POST = file_get_contents('php://input');
+        $_POST = empty($_POST) ? $_GET : $_POST;
         $k = Mage::helper('billmatecardpay')->getBillmate(true,false);
         $session = Mage::getSingleton('checkout/session');
         $data = $k->verify_hash($_POST);
@@ -18,6 +19,49 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 
 
         $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
+        if($data['status'] == 'Cancelled' && !$order->isCanceled()){
+
+            if (!$order->isCanceled() && !$order->hasInvoices()) {
+
+                $message = Mage::helper('billmatecardpay')->__('Order canceled by user');
+                $order->cancel();
+                $order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, $message);
+                $order->save();
+
+                // Rollback stock
+                // Mage::helper('billmatecardpay')->rollbackStockItems($order);
+            }
+
+            //$session->setQuoteId($session->getBillmateQuoteId(true));
+            if ($data['orderid']) {
+                $quote = Mage::getModel('sales/quote')->load($data['orderid']);
+                if ($quote->getId()) {
+                    $quote->setIsActive(true)->save();
+                    $session->setQuoteId($quote->getId());
+                }
+
+                $quoteItems = $quote->getAllItems();
+                if( sizeof( $quoteItems ) <=0 ){
+                    $items = $order->getAllItems();
+                    if( $items ){
+                        foreach( $items as $item ){
+                            $product1 = Mage::getModel('catalog/product')->load($item->getProductId());
+                            $qty = $item->getQtyOrdered();
+                            $quote->addProduct($product1, $qty);
+                        }
+                    }else{
+                        $quote->setIsActive(false)->save();
+
+                    }
+                    $quote->setReservedOrderId(null);
+                    $quote->collectTotals()->save();
+                }
+            }
+            die('OK');
+        }
+        if($order->isCanceled()){
+            die('OK');
+        }
 
         try{
 
@@ -58,8 +102,9 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 
 
             $isCustomerNotified = false;
-            $order->setState($status, $status, '', $isCustomerNotified);
+            $order->setState('new', $status, '', $isCustomerNotified);
             $order->save();
+            $order->sendNewOrderEmail();
             $this->clearAllCache();
 
         }catch(Exception $ex){
