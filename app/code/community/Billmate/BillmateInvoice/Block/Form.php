@@ -18,7 +18,6 @@
 
 class Billmate_BillmateInvoice_Block_Form extends Mage_Payment_Block_Form
 {
-    protected $method = 'billmateinvoice';
     protected function _construct()
     {
         parent::_construct();
