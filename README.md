@@ -47,12 +47,13 @@ Copy the code below for the size that fits your needs.
 
 ### 2.0.4 (2015-06-22)
 Minor bug fixes
-3 issue closed 10 commits
+3 issue closed 11 commits
 
 * Fix - Personnumber in session to persist if customer Reloads checkout
 * Fix - Updated Version number
 * Fix - Use Iso codes instead of Country names
 * Fix - Order Confirm email, card and bankpay
+* Fix - Logged In customer and getAddress FireCheckout
 
 ### 2.0.3 (2015-06-03)
 Minor bug fixes
