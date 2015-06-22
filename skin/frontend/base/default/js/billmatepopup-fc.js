@@ -93,7 +93,7 @@ function CreateModalPopUpObject() {
 }
 
 function ModalPopupWindow() {
-    var strOverLayHTML = '<div id="divOverlay" style="position:absolute;z-index:1011; background-color:WHITE; filter: alpha(opacity = 70);opacity:0.7;"></div><div id="divFrameParent" style="position:absolute;z-index:1012; display:none;background-color:white;border:1px solid;-moz-box-shadow: 0 0 10px 10px #BBB;-webkit-box-shadow: 0 0 10px 10px #BBB;box-shadow: 0 0 10px 10px #BBB;padding:10px;line-height:21px;font-size:15px;color:#000;font-family:Arial,Helvetica,sans-serif;"	class="Example_F"><div class="checkout-heading" id="spanOverLayTitle"></div><div id="divMessage" style="display:none;"><span id="spanMessage"></span></div><span id="spanLoading"></span></div>';
+    var strOverLayHTML = '<div id="divOverlay" style="position:absolute;z-index:1011; background-color:WHITE; filter: alpha(opacity = 70);opacity:0.7;"></div><div id="divFrameParent" style="position:absolute;z-index:1012; display:none;background-color:white;border:1px solid;-moz-box-shadow: 0 0 10px 10px #BBB;-webkit-box-shadow: 0 0 10px 10px #BBB;box-shadow: 0 0 10px 10px #BBB;padding:10px;line-height:21px;font-size:15px;color:#000;font-family:Arial,Helvetica,sans-serif;"	class="Example_F"><span class="closebutton" onclick="modalWin.HideModalPopUp();" style="float: right;">X</span><div class="checkout-heading" id="spanOverLayTitle"></div><div id="divMessage" style="display:none;"><span id="spanMessage"></span></div><span id="spanLoading"></span></div>';
     var orginalHeight;
     var orginalWidth;
     var btnStyle="";
@@ -300,7 +300,7 @@ function checkAddress() {
         afterSave();
         return;
     }
-
+    console.log('test');
     if (
         ( typeof checkout == 'undefined' || typeof checkout.form == 'undefined' )
         && ( typeof checkoutForm == 'undefined' || typeof checkoutForm.form.id == 'undefined' )
@@ -312,7 +312,7 @@ function checkAddress() {
     } else if (typeof checkout.form != 'undefined') {
         params = Form.serialize(checkout.form);
     }
-
+    console.log('test');
     checkout.setLoadWaiting(true);
 
     url = billmateindexurl;
@@ -321,7 +321,8 @@ function checkAddress() {
     }
     var selectedmethod = $$('input:checked[type="radio"][name="payment[method]"]').pluck('value');
 
-    if ($('person_number') && $('person_number').value == '') {
+    if ($('billing-new-address-form').visible() &&  $('person_number') && $('person_number').value == '') {
+        console.log('pnum');
         if ($('getaddress_failure'))
             $('getaddress_failure').remove();
         $('person_number').addClassName('validation-failed');
@@ -329,11 +330,13 @@ function checkAddress() {
         checkout.setLoadWaiting(false);
 
     }else if(!$('person_number') && $(selectedmethod+'_pno').value == ''){
+        console.log('selected');
         $(selectedmethod+'_pno').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'});
         $(selectedmethod+'_pno').addClassName('validation-failed');
         checkout.setLoadWaiting(false);
     }
     else if(($('person_number') && $('person_number').value != '') || ($(selectedmethod+'_pno').value != '')) {
+        console.log('correct');
         if($('person_number'))
             $('person_number').removeClassName('validation-failed');
         $(selectedmethod+'_pno').removeClassName('validation-failed');
@@ -445,7 +448,9 @@ AddEvent(window, 'load', function(){
     jQuery.getScript('https://billmate.se/billmate/base_jquery.js',function(){addTerms();});
 
     if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
-        SaveAddress();
+        if($('billing-new-address-form').visible()) {
+            SaveAddress();
+        }
         $checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
         $$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ onchange_person_number = false; checkAddress(); };
     }

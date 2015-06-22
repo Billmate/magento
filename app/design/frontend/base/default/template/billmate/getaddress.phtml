@@ -7,7 +7,7 @@
 
 
                     var pno ="<li class=\"wide person_number billmate-getaddress\"><label for=\"person_number\"><?php echo Mage::helper('billmateinvoice')->__('Social Security Number / Corporate Registration Number'); ?></label>"
-                        +'<div class="input-box"><input type="text" class="input-text" name="payment[person_number]" id="person_number" title="<?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number'); ?>"/> '+ getaddress +'</div></li>';
+                        +'<div class="input-box"><input type="text" class="input-text" value="<?php echo (Mage::getSingleton('checkout/session')->getBillmatePno()) ?Mage::getSingleton('checkout/session')->getBillmatePno() : ''; ?>" name="payment[person_number]" id="person_number" title="<?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number'); ?>"/> '+ getaddress +'</div></li>';
                     //$('billing-new-address-form').down('ul').innerHTML = pno + $('billing-new-address-form').down('ul').innerHTML;
                     $('billing-new-address-form').down('ul').down('li').insert({before: pno});
 
@@ -16,7 +16,7 @@
                     var pno =   '<div class="billmate-getaddress">'+
                         '<div class="field person-number field-type-text">'+
                         '<div class="input-box">'+
-                        '<input placeholder="<?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number');?>" type="text" id="person_number" name="payment[person_number]" title="<?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number');?>" class="input-text">'+
+                        '<input placeholder="<?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number');?>" value="<?php echo (Mage::getSingleton('checkout/session')->getBillmatePno()) ?Mage::getSingleton('checkout/session')->getBillmatePno() : ''; ?>" type="text" id="person_number" name="payment[person_number]" title="<?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number');?>" class="input-text">'+
                         '</div>'+
 
                         '</div>'+
@@ -32,7 +32,7 @@
                                     '<div class="pno">' +
                                         '<label for="pno"><?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number'); ?></label>' +
                                         '<div class="input-box">' +
-                                            '<input type="text" name="billmate_pno" id="person_number" class="input-text"/>' +
+                                            '<input type="text" name="billmate_pno" id="person_number" class="input-text" value="<?php echo (Mage::getSingleton('checkout/session')->getBillmatePno()) ?Mage::getSingleton('checkout/session')->getBillmatePno() : ''; ?>"/>' +
                                         '</div>' +
                                     '</div>' +
                                     '<div style="float:left; padding-top:18px;padding-left:5px;" class="fetch">' +

@@ -12,6 +12,7 @@ class Billmate_Common_GetaddressController extends Mage_Core_Controller_Front_Ac
     public function indexAction()
     {
         $pno = $this->getRequest()->getParam('billmate_pno');
+        Mage::getSingleton('checkout/session')->setBillmatePno($pno);
         $data = Mage::helper('billmatecommon')->getAddress($pno);
 
         $status = (!isset($data['code'])) ? true : false;

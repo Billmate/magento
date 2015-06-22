@@ -25,8 +25,6 @@ class Billmate_Common_Adminhtml_BillmatecommonController extends Mage_Adminhtml_
 		    $countries = explode(',',Mage::getStoreConfig('payment/partpayment/countries'));
 		    $lang = explode('_',Mage::getStoreConfig('general/locale/code',$store));
 
-		    $eid = Mage::getStoreConfig('billmate/credentials/eid');
-		    $secret = Mage::getStoreConfig('billmate/credentials/secret');
 		    $testmode = Mage::getStoreConfig('payment/partpayment/test_mode');
 
 

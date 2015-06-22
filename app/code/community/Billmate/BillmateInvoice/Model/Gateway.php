@@ -75,7 +75,7 @@
 				'street2'   => isset( $bill[1] ) ? $bill[1] : '',
 				'zip'       => $Billing->getPostcode(),
 				'city'      => $Billing->getCity(),
-				'country'   => Mage::getModel('directory/country')->load($Billing->getCountry())->getName(),
+				'country'   => $Billing->getCountryId(),
 				'phone'     => $Billing->getTelephone(),
 				'email'     => $Billing->email
 			);
@@ -88,7 +88,7 @@
 				'street2'   => isset( $shipp[1] ) ? $shipp[1] : '',
 				'zip'       => $Shipping->getPostcode(),
 				'city'      => $Shipping->getCity(),
-				'country'   => Mage::getModel('directory/country')->load($Shipping->getCountry() )->getName(),
+				'country'   => $Shipping->getCountryId(),
 				'phone'     => $Shipping->getTelephone()
 			);
 
@@ -348,7 +348,7 @@
 			$payment = Mage::app()->getRequest()->getPost( 'payment' );
 
 			$methodname = $payment['method'];
-			$k          = Mage::helper( 'billmateinvoice' )->getBillmate( true, false );
+			$k          = Mage::helper('billmateinvoice')->getBillmate( true, false );
 			$quote      = Mage::getSingleton( 'checkout/session' )->getQuote();
 			$Billing    = $quote->getBillingAddress();
 			$Shipping   = $quote->getShippingAddress();
@@ -391,7 +391,7 @@
 
 				if(Mage::getSingleton('customer/session')->isLoggedIn())
 					$this->telephone = $Billing->getTelephone();
-				$this->country      = ( BillmateCountry::getCode( $addr['country'] ) != '' ) ? strtoupper(BillmateCountry::getCode( $addr['country'] )) : strtoupper('se');
+				$this->country      = $addr['country'];
 				$this->country_name = Mage::getModel( 'directory/country' )->loadByCode( $this->country )->getName();
 
 			}
@@ -416,7 +416,7 @@
 			$addressNotMatched = ! isEqual( $addr['street'], $billingStreet[0] ) ||
 			                     ! isEqual( $addr['zip'], $Billing->getPostcode() ) ||
 			                     ! isEqual( $addr['city'], $Billing->getCity() ) ||
-			                     ! isEqual( strtolower( $addr['country'] ), strtolower( BillmateCountry::fromCode( $Billing->getCountryId() ) ) );
+			                     ! isEqual( strtolower( $addr['country'] ), $Billing->getCountryId() );
 
 
 			$shippingStreet = $Shipping->getStreet();
@@ -425,7 +425,7 @@
 			                      ! isEqual( $shippingStreet[0], $billingStreet[0] ) ||
 			                      ! isEqual( $Shipping->getPostcode(), $Billing->getPostcode() ) ||
 			                      ! isEqual( $Shipping->getCity(), $Billing->getCity() ) ||
-			                      ! isEqual( $Shipping->getCountryId, $Billing->getCountryId );
+			                      ! isEqual( $Shipping->getCountryId(), $Billing->getCountryId() );
 			if ( $addressNotMatched || $shippingAndBilling )
 			{
 				$this->isMatched = false;

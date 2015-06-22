@@ -1,7 +1,9 @@
 <?php
 class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
     function getBillmate($ssl = true, $debug = false ){
-        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.0.2');
+        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.0.4');
+        if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.7');
+
         $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
         //if(!defined('BILLMATE_LANGUAGE'))define('BILLMATE_LANGUAGE',$lang[0]);
         require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
@@ -270,8 +272,8 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 	
 					if ($pclass->getNbrofmonths() == 0) {
 						$payment = $sum;
-					} elseif ($pclass->getInterestrate() == 0) {
-						$payment = $sum / $pclass->getNbrofonths();
+					} elseif ((int)$pclass->getInterestrate() == 0) {
+						$payment = $sum / $pclass->getNbrofmonths();
 					} else {
 						// Because Interest rate is in decimal for example 0.12 no need to multiply by 100
 						$interest_rate = $pclass->getInterestrate() / 12;

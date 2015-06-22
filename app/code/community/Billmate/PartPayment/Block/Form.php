@@ -1,7 +1,7 @@
 <?php
 
 class Billmate_PartPayment_Block_Form extends Mage_Payment_Block_Form{
-    protected $method = 'partpayment';
+
 	public function termsx(){
 	
 		$total = Mage::getSingleTon('checkout/session')

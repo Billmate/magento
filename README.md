@@ -44,20 +44,34 @@ Copy the code below for the size that fits your needs.
 `<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_s.png" alt="Billmate Payment Gateway" /></a>`
 
 ## Changelog
+
+### 2.0.4 (2015-06-22)
+Minor bug fixes
+3 issue closed 11 commits
+
+* Fix - Personnumber in session to persist if customer Reloads checkout
+* Fix - Updated Version number
+* Fix - Use Iso codes instead of Country names
+* Fix - Order Confirm email, card and bankpay
+* Fix - Logged In customer and getAddress FireCheckout
+
 ### 2.0.3 (2015-06-03)
 Minor bug fixes
 1 issue closed and 2 commits
+
 * Fix - An issue when using HTTPS in the checkout is now fixed.
 
 ### 2.0.2 (2015-05-29)
 Minor bug fixes
 0 issues closed and 5 commits
+
 * Fix - Improvement for how http & https work with the redirection. POST or GET.
 * Fix - Getadress works for person again (bug introduced in 2.0.1)
 
 ### 2.0.2 (2015-05-29)
 Minor bug fixes
 0 issues closed and 5 commits
+
 * Fix - Improvement for how http & https work with the redirection. POST or GET.
 * Fix - Getadress works for person again (bug introduced in 2.0.1)
 
