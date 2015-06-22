@@ -425,7 +425,7 @@
 			                      ! isEqual( $shippingStreet[0], $billingStreet[0] ) ||
 			                      ! isEqual( $Shipping->getPostcode(), $Billing->getPostcode() ) ||
 			                      ! isEqual( $Shipping->getCity(), $Billing->getCity() ) ||
-			                      ! isEqual( $Shipping->getCountryId, $Billing->getCountryId );
+			                      ! isEqual( $Shipping->getCountryId(), $Billing->getCountryId() );
 			if ( $addressNotMatched || $shippingAndBilling )
 			{
 				$this->isMatched = false;

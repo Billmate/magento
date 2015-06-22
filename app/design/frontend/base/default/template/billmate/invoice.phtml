@@ -9,7 +9,7 @@ $customerData['email'] = Mage::getSingleton('checkout/session')
 	->getBillingAddress()
 	->email;
 }
-if (Mage::getStoreConfig('firecheckout/general/enabled') && Mage::getStoreConfig('billmate/settings/getaddress')){
+if (Mage::getStoreConfig('firecheckout/general/enabled') && Mage::getStoreConfig('billmate/settings/getaddress') && !Mage::getSingleton('customer/session')->isLoggedIn()){
     $visuality = 'display:none';
 	$padding = 'margin-right: 10px;';
 } else {
