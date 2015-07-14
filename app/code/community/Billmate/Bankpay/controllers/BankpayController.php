@@ -75,7 +75,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 $session->setQuoteId($session->getBillmateQuoteId(true));
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
                 $order->sendNewOrderEmail();
-
+                $session->unsRebuildCart();
 
                 $this->_redirect('checkout/onepage/success', array('_secure'=>true));
                 return;
@@ -218,6 +218,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
             $order->sendNewOrderEmail();
+            $session->unsRebuildCart();
 
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
             return;
