@@ -193,8 +193,9 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         }
 		$checkouturl = $session->getBillmateCheckOutUrl();
 		$checkouturl = empty($checkouturl)?Mage::helper('checkout/url')->getCheckoutUrl():$checkouturl;
+        $session->unsRebuildCart();
 
-		Mage::getSingleton('core/session')->setFailureMsg('order_failed');
+        Mage::getSingleton('core/session')->setFailureMsg('order_failed');
 		Mage::getSingleton('checkout/session')->setFirstTimeChk('0');
 		Mage::dispatchEvent('sales_model_service_quote_submit_failure', array('order'=>$order, 'quote'=>$quote));
         header('location:'. $checkouturl);
