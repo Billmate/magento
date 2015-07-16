@@ -45,6 +45,12 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.0.6 (2015-07-16)
+Clean up
+1 issue closed 1 commit
+
+* Clean up - Not needed stuff.
+
 ### 2.0.5 (2015-07-14)
 Minor bug fixes
 1 issue closed 3 commits
