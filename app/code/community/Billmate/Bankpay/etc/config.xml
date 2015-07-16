@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Billmate_Bankpay>
-            <version>2.0.5</version>
+            <version>2.0.6</version>
         </Billmate_Bankpay>
     </modules>
     <global>
@@ -59,8 +59,6 @@
                 <countries>SE,DE,NL</countries>
                 <title>Billmate Bank</title>
 				<bank_error_page>home</bank_error_page>
-                <eid>7270</eid>
-                <secret>606250886062</secret>
                 <active>0</active>
                 <payment_action>sale</payment_action>
                 <min_amount>0</min_amount>

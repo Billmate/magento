@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Billmate_Common>
-            <version>2.0.5</version>
+            <version>2.0.6</version>
         </Billmate_Common>
     </modules>
     <global>
