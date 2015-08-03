@@ -455,5 +455,6 @@
 
 				Mage::getModel( 'checkout/session' )->loadCustomerQuote();
 			}
+
 		}
 	}

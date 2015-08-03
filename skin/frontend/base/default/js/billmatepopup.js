@@ -359,7 +359,6 @@ function checkAddress(psn){
             onSuccess: function (res) {
                 checkout.setLoadWaiting(false);
 
-                console.log(res.responseText);
                 eval(res.responseText);
             }
         });
