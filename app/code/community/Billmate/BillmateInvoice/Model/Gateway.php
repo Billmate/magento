@@ -455,5 +455,7 @@
 
 				Mage::getModel( 'checkout/session' )->loadCustomerQuote();
 			}
+			Mage::register('isMatched',$this->isMatched);
+
 		}
 	}

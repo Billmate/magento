@@ -52,10 +52,8 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
 		    
 			$gateway = Mage::getSingleton('billmateinvoice/gateway');
             $gateway->init();
-            
             $this->loadLayout();
-            $this->_initLayoutMessages('customer/session');
-            $this->renderLayout();
+            $this->getResponse()->setBody($this->getLayout()->createBlock('billmateinvoice/changeaddress')->toHtml());
         }
     
     }
@@ -68,10 +66,8 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
         if ($this->getRequest()->isPost()){
             $gateway = Mage::getSingleton('billmateinvoice/gateway');
             $gateway->init(true);
-            
             $this->loadLayout();
-            $this->_initLayoutMessages('customer/session');
-            $this->renderLayout();
+            $this->getResponse()->setBody($this->getLayout()->createBlock('billmateinvoice/changeaddress')->toHtml());
         }
     }
 }
