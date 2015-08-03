@@ -45,6 +45,12 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.0.7 (2015-08-03)
+2 issues closed 2 commits
+
+* Fix - Change our Ajax function to be compatible with different blocks that are added f.ex live chats
+* Translation - Improved translation
+
 ### 2.0.6 (2015-07-16)
 Clean up
 1 issue closed 1 commit
