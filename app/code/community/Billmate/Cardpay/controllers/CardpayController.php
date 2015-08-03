@@ -75,6 +75,8 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                 $session->setQuoteId($quote->getId());
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
                 $order->sendNewOrderEmail();
+                $session->unsRebuildCart();
+
                 $this->_redirect('checkout/onepage/success', array('_secure'=>true));
 
                 return;
@@ -191,8 +193,9 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         }
 		$checkouturl = $session->getBillmateCheckOutUrl();
 		$checkouturl = empty($checkouturl)?Mage::helper('checkout/url')->getCheckoutUrl():$checkouturl;
+        $session->unsRebuildCart();
 
-		Mage::getSingleton('core/session')->setFailureMsg('order_failed');
+        Mage::getSingleton('core/session')->setFailureMsg('order_failed');
 		Mage::getSingleton('checkout/session')->setFirstTimeChk('0');
 		Mage::dispatchEvent('sales_model_service_quote_submit_failure', array('order'=>$order, 'quote'=>$quote));
         header('location:'. $checkouturl);
@@ -228,6 +231,8 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
             $order->sendNewOrderEmail();
+            $session->unsRebuildCart();
+
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
 
             return;

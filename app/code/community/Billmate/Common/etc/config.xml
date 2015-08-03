@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Billmate_Common>
-            <version>2.0.4</version>
+            <version>2.0.6</version>
         </Billmate_Common>
     </modules>
     <global>
@@ -85,5 +85,23 @@
                 </args>
             </billmatecommon>
         </routers>
+        <events>
+            <controller_action_predispatch_firecheckout_index_index>
+                <observers>
+                    <billmate_firecheckout_index>
+                        <class>Billmate_Common_Model_Observer</class>
+                        <method>redirectToCancelUrl</method>
+                    </billmate_firecheckout_index>
+                </observers>
+            </controller_action_predispatch_firecheckout_index_index>
+            <controller_action_predispatch_checkout_onepage_index>
+                <observers>
+                    <billmate_onepagecheckout_index>
+                        <class>Billmate_Common_Model_Observer</class>
+                        <method>redirectToCancelUrl</method>
+                    </billmate_onepagecheckout_index>
+                </observers>
+            </controller_action_predispatch_checkout_onepage_index>
+        </events>
     </frontend>
 </config>
