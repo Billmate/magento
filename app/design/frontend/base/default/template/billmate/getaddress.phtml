@@ -26,7 +26,16 @@
                         '</div>';
 
                     $('billing-new-address-form').down('fieldset').down('div').insert({before: pno});
-            <?php } else { ?>
+            <?php } elseif(Mage::getStoreConfig('onestepcheckout/general/active')){ ?>
+                        var getaddress = '';
+                        getaddress = '<button class="button" id="billmategetaddress"><span><span><?php echo Mage::helper('billmatecommon')->__('Get Address'); ?></span></span></div>';
+
+
+                        var pno ="<li class=\"wide person_number billmate-getaddress\"><label for=\"person_number\"><?php echo Mage::helper('billmateinvoice')->__('Social Security Number / Corporate Registration Number'); ?></label>"
+                            +'<input type="text" class="input-text" style="width:62%!important" value="<?php echo (Mage::getSingleton('checkout/session')->getBillmatePno()) ?Mage::getSingleton('checkout/session')->getBillmatePno() : ''; ?>" name="payment[person_number]" id="person_number" title="<?php echo Mage::helper('billmatecommon')->__('Social Security Number / Corporate Registration Number'); ?>"/> '+ getaddress +'</li>';
+                        //$('billing-new-address-form').down('ul').innerHTML = pno + $('billing-new-address-form').down('ul').innerHTML;
+                        $('billing-new-address-form').down('ul').down('li').insert({before: pno});
+            <?php }else { ?>
                 var pno = '<li class="fields">' +
                                 '<div class="billmate-getaddress">' +
                                     '<div class="pno">' +
@@ -63,23 +72,27 @@
 	                        $('person_number').removeClassName('validation-failed');
 
                             if(typeof result.data.company != 'undefined') {
-                                $('billing:company').value = result.data.company;
+                                $('billing:company').setValue(result.data.company);
                             } else {
-                                $('billing:firstname').value = result.data.firstname;
-                                $('billing:lastname').value = result.data.lastname;
+                                $('billing:firstname').setValue(result.data.firstname);
+                                $('billing:lastname').setValue(result.data.lastname);
                             }
 
 	                        if(result.data.email != ''){
 
-		                        $('billing:email').value = result.data.email;
+		                        $('billing:email').setValue(result.data.email);
+                                <?php if(Mage::getStoreConfig('onestepcheckout/general/active')){ ?>
+                                    $('billing:email').triggerEvent('blur');
+                                <?php } ?>
 	                        }
 	                        if(result.data.phone != ''){
-		                        $('billing:telephone').value = result.data.phone;
+		                        $('billing:telephone').setValue(result.data.phone);
 	                        }
-                            $('billing:street1').value = result.data.street;
-                            $('billing:city').value = result.data.city;
-                            $('billing:postcode').value = result.data.zip;
+                            $('billing:street1').setValue(result.data.street);
+                            $('billing:city').setValue(result.data.city);
+                            $('billing:postcode').setValue(result.data.zip);
                             $('billing:country_id').setValue(result.data.country);
+
                         } else {
 	                        if($('getaddress_failure'))
 		                        $('getaddress_failure').remove();
