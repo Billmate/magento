@@ -69,7 +69,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
 	        $payment = $order->getPayment();
             $status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
-
+            if($data['status'] == 'Pending')
+                $status = 'pending_payment';
             if( $order->getStatus() == $status ){
                 $session->setOrderId($quote->getReservedOrderId());
                 $session->setQuoteId($session->getBillmateQuoteId(true));
@@ -245,7 +246,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
             
 			$status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
-			
+            if($data['status'] == 'Pending')
+                $status = 'pending_payment';
 			$isCustomerNotified = true;
 			$order->setState('new', $status, '', $isCustomerNotified);
             $payment = $order->getPayment();
