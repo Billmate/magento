@@ -2,7 +2,7 @@
 class Billmate_Bankpay_Helper_Data extends Mage_Core_Helper_Abstract
 {
     function getBillmate($ssl = true, $debug = false ){
-        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.0.7');
+        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.0.8');
         if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.7');
 
         $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
