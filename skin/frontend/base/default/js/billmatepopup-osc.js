@@ -1,6 +1,20 @@
 /**
  * Created by jesper on 15-05-11.
  */
+Element.prototype.triggerEvent = function(eventName)
+{
+    if (document.createEvent)
+    {
+        var evt = document.createEvent('HTMLEvents');
+        evt.initEvent(eventName, true, true);
+
+        return this.dispatchEvent(evt);
+    }
+
+    if (this.fireEvent)
+        return this.fireEvent('on' + eventName);
+}
+
 //https://github.com/paulirish/matchMedia.js/
 window.billmatepopupLoaded = true;
 function match_media_mount(){

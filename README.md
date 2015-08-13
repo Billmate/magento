@@ -45,6 +45,12 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.0.8
+2 issues closed 5 commits
+
+* Fix - Company name billmatepopup
+* Translation - SSN validation
+
 ### 2.0.7 (2015-08-03)
 2 issues closed 2 commits
 

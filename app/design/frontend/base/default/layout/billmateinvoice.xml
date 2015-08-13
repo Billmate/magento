@@ -38,6 +38,11 @@ var oldurl = null;
             <block type="core/template" template="billmate/getaddress.phtml"/>
         </reference>
     </checkout_onepage_index>
+    <onestepcheckout_index_index>
+        <reference name="head">
+            <block type="core/template" template="billmate/getaddress.phtml"/>
+        </reference>
+    </onestepcheckout_index_index>
     <streamcheckout_index_index>
         <reference name="head">
             <block type="core/template" template="billmate/getaddress.phtml"/>

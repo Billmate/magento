@@ -14,6 +14,10 @@ if(strlen($gateway->lastname)>0){
 	$fieldname[] = 'lastname';
 	$address['lastname'] = $gateway->lastname;
 }
+if(strlen($gateway->company>0)){
+	$fieldname[] = 'company';
+	$address['company'] = $gateway->company;
+}
 
 if($this->isMatched()):
 	echo 'if(typeof streamcheckout != "undefined"){'."\n";
@@ -54,7 +58,6 @@ paymentSave();';
  ?>
 
 <?php else: ?>
-
-$html='<span style="line-height: 1.4em;"><?php echo $gateway->firstname.' '.$gateway->lastname; ?><br><?php echo $gateway->street; ?><br><?php echo $gateway->postcode.'<br/>'.$gateway->city.'<br/>'.($gateway->country == 'se' ? '':$gateway->country_name); ?></span><div style="margin-top:1em"><input type="button" id="updateAddressYes" onclick="updateAddress()" value="<?php echo $this->__('Yes, make purchase with this address.')?>" class="billmate_button"/></div><div><a onclick="modalWin.HideModalPopUp();" class="linktag" ><?php echo $this->__('No, I want to specify another person / company or change payment method.')?></a></div>';
+$html='<span style="line-height: 1.4em;"><?php echo ($gateway->company != '') ? $gateway->company : $gateway->firstname.' '.$gateway->lastname; ?><br><?php echo $gateway->street; ?><br><?php echo $gateway->postcode.'<br/>'.$gateway->city.'<br/>'.($gateway->country == 'se' ? '':$gateway->country_name); ?></span><div style="margin-top:1em"><input type="button" id="updateAddressYes" onclick="updateAddress()" value="<?php echo $this->__('Yes, make purchase with this address.')?>" class="billmate_button"/></div><div><a onclick="modalWin.HideModalPopUp();" class="linktag" ><?php echo $this->__('No, I want to specify another person / company or change payment method.')?></a></div>';
 ShowMessage($html,'<?php echo $this->__('Pay with invoice can only be made with a registered adress. Would you like to make the purchase with the following registered address:')?>');
 <?php endif; ?>

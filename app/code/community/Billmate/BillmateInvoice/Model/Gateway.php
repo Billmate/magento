@@ -373,11 +373,12 @@
 				{
 					$addr[ $key ] = mb_convert_encoding( $col, 'UTF-8', 'auto' );
 				}
+
 				if ( empty( $addr['firstname'] ) )
 				{
 					$this->firstname = $Billing->getFirstname();
 					$this->lastname  = $Billing->getLastname();
-					$this->company   = $addr['lastname'];
+					$this->company   = $addr['company'];
 				}
 				else
 				{
