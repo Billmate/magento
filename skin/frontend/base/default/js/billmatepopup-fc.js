@@ -319,8 +319,6 @@ function checkAddress() {
     if (onchange_person_number) {
         params += '&pophide=true';
     }
-    var selectedmethod = $$('input:checked[type="radio"][name="payment[method]"]').pluck('value');
-
     if ($('billing-new-address-form').visible() &&  $('person_number') && $('person_number').value == '') {
         if ($('getaddress_failure'))
             $('getaddress_failure').remove();
@@ -328,15 +326,19 @@ function checkAddress() {
         $('billmategetaddress').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'})
         checkout.setLoadWaiting(false);
 
-    }else if(!$('person_number') && $(selectedmethod+'_pno').value == ''){
-        $(selectedmethod+'_pno').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'});
-        $(selectedmethod+'_pno').addClassName('validation-failed');
+    }else if(!$('billing-new-address-form').visible() &&  $(selectedGateway+'_pno').value == ''){
+        $(selectedGateway+'_pno').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'});
+        $(selectedGateway+'_pno').addClassName('validation-failed');
+        checkout.setLoadWaiting(false);
+    }else if(!$('person_number') && $(selectedGateway+'_pno').value == ''){
+        $(selectedGateway+'_pno').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'});
+        $(selectedGateway+'_pno').addClassName('validation-failed');
         checkout.setLoadWaiting(false);
     }
-    else if(($('person_number') && $('person_number').value != '') || ($(selectedmethod+'_pno').value != '')) {
+    else if(($('person_number') && $('person_number').value != '') || (!$('personnumber') && $(selectedGateway+'_pno').value != '')) {
         if($('person_number'))
             $('person_number').removeClassName('validation-failed');
-        $(selectedmethod+'_pno').removeClassName('validation-failed');
+        $(selectedGateway+'_pno').removeClassName('validation-failed');
 
 
         if ($('getaddress_failure')) {

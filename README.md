@@ -44,6 +44,10 @@ Copy the code below for the size that fits your needs.
 `<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_s.png" alt="Billmate Payment Gateway" /></a>`
 
 ## Changelog
+### 2.0.9 (2015-08-17)
+1 commit
+
+* Firecheckout - Validate SSN when customer is logged in.
 
 ### 2.0.8 (2015-08-13)
 2 issues closed 5 commits
