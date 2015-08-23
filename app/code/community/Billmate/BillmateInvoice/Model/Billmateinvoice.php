@@ -1,6 +1,6 @@
 <?php
 
-class Billmate_BillmateInvoice_Model_BillmateInvoice extends Mage_Payment_Model_Method_Abstract{
+class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_Method_Abstract{
     protected $_code = 'billmateinvoice';
     protected $_formBlockType = 'billmateinvoice/form';
 //    protected $_infoBlockType = 'billmateinvoice/form';
