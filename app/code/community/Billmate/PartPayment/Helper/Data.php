@@ -14,7 +14,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 
         $eid = Mage::getStoreConfig('billmate/credentials/eid');
         $secret= Mage::getStoreConfig('billmate/credentials/secret');
-        $testmode=(boolean)Mage::getStoreConfig('payment/partpayment/test_mode');
+        $testmode=(boolean)Mage::getStoreConfig('payment/billmatepartpayment/test_mode');
         return new Billmate($eid, $secret, $ssl, $testmode,$debug);
     }
     private function getLowestPaymentAccount($country) {
@@ -67,11 +67,11 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
             }
 
             // Fetch new Pclasses
-            $countries = explode(',',Mage::getStoreConfig('payment/partpayment/countries'));
+            $countries = explode(',',Mage::getStoreConfig('payment/billmatepartpayment/countries'));
             $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
             $eid = (int)Mage::getStoreConfig('billmate/credentials/eid');
             $secret=(float)Mage::getStoreConfig('billmate/credentials/secret');
-            $testMode=(boolean)Mage::getStoreConfig('payment/partpayment/test_mode');
+            $testMode=(boolean)Mage::getStoreConfig('payment/billmatepartpayment/test_mode');
 
 
             foreach($countries as $country)
@@ -111,17 +111,14 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
      */
     function savePclasses($eid, $secret, $countrycode, $testmode ,$lang, $store = false){
     
-        require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
-        require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
-        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
-        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
+
         $store_id = Mage::app()->getStore()->getId();
 
         $eid = (int)$eid;
         $secret=(float)$secret;
         $ssl=true;
         $debug = false;
-        $billmate = new Billmate($eid, $secret, $ssl, $testmode, $debug);
+        $billmate = $this->getBillmate($ssl,$debug);
 
 		switch ($countrycode) {
 			// Sweden

@@ -17,12 +17,12 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     
     public function isAvailable($quote = null)
     {
-    	if( Mage::getStoreConfig('payment/partpayment/active') != 1 ){
+    	if( Mage::getStoreConfig('payment/billmatepartpayment/active') != 1 ){
     		return false;
     	}
 
         if($quote == null ) return false;
-        $countries = explode(',', Mage::getStoreConfig('payment/partpayment/countries'));
+        $countries = explode(',', Mage::getStoreConfig('payment/billmatepartpayment/countries'));
 
         //TODO Check active Paymentplan country instead.
         $collection = Mage::getModel('partpayment/pclass')->getCollection();
@@ -48,8 +48,8 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
         if( $avail ){
             $total = $quote->getSubtotal();
             $status = false;
-			$min_total = Mage::getStoreConfig('payment/partpayment/min_amount');
-			$max_total = Mage::getStoreConfig('payment/partpayment/max_amount');
+			$min_total = Mage::getStoreConfig('payment/billmatepartpayment/min_amount');
+			$max_total = Mage::getStoreConfig('payment/billmatepartpayment/max_amount');
             if(!empty($min_total) && $min_total > 0){
                 
                 $status = $total >= $min_total;

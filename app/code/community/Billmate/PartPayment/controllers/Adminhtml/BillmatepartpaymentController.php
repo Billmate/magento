@@ -18,12 +18,12 @@ class Billmate_PartPayment_Adminhtml_BillmatepartpaymentController extends Mage_
             $item->delete();
         }
 
-        $countries = explode(',',Mage::getStoreConfig('payment/partpayment/countries'));
+        $countries = explode(',',Mage::getStoreConfig('payment/billmatepartpayment/countries'));
         $lang = explode('_',Mage::getStoreConfig('general/locale/code',$store));
 
         $eid = Mage::getStoreConfig('billmate/credentials/eid');
         $secret = Mage::getStoreConfig('billmate/credentials/secret');
-        $testmode = Mage::getStoreConfig('payment/partpayment/test_mode');
+        $testmode = Mage::getStoreConfig('payment/billmatepartpayment/test_mode');
 
 
         $gateway = Mage::helper("partpayment");
