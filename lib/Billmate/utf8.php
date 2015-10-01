@@ -20,15 +20,19 @@ function isEqual($string1, $string2 ){
 			$filterStr1[] = $str1;
 		}
 	}
+	$sumStr1 = count($filterStr1);
 	$filterStr2 = array();
 	foreach( $string2 as $str2 ){
 		if( trim($str2,'.') == $str2 ){
 			$filterStr2[] = $str2;
 		}
 	}
+	$sumStr2 = count($filterStr2);
+	if($sumStr1 != $sumStr2)
+		return false;
 
 	$foundName = array_intersect( $filterStr1, $filterStr2 );
-	return count($foundName)>0;
+	return count($foundName) == $sumStr1;
 }
 
 function utf8_strlen($string) {
