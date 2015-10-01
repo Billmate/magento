@@ -1,7 +1,7 @@
 <?php  
 class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_Abstract
 {
-    protected $_code = 'partpayment';
+    protected $_code = 'billmatepartpayment';
     protected $_formBlockType = 'partpayment/form';
 
 
@@ -176,15 +176,15 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
         parent::validate();
         $payment = $_POST['payment'];
         if(Mage::getStoreConfig('firecheckout/general/enabled') || Mage::getStoreConfig('streamcheckout/general/enabled')){
-            if( empty( $payment['person_number'] ) && empty( $payment['partpayment_pno'] ) ){
+            if( empty( $payment['person_number'] ) && empty( $payment['billmatepartpayment_pno'] ) ){
                 Mage::throwException(Mage::helper('payment')->__('Missing Personal number') );
             }
         } else {
-            if( empty( $payment['partpayment_pno'] ) ){
+            if( empty( $payment['billmatepartpayment_pno'] ) ){
                 Mage::throwException(Mage::helper('payment')->__('Missing Personal number') );
             }
         }
-        if( empty( $payment['partpayment_phone'] ) ){
+        if( empty( $payment['billmatepartpayment_phone'] ) ){
             Mage::throwException(Mage::helper('payment')->__('Missing phone number') );
         }
     }

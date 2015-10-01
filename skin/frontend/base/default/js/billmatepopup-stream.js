@@ -468,10 +468,10 @@ AddEvent(window, 'load', function(){
 $(document).observe('stream:paymentswitched',function(method){
 
     if($$('.billmate-getaddress').length > 0){
-        if(method.memo.method == 'billmateinvoice' || method.memo.method == 'billmatebankpay' || method.memo.method == 'partpayment' || method.memo.method == 'billmatecardpay'){
+        if(method.memo.method == 'billmateinvoice' || method.memo.method == 'billmatebankpay' || method.memo.method == 'billmatepartpayment' || method.memo.method == 'billmatecardpay'){
             $$('.billmate-getaddress')[0].show();
-            if($('partpayment_pno') && billmatecust_loggedin == 'false')
-                $('partpayment_pno').up('li').hide();
+            if($('billmatepartpayment_pno') && billmatecust_loggedin == 'false')
+                $('billmatepartpayment_pno').up('li').hide();
             if($('billmateinvoice_pno') && billmatecust_loggedin == 'false')
                 $('billmateinvoice_pno').up('li').hide();
 

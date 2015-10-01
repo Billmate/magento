@@ -22,7 +22,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             'DE' => 'EUR',
             'NL' => 'EUR',
         );
-        $methodname = $payment['method'] == 'billmateinvoice'? 'billmateinvoice': 'partpayment';
+        $methodname = $payment['method'] == 'billmateinvoice'? 'billmateinvoice': 'billmatepartpayment';
         $k = Mage::helper('partpayment')->getBillmate(true, false);
 
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();

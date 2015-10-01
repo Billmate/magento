@@ -11,7 +11,7 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
 			$payment = $_POST['payment'];
             $pophide = $this->getRequest()->getPost('pophide',false);
             if($pophide === false) {
-                if (!in_array($payment['method'], array('billmateinvoice', 'partpayment'))) {
+                if (!in_array($payment['method'], array('billmateinvoice', 'billmatepartpayment'))) {
 	                if(Mage::getStoreConfig('streamcheckout/general/enabled'))
 		                echo '$(streamcheckout.container).removeClassName("placing-order");streamcheckout.placeUrl=oldurl;streamcheckout.place()';
 	                else

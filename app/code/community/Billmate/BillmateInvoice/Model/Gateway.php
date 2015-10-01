@@ -15,7 +15,7 @@
 
 			$payment = Mage::app()->getRequest()->getPost( 'payment' );
 
-			$methodname = $payment['method'] == 'billmateinvoice' ? 'billmateinvoice' : 'partpayment';
+			$methodname = $payment['method'] == 'billmateinvoice' ? 'billmateinvoice' : 'billmatepartpayment';
 			$k          = Mage::helper( 'billmateinvoice' )->getBillmate( true, false );
 
 			$customerId       = Mage::getSingleton( 'customer/session' )->getCustomer()->getId();
