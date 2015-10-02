@@ -45,7 +45,7 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
-### 2.1 (2015-10-01)
+### 2.1 (2015-10-02)
 * Fix - Canceled order issue.
 * Enhancement - Its possible to set a invoice logo per store or website.
 * Fix - Street validation issue.
