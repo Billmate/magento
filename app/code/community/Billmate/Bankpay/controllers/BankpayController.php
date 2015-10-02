@@ -14,11 +14,13 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $k = Mage::helper('billmatebankpay')->getBillmate(true,false);
         $session = Mage::getSingleton('checkout/session');
         $data = $k->verify_hash($_POST);
+        Mage::log('data callback'.print_r($data,true));
 
         $quote = Mage::getModel('sales/quote')->load($data['orderid']);
 
         $session->setData('last_real_order_id', $quote->getReservedOrderId());
 
+        Mage::log('time callback'.date('Y-m-d H:i:s'));
 
         $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
         Mage::log('order_id'.$order->getId());
@@ -26,7 +28,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
             if (!$order->isCanceled() && !$order->hasInvoices()) {
 
-                $message = Mage::helper('billmatecardpay')->__('Order canceled by user');
+                $message = Mage::helper('billmatecardpay')->__('Order canceled by callback');
                 $order->cancel();
                 $order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, $message);
                 $order->save();
@@ -59,6 +61,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                     $quote->setReservedOrderId(null);
                     $quote->collectTotals()->save();
                 }
+                $session->unsRebuildCart();
+
             }
             die('OK');
         }
@@ -69,7 +73,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
 	        $payment = $order->getPayment();
             $status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
-            if($data['status'] == 'Pending')
+            if($data['status'] == 'Pending' && $order->getStatus() != $status)
                 $status = 'pending_payment';
             if( $order->getStatus() == $status ){
                 $session->setOrderId($quote->getReservedOrderId());
@@ -98,6 +102,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $isCustomerNotified = false;
             $order->setState('new', $status, '', $isCustomerNotified);
             $order->save();
+            $session->unsRebuildCart();
+
             $order->sendNewOrderEmail();
 
             $this->clearAllCache();
@@ -138,7 +144,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $session->unsRedirectUrl();
     }
     /**
-     * When a customer cancel payment from paypal.
+     * When a customer cancel payment from Billmate.
      */
     public function cancelAction()
     {
@@ -206,16 +212,17 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());
 
         $status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
-        
-		$session->setLastSuccessQuoteId($session->getBillmateQuoteId());
+        Mage::log('time success'.date('Y-m-d H:i:s'));
+
+        $session->setLastSuccessQuoteId($session->getBillmateQuoteId());
         $session->setLastQuoteId($session->getBillmateQuoteId());
         $session->setLastOrderId($session->getLastOrderId());
 
 		if(empty($_POST)) $_POST = $_GET;
         //$_POST['data'] = json_decode(stripslashes($_POST['data']),true);
         $data = $k->verify_hash($_POST);
-
-        if( $order->getState() == $status ){
+        Mage::log('data success'.print_r($data,true));
+        if( $order->getStatus() == $status ){
             $session->setOrderId($data['orderid']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
@@ -246,7 +253,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
             
 			$status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
-            if($data['status'] == 'Pending')
+            if($data['status'] == 'Pending' && $order->getStatus() != $status)
                 $status = 'pending_payment';
 			$isCustomerNotified = true;
 			$order->setState('new', $status, '', $isCustomerNotified);
@@ -259,6 +266,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 'orderid' => $order->getIncrementId()
             );
             $data1 = $k->updatePayment($values);
+            $session->unsRebuildCart();
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed'.'<br/>Billmate status: '.$data1['status'].'<br/>'.'Transaction ID: '.$data1['number']));
 	        $payment->setTransactionId($data['number']);
 	        $payment->setIsTransactionClosed(0);

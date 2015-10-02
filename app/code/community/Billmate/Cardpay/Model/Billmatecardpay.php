@@ -33,7 +33,7 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
     public function void( Varien_Object $payment )
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('billmateinvoice')->getBillmate(true, false);
+            $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
                 'number' => $invoiceId

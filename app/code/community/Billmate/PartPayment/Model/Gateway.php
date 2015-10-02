@@ -77,7 +77,9 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             'country' => $storeCountryIso2,
             'orderid' => (string)time(),
             'autoactivate' => 0,
-            'language' => BillmateCountry::fromLocale($storeLanguage)
+            'language' => BillmateCountry::fromLocale($storeLanguage),
+            'logo' => (strlen(Mage::getStoreConfig('billmate/settings/logo')) > 0) ? Mage::getStoreConfig('billmate/settings/logo') : ''
+
 
         );
         $orderValues['PaymentInfo'] = array(

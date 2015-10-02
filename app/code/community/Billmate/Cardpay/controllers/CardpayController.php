@@ -56,6 +56,8 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                     $quote->setReservedOrderId(null);
                     $quote->collectTotals()->save();
                 }
+                $session->unsRebuildCart();
+
             }
             die('OK');
         }
@@ -101,7 +103,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 	        $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
 	                    ->save();
 	        $payment->save();
-
+            $session->unsRebuildCart();
 
             $isCustomerNotified = false;
             $order->setState('new', $status, '', $isCustomerNotified);
@@ -271,6 +273,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                 );
                 $data1 = $k->updatePayment($values);
             }
+            $session->unsRebuildCart();
 
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed'.'<br/>Billmate status: '.$data1['status'].'<br/>'.'Transaction ID: '.$data1['number']));
 

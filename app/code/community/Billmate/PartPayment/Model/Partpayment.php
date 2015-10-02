@@ -77,7 +77,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 	public function void( Varien_Object $payment )
 	{
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('billmateinvoice')->getBillmate(true, false);
+            $k = Mage::helper('partpayment')->getBillmate(true, false);
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
                 'number' => $invoiceId
