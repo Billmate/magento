@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Billmate_PartPayment>
-            <version>2.0.8</version>
+            <version>2.1</version>
         </Billmate_PartPayment>
     </modules>
     <global>
@@ -76,16 +76,16 @@
     </global>
     <default>
         <payment>
-            <partpayment>
+            <billmatepartpayment>
                 <model>partpayment/partpayment</model>
-                <title>Billmate Part Payment</title>
+                <title>Billmate Partpayment</title>
                 <active>0</active>
                 <order_status>pending</order_status>
                 <countries>SE,NL,DE</countries>
                 <min_amount>0</min_amount>
                 <max_amount>99999</max_amount>
                 <payment_action>authorize</payment_action>
-            </partpayment>
+            </billmatepartpayment>
         </payment>
         <payment_action>authorize</payment_action>
     </default>

@@ -54,6 +54,15 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </activation>
+                        <logo translate="label comment" module="billmatecommon">
+                            <label>Logo to be displayed in the invoice</label>
+                            <comment>Enter the name of the logo (shown in Billmate Online). Leave empty if you only have one logo.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </logo>
                     </fields>
                 </settings>
                 <credentials translate="label" module="billmatecommon">

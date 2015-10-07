@@ -17,10 +17,11 @@ class Billmate_Common_Model_Observer extends Mage_Core_Model_Abstract
     {
         $controllerAction = $observer->getEvent()->getControllerAction();
         $session = Mage::getSingleton('checkout/session');
+        Mage::log('time observer'.date('Y-m-d H:i:s'));
         if($session->getRebuildCart()){
-            Mage::log('rebuild');
+
             $order = Mage::getModel('sales/order');
-            $message = 'Order canceled by user';
+            $message = 'Order canceled by observer';
             $order_id = $session->getLastRealOrderId();
             $order->loadByIncrementId($order_id);
 
