@@ -76,10 +76,8 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
                 $order->sendNewOrderEmail();
                 $session->unsRebuildCart();
+                die('OK');
 
-                $this->_redirect('checkout/onepage/success', array('_secure'=>true));
-
-                return;
             }
             $payment = $order->getPayment();
             $info = $payment->getMethodInstance()->getInfoInstance();
