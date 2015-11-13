@@ -2,7 +2,7 @@
 /**
  * Billmate
  *
- * Billmate API - PHP Class 
+ * Billmate API - PHP Class
  *
  * LICENSE: This source file is part of Billmate API, that is fully owned by Billmate AB
  * This is not open source. For licensing queries, please contact Billmate AB at info@billmate.se.
@@ -12,7 +12,7 @@
  * @author Yuksel Findik <yuksel@billmate.se>
  * @copyright 2013-2014 Billmate AB
  * @license Proprietary and fully owned by Billmate AB
- * @version 1.1
+ * @version 2.1.6
  * @link http://www.billmate.se
  *
  * History:
@@ -25,6 +25,7 @@
  * 2.1.4 20150115 Yuksel Findik: verify_hash is improved. The serverdata is added instead of useragent
  * 2.1.5 20150122 Yuksel Findik: Will make a utf8_decode before it returns the result
  * 2.1.6 20150129 Yuksel Findik: Language is added as an optional paramater in credentials, version_compare is added for Curl setup
+ * 2.1.7 20150922 Yuksel Findik: PHP Notice for CURLOPT_SSL_VERIFYHOST is fixed
  */
 class BillMate{
 	var $ID = "";
@@ -38,7 +39,7 @@ class BillMate{
 	function BillMate($id,$key,$ssl=true,$test=false,$debug=false,$referer=array()){
 		$this->ID = $id;
 		$this->KEY = $key;
-        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "BillMate:2.1.6" );
+        defined('BILLMATE_CLIENT') || define('BILLMATE_CLIENT',  "BillMate:2.1.7" );
         defined('BILLMATE_SERVER') || define('BILLMATE_SERVER',  "2.0.6" );
         defined('BILLMATE_LANGUAGE') || define('BILLMATE_LANGUAGE',  "" );
 		$this->SSL = $ssl;
@@ -51,7 +52,6 @@ class BillMate{
 	 	return $this->call($name,$args[0]);
 	}
 	function call($function,$params) {
-		
 		$values = array(
 			"credentials" => array(
 				"id"=>$this->ID,
@@ -66,7 +66,6 @@ class BillMate{
 			"data"=> $params,
 			"function"=>$function,
 		);
-
 		$this->out("CALLED FUNCTION",$function);
 		$this->out("PARAMETERS TO BE SENT",$values);
 		switch ($this->MODE) {
@@ -79,7 +78,7 @@ class BillMate{
 	function verify_hash($response) {
 		$response_array = is_array($response)?$response:json_decode($response,true);
 		//If it is not decodable, the actual response will be returnt.
-		if(!$response_array && !is_array($response)) 
+		if(!$response_array && !is_array($response))
 			return $response;
 		if(is_array($response)) {
 			$response_array['credentials'] = json_decode($response['credentials'], true);
@@ -100,20 +99,31 @@ class BillMate{
 		curl_setopt($ch, CURLOPT_URL, "http".($this->SSL?"s":"")."://".$this->URL);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->SSL);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT,10);
 		$vh = $this->SSL?((function_exists("phpversion") && function_exists("version_compare") && version_compare(phpversion(),'5.4','>=')) ? 2 : true):false;
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $vh);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
-		    'Content-Type: application/json',                                                                                
-		    'Content-Length: ' . strlen($parameters))                                                                       
+		if($this->SSL){
+			if(function_exists("phpversion") && function_exists("version_compare")){
+				$cv = curl_version();
+				if(version_compare(phpversion(),'5.4','>=') || version_compare($cv["version"],'7.28.1','>='))
+					$vh = 2;
+				else $vh = true;
+			}
+			else
+				$vh = true;
+		}
+		else
+			$vh = false;
+		@curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $vh);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		    'Content-Type: application/json',
+		    'Content-Length: ' . strlen($parameters))
 		);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
 		$data = curl_exec($ch);
-		
 		if (curl_errno($ch)){
 	        $curlerror = curl_error($ch);
-	        return json_encode(array("error"=>9510,"message"=>htmlentities($curlerror)));
+	        return json_encode(array("code"=>9510,"message"=>htmlentities($curlerror)));
 		}else curl_close($ch);
-		
 	    return $data;
 	}
 	function hash($args) {
@@ -127,6 +137,5 @@ class BillMate{
     	else print $out;
     	print "'\n";
     }
-    
 }
 ?>

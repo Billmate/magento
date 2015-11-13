@@ -45,6 +45,18 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.1 (2015-10-07)
+* Fix - Canceled order issue.
+* Enhancement - Its possible to set a invoice logo per store or website.
+* Fix - Street validation issue.
+* Fix - Some class name changes.
+
+
+### 2.0.9 (2015-08-17)
+1 commit
+
+* Firecheckout - Validate SSN when customer is logged in.
+
 ### 2.0.8 (2015-08-13)
 2 issues closed 5 commits
 

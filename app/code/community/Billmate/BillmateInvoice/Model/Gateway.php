@@ -15,7 +15,7 @@
 
 			$payment = Mage::app()->getRequest()->getPost( 'payment' );
 
-			$methodname = $payment['method'] == 'billmateinvoice' ? 'billmateinvoice' : 'partpayment';
+			$methodname = $payment['method'] == 'billmateinvoice' ? 'billmateinvoice' : 'billmatepartpayment';
 			$k          = Mage::helper( 'billmateinvoice' )->getBillmate( true, false );
 
 			$customerId       = Mage::getSingleton( 'customer/session' )->getCustomer()->getId();
@@ -52,7 +52,9 @@
 				'country'      => $storeCountryIso2,
 				'orderid'      => (string) time(),
 				'autoactivate' => 0,
-				'language'     => BillmateCountry::fromLocale( $storeLanguage )
+				'language'     => BillmateCountry::fromLocale( $storeLanguage ),
+				'logo' => (strlen(Mage::getStoreConfig('billmate/settings/logo')) > 0) ? Mage::getStoreConfig('billmate/settings/logo') : ''
+
 
 			);
 			$orderValues['PaymentInfo'] = array(

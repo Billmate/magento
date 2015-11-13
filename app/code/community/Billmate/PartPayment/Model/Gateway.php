@@ -22,7 +22,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             'DE' => 'EUR',
             'NL' => 'EUR',
         );
-        $methodname = $payment['method'] == 'billmateinvoice'? 'billmateinvoice': 'partpayment';
+        $methodname = $payment['method'] == 'billmateinvoice'? 'billmateinvoice': 'billmatepartpayment';
         $k = Mage::helper('partpayment')->getBillmate(true, false);
 
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
@@ -77,7 +77,9 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             'country' => $storeCountryIso2,
             'orderid' => (string)time(),
             'autoactivate' => 0,
-            'language' => BillmateCountry::fromLocale($storeLanguage)
+            'language' => BillmateCountry::fromLocale($storeLanguage),
+            'logo' => (strlen(Mage::getStoreConfig('billmate/settings/logo')) > 0) ? Mage::getStoreConfig('billmate/settings/logo') : ''
+
 
         );
         $orderValues['PaymentInfo'] = array(

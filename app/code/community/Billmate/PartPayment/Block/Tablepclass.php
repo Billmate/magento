@@ -9,7 +9,7 @@ class Billmate_Partpayment_Block_TablePclass extends Mage_Adminhtml_Block_System
         $pclass->addFieldToFilter('store_id',Mage::helper('partpayment')->getStoreIdForConfig());
         $this->setElement($element);
         if( $pclass->count() > 0 ){
-            $html = '<div class="grid"><table border="0" class="data"><tr class="headings"><th>PClassid</th><th>Type</th><th>Description</th><th>Months</th><th>Interest Rate</th><th>Invoice Fee</th><th>Start Fee</th><th>Min Amount</th><th>Max Amount</th><th>Expire</th><th>Country</th></tr>';
+            $html = '<div class="grid"><table border="0" class="data"><tr class="headings"><th>'.Mage::helper('partpayment')->__('PClassid').'</th><th>'.Mage::helper('partpayment')->__('Type').'</th><th>'.Mage::helper('partpayment')->__('Description').'</th><th>'.Mage::helper('partpayment')->__('Months').'</th><th>'.Mage::helper('partpayment')->__('Interest Rate').'</th><th>'.Mage::helper('partpayment')->__('Invoice Fee').'</th><th>'.Mage::helper('partpayment')->__('Start Fee').'</th><th>'.Mage::helper('partpayment')->__('Min Amount').'</th><th>'.Mage::helper('partpayment')->__('Max Amount').'</th><th>'.Mage::helper('partpayment')->__('Expire').'</th><th>'.Mage::helper('partpayment')->__('Country').'</th></tr>';
             $i=0;
             foreach($pclass as $_item ){
                 $id = $_item->getPaymentplanid();

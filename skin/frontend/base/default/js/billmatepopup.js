@@ -427,12 +427,12 @@ AddEvent(window, 'load', function(){
 	}
 	jQuery.getScript('https://billmate.se/billmate/base_jquery.js', function() {addTerms();});
     if($('person_number')){
-        jQuery(document).on('click','#p_method_partpayment',function(){
+        jQuery(document).on('click','#p_method_billmatepartpayment',function(){
 
             var pno = $('person_number').value;
-            if(typeof $('partpayment_pno') != 'undefined'){
-                $('partpayment_pno').enable();
-                jQuery('#partpayment_pno').val(pno);
+            if(typeof $('billmatepartpayment_pno') != 'undefined'){
+                $('billmatepartpayment_pno').enable();
+                jQuery('#billmatepartpayment_pno').val(pno);
             }
 
         });
