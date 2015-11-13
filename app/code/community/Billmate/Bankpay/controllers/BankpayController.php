@@ -82,7 +82,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 $order->sendNewOrderEmail();
                 $session->unsRebuildCart();
 
-                $this->_redirect('checkout/onepage/success', array('_secure'=>true));
+                die('OK');
                 return;
             }
 

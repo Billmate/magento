@@ -45,6 +45,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.1.1 (2015-11-13)
+* Fix - No redirect in callback process. 
+
 ### 2.1 (2015-10-07)
 * Fix - Canceled order issue.
 * Enhancement - Its possible to set a invoice logo per store or website.
