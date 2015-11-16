@@ -45,6 +45,10 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.1.2 (2015-11-16)
+
+* Fix - Multiple order emails. 
+
 ### 2.1.1 (2015-11-13)
 * Fix - No redirect in callback process. 
 
