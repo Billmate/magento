@@ -79,7 +79,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 $session->setOrderId($quote->getReservedOrderId());
                 $session->setQuoteId($session->getBillmateQuoteId(true));
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-                $order->sendNewOrderEmail();
+                $order->queueNewOrderEmail();
                 $session->unsRebuildCart();
 
                 die('OK');
@@ -104,7 +104,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $order->save();
             $session->unsRebuildCart();
 
-            $order->sendNewOrderEmail();
+            $order->queueNewOrderEmail();
 
             $this->clearAllCache();
 
@@ -226,7 +226,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $session->setOrderId($data['orderid']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-            $order->sendNewOrderEmail();
+            $order->queueNewOrderEmail();
             $session->unsRebuildCart();
 
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
@@ -240,7 +240,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $isCustomerNotified = true;
             $order->setState('new', $status, $comment, $isCustomerNotified);
             $order->save();
-            $order->sendOrderUpdateEmail(true, $comment);
+            $order->queueOrderUpdateEmail(true, $comment);
             
             Mage::getSingleton('core/session')->addError($this->__('Unable to process with payment gateway :').$data['message']);
             if(isset($data['error'])){
@@ -278,7 +278,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
             $session->setQuoteId($session->getBillmateStandardQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-			$order->sendNewOrderEmail(); 
+			$order->queueNewOrderEmail();
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
         }
     }
