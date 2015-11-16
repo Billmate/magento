@@ -76,7 +76,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                 $session->setOrderId($quote->getReservedOrderId());
                 $session->setQuoteId($quote->getId());
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-                $order->sendNewOrderEmail();
+                $order->queueNewOrderEmail();
                 $session->unsRebuildCart();
                 die('OK');
 
@@ -85,7 +85,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $info = $payment->getMethodInstance()->getInfoInstance();
             $info->setAdditionalInformation('invoiceid',$data['number']);
             $data1 = $data;
-            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action')) {
+            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action') == 'sale') {
                 $values['PaymentData'] = array(
                     'number' => $data['number'],
                     'orderid' => $order->getIncrementId()
@@ -106,7 +106,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $isCustomerNotified = false;
             $order->setState('new', $status, '', $isCustomerNotified);
             $order->save();
-            $order->sendNewOrderEmail();
+            $order->queueNewOrderEmail();
             $this->clearAllCache();
 
         }catch(Exception $ex){
@@ -230,7 +230,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $session->setOrderId($data['orderid']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-            $order->sendNewOrderEmail();
+            $order->queueNewOrderEmail();
             $session->unsRebuildCart();
 
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
@@ -245,7 +245,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $isCustomerNotified = true;
             $order->setState('new', $status, $comment, $isCustomerNotified);
             $order->save();
-            $order->sendOrderUpdateEmail(true, $comment);
+            $order->queueOrderUpdateEmail(true, $comment);
             
             Mage::getSingleton('core/session')->addError($this->__('Unable to process with payment gateway :').$data['message']);
             if(isset($data['code'])){
@@ -264,7 +264,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $info = $payment->getMethodInstance()->getInfoInstance();
             $info->setAdditionalInformation('invoiceid',$data['number']);
             $data1 = $data;
-            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action')) {
+            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action') == 'sale') {
                 $values['PaymentData'] = array(
                     'number' => $data['number'],
                     'orderid' => $order->getIncrementId()
@@ -285,7 +285,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 			$order->save();
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-			$order->sendNewOrderEmail(); 
+			$order->queueNewOrderEmail();
 
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
         }
