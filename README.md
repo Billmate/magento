@@ -45,6 +45,10 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.1.3
+* Fix - Company that is logged in. 
+
+
 ### 2.1.2 (2015-11-16)
 
 * Fix - Multiple order emails. 
