@@ -45,6 +45,10 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.1.4
+* Fix - Company Firecheckout
+* Enhancement - Cleaned up logging.
+
 ### 2.1.3
 * Fix - Company that is logged in. 
 

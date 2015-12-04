@@ -6,17 +6,17 @@ $address   = array_combine(
 				$fieldname,
 				array($gateway->street, $gateway->city, $gateway->postcode)
 			);
-if(strlen($gateway->firstname)>0){
+if(strlen($gateway->getFirstname())>0){
 	$fieldname[] = 'firstname';
-	$address['firstname'] = $gateway->firstname;
+	$address['firstname'] = $gateway->getFirstname();
 }
-if(strlen($gateway->lastname)>0){
+if(strlen($gateway->getLastname())>0){
 	$fieldname[] = 'lastname';
-	$address['lastname'] = $gateway->lastname;
+	$address['lastname'] = $gateway->getLastname();
 }
-if(strlen($gateway->company>0)){
+if(strlen($gateway->getCompany())>0){
 	$fieldname[] = 'company';
-	$address['company'] = $gateway->company;
+	$address['company'] = $gateway->getCompany();
 }
 
 if($this->isMatched()):
