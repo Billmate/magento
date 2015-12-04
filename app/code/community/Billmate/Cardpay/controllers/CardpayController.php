@@ -85,7 +85,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $info = $payment->getMethodInstance()->getInfoInstance();
             $info->setAdditionalInformation('invoiceid',$data['number']);
             $data1 = $data;
-            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action') == 'sale') {
+            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action') != 'sale') {
                 $values['PaymentData'] = array(
                     'number' => $data['number'],
                     'orderid' => $order->getIncrementId()
@@ -264,7 +264,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $info = $payment->getMethodInstance()->getInfoInstance();
             $info->setAdditionalInformation('invoiceid',$data['number']);
             $data1 = $data;
-            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action') == 'sale') {
+            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action') != 'sale') {
                 $values['PaymentData'] = array(
                     'number' => $data['number'],
                     'orderid' => $order->getIncrementId()
