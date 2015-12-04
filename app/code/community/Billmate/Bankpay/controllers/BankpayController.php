@@ -14,16 +14,14 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $k = Mage::helper('billmatebankpay')->getBillmate(true,false);
         $session = Mage::getSingleton('checkout/session');
         $data = $k->verify_hash($_POST);
-        Mage::log('data callback'.print_r($data,true));
-
         $quote = Mage::getModel('sales/quote')->load($data['orderid']);
 
         $session->setData('last_real_order_id', $quote->getReservedOrderId());
 
-        Mage::log('time callback'.date('Y-m-d H:i:s'));
+
 
         $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
-        Mage::log('order_id'.$order->getId());
+
         if($data['status'] == 'Cancelled' && !$order->isCanceled()){
 
             if (!$order->isCanceled() && !$order->hasInvoices()) {
