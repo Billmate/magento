@@ -64,7 +64,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
             'method' => 16,
             'currency' => $currentCurrencyCode,
             'country' => $storeCountryIso2,
-            'orderid' => $quote->getId(),
+            'orderid' => ($quote->getReservedOrderId()) ? $quote->getReservedOrderId() : (string)time(),
             'autoactivate' => 0,
             'language' => BillmateCountry::fromLocale($storeLanguage),
             'logo' => (strlen(Mage::getStoreConfig('billmate/settings/logo')) > 0) ? Mage::getStoreConfig('billmate/settings/logo') : ''

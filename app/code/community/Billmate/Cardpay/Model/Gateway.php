@@ -63,7 +63,7 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
             'method' => 8,
             'currency' => $currentCurrencyCode,
             'country' => $storeCountryIso2,
-            'orderid' => $quote->getId(),
+            'orderid' => ($quote->getReservedOrderId()) ? $quote->getReservedOrderId() : (string)time(),
             'autoactivate' => Mage::getStoreConfig('payment/billmatecardpay/payment_action') == 'sale' ? 1 : 0,
             'language' => BillmateCountry::fromLocale($storeLanguage),
             'logo' => (strlen(Mage::getStoreConfig('billmate/settings/logo')) > 0) ? Mage::getStoreConfig('billmate/settings/logo') : ''
