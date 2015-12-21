@@ -76,7 +76,12 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                 $session->setOrderId($quote->getReservedOrderId());
                 $session->setQuoteId($quote->getId());
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-                $order->queueNewOrderEmail();
+                $magentoVersion = Mage::getVersion();
+                if(version_compare($magentoVersion,'1.9.1','>='))
+                    $order->queueNewOrderEmail();
+                else
+                    $order->sendNewOrderEmail();
+
                 $session->unsRebuildCart();
                 die('OK');
 
@@ -85,13 +90,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $info = $payment->getMethodInstance()->getInfoInstance();
             $info->setAdditionalInformation('invoiceid',$data['number']);
             $data1 = $data;
-            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action') != 'sale') {
-                $values['PaymentData'] = array(
-                    'number' => $data['number'],
-                    'orderid' => $order->getIncrementId()
-                );
-                $data1 = $k->updatePayment($values);
-            }
+
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed'.'<br/>Billmate status: '.$data1['status'].'<br/>'.'Transaction ID: '.$data1['number']));
 
 
@@ -106,7 +105,12 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $isCustomerNotified = false;
             $order->setState('new', $status, '', $isCustomerNotified);
             $order->save();
-            $order->queueNewOrderEmail();
+            $magentoVersion = Mage::getVersion();
+            if(version_compare($magentoVersion,'1.9.1','>='))
+                $order->queueNewOrderEmail();
+            else
+                $order->sendNewOrderEmail();
+
             $this->clearAllCache();
 
         }catch(Exception $ex){
@@ -230,7 +234,12 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $session->setOrderId($data['orderid']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-            $order->queueNewOrderEmail();
+            $magentoVersion = Mage::getVersion();
+            if(version_compare($magentoVersion,'1.9.1','>='))
+                $order->queueNewOrderEmail();
+            else
+                $order->sendNewOrderEmail();
+
             $session->unsRebuildCart();
 
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
@@ -245,7 +254,12 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $isCustomerNotified = true;
             $order->setState('new', $status, $comment, $isCustomerNotified);
             $order->save();
-            $order->queueOrderUpdateEmail(true, $comment);
+            $magentoVersion = Mage::getVersion();
+            if(version_compare($magentoVersion,'1.9.1','>='))
+                $order->queueOrderUpdateEmail(true, $comment);
+            else
+                $order->sendOrderUpdateEmail(true,$comment);
+
             
             Mage::getSingleton('core/session')->addError($this->__('Unable to process with payment gateway :').$data['message']);
             if(isset($data['code'])){
@@ -264,13 +278,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $info = $payment->getMethodInstance()->getInfoInstance();
             $info->setAdditionalInformation('invoiceid',$data['number']);
             $data1 = $data;
-            if(Mage::getStoreConfig('payment/billmatecardpay/payment_action') != 'sale') {
-                $values['PaymentData'] = array(
-                    'number' => $data['number'],
-                    'orderid' => $order->getIncrementId()
-                );
-                $data1 = $k->updatePayment($values);
-            }
+
             $session->unsRebuildCart();
 
             $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed'.'<br/>Billmate status: '.$data1['status'].'<br/>'.'Transaction ID: '.$data1['number']));
@@ -285,7 +293,12 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 			$order->save();
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-			$order->queueNewOrderEmail();
+
+            $magentoVersion = Mage::getVersion();
+            if(version_compare($magentoVersion,'1.9.1','>='))
+                $order->queueNewOrderEmail();
+            else
+                $order->sendNewOrderEmail();
 
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
         }

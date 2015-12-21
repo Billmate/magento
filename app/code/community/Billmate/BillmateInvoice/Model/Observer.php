@@ -16,12 +16,7 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
 
         $orderValues = array();
         if($liveid) {
-            $orderValues['PaymentData'] = array(
-                'number' => $liveid,
-                'orderid' => $order->getIncrementId()
-            );
 
-            $result = $k->UpdatePayment($orderValues);
             $payment = $order->getPayment();
             $info = $payment->getMethodInstance()->getInfoInstance();
             $info->setAdditionalInformation('invoiceid',$liveid);

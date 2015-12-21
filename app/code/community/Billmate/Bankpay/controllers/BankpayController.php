@@ -77,7 +77,12 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 $session->setOrderId($quote->getReservedOrderId());
                 $session->setQuoteId($session->getBillmateQuoteId(true));
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-                $order->queueNewOrderEmail();
+                $magentoVersion = Mage::getVersion();
+                if(version_compare($magentoVersion,'1.9.1','>='))
+                    $order->queueNewOrderEmail();
+                else
+                    $order->sendNewOrderEmail();
+
                 $session->unsRebuildCart();
 
                 die('OK');
@@ -102,7 +107,11 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $order->save();
             $session->unsRebuildCart();
 
-            $order->queueNewOrderEmail();
+            $magentoVersion = Mage::getVersion();
+            if(version_compare($magentoVersion,'1.9.1','>='))
+                $order->queueNewOrderEmail();
+            else
+                $order->sendNewOrderEmail();
 
             $this->clearAllCache();
 
@@ -219,12 +228,16 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 		if(empty($_POST)) $_POST = $_GET;
         //$_POST['data'] = json_decode(stripslashes($_POST['data']),true);
         $data = $k->verify_hash($_POST);
-        Mage::log('data success'.print_r($data,true));
+
         if( $order->getStatus() == $status ){
             $session->setOrderId($data['orderid']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-            $order->queueNewOrderEmail();
+            $magentoVersion = Mage::getVersion();
+            if(version_compare($magentoVersion,'1.9.1','>='))
+                $order->queueNewOrderEmail();
+            else
+                $order->sendNewOrderEmail();
             $session->unsRebuildCart();
 
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
@@ -238,7 +251,11 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $isCustomerNotified = true;
             $order->setState('new', $status, $comment, $isCustomerNotified);
             $order->save();
-            $order->queueOrderUpdateEmail(true, $comment);
+            $magentoVersion = Mage::getVersion();
+            if(version_compare($magentoVersion,'1.9.1','>='))
+                $order->queueOrderUpdateEmail(true, $comment);
+            else
+                $order->sendOrderUpdateEmail(true,$comment);
             
             Mage::getSingleton('core/session')->addError($this->__('Unable to process with payment gateway :').$data['message']);
             if(isset($data['error'])){
@@ -277,7 +294,11 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
             $session->setQuoteId($session->getBillmateStandardQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-			$order->queueNewOrderEmail();
+            $magentoVersion = Mage::getVersion();
+            if(version_compare($magentoVersion,'1.9.1','>='))
+			    $order->queueNewOrderEmail();
+            else
+                $order->sendNewOrderEmail();
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
         }
     }

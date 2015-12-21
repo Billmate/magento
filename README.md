@@ -45,6 +45,10 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.1.5
+* Compatibility - Mail queue after Magento 1.9.1
+* Enhancement - Use of magento getReservedOrderId to send order numbers.
+
 ### 2.1.4
 * Fix - Company Firecheckout
 * Enhancement - Cleaned up logging.

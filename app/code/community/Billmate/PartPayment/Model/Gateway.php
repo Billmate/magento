@@ -75,7 +75,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             'currency' => $currentCurrencyCode,
             'paymentplanid' => $_POST['pclass'],
             'country' => $storeCountryIso2,
-            'orderid' => (string)time(),
+            'orderid' => ($quote->getReservedOrderId()) ? $quote->getReservedOrderId() : (string)time(),
             'autoactivate' => 0,
             'language' => BillmateCountry::fromLocale($storeLanguage),
             'logo' => (strlen(Mage::getStoreConfig('billmate/settings/logo')) > 0) ? Mage::getStoreConfig('billmate/settings/logo') : ''
