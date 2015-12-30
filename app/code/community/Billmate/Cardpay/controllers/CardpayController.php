@@ -13,12 +13,12 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         $session = Mage::getSingleton('checkout/session');
         $data = $k->verify_hash($_POST);
 
-        $quote = Mage::getModel('sales/quote')->load($data['orderid']);
+        //$quote = Mage::getModel('sales/quote')->load($data['orderid']);
 
-        $session->setData('last_real_order_id', $quote->getReservedOrderId());
+        $session->setData('last_real_order_id', $data['orderid']);
 
 
-        $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
+        $order = Mage::getModel('sales/order')->loadByIncrementId($data['orderid']);
         if($data['status'] == 'Cancelled' && !$order->isCanceled()){
 
             if (!$order->isCanceled() && !$order->hasInvoices()) {
@@ -34,7 +34,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 
             //$session->setQuoteId($session->getBillmateQuoteId(true));
             if ($data['orderid']) {
-                $quote = Mage::getModel('sales/quote')->load($data['orderid']);
+                $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
                 if ($quote->getId()) {
                     $quote->setIsActive(true)->save();
                     $session->setQuoteId($quote->getId());
@@ -72,9 +72,9 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 
             if( $order->getStatus() == $status ){
 
-                $session->setLastSuccessQuoteId($quote->getId());
-                $session->setOrderId($quote->getReservedOrderId());
-                $session->setQuoteId($quote->getId());
+                $session->setLastSuccessQuoteId($order->getQuoteId());
+                $session->setOrderId($data['orderid']);
+                $session->setQuoteId($order->getQuoteId());
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
                 $magentoVersion = Mage::getVersion();
                 if(version_compare($magentoVersion,'1.9.1','>='))
