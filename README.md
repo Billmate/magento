@@ -45,6 +45,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.1.6 (2015-12-30)
+* Fix - Callback issues.
+
 ### 2.1.5
 * Compatibility - Mail queue after Magento 1.9.1
 * Enhancement - Use of magento getReservedOrderId to send order numbers.
