@@ -45,6 +45,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.1.7 (2016-01-08)
+*Fix - Shipping taxrate calculation.
+
 ### 2.1.6 (2015-12-30)
 * Fix - Callback issues.
 
