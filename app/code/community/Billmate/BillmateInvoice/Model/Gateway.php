@@ -280,7 +280,10 @@
 			{
 				if ( $Shipping->getBaseShippingTaxAmount() > 0 )
 				{
-					$rate = round( $Shipping->getBaseShippingTaxAmount() / $Shipping->getBaseShippingAmount() * 100 );
+					$taxCalculation = Mage::getModel('tax/calculation');
+					$request = $taxCalculation->getRateRequest($Shipping,$Billing,null,$quote->getStore());
+					$taxRateId = Mage::getStoreConfig('tax/classes/shipping_tax_class',$quote->getStore());
+					$rate = $taxCalculation->getRate($request->setProductClassId($taxRateId));
 				}
 				else
 				{
