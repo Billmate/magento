@@ -1,7 +1,7 @@
 <?php
 class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
     function getBillmate($ssl = true, $debug = false ){
-        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.1.6');
+        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.1.8');
         if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.7');
 
         $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
