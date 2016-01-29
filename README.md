@@ -45,6 +45,10 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.1.8 (2016-01-29)
+* Fix - Multiple order mails. 
+* Fix - Observer for Cancel order.
+
 ### 2.1.7 (2016-01-08)
 *Fix - Shipping taxrate calculation.
 

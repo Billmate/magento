@@ -76,12 +76,13 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                 $session->setOrderId($data['orderid']);
                 $session->setQuoteId($order->getQuoteId());
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
+                /*
                 $magentoVersion = Mage::getVersion();
                 if(version_compare($magentoVersion,'1.9.1','>='))
                     $order->queueNewOrderEmail();
                 else
                     $order->sendNewOrderEmail();
-
+                */
                 $session->unsRebuildCart();
                 die('OK');
 
@@ -228,18 +229,19 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 
 		if(empty($_POST)) $_POST = $_GET;
         $data = $k->verify_hash($_POST);
-        if( $order->getState() == $status ){
+        if( $order->getStatus() == $status ){
 
             $session->setLastSuccessQuoteId($session->getLastRealOrderId());
             $session->setOrderId($data['orderid']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
+            /*
             $magentoVersion = Mage::getVersion();
             if(version_compare($magentoVersion,'1.9.1','>='))
                 $order->queueNewOrderEmail();
             else
                 $order->sendNewOrderEmail();
-
+            */
             $session->unsRebuildCart();
 
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));

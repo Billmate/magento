@@ -77,12 +77,13 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 $session->setOrderId($data['orderid']);
                 $session->setQuoteId($session->getBillmateQuoteId(true));
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
+                /*
                 $magentoVersion = Mage::getVersion();
                 if(version_compare($magentoVersion,'1.9.1','>='))
                     $order->queueNewOrderEmail();
                 else
                     $order->sendNewOrderEmail();
-
+                */
                 $session->unsRebuildCart();
 
                 die('OK');
@@ -233,11 +234,11 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $session->setOrderId($data['orderid']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-            $magentoVersion = Mage::getVersion();
+            /*$magentoVersion = Mage::getVersion();
             if(version_compare($magentoVersion,'1.9.1','>='))
                 $order->queueNewOrderEmail();
             else
-                $order->sendNewOrderEmail();
+                $order->sendNewOrderEmail();*/
             $session->unsRebuildCart();
 
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
