@@ -26,6 +26,8 @@
  * 2.1.5 20150122 Yuksel Findik: Will make a utf8_decode before it returns the result
  * 2.1.6 20150129 Yuksel Findik: Language is added as an optional paramater in credentials, version_compare is added for Curl setup
  * 2.1.7 20150922 Yuksel Findik: PHP Notice for CURLOPT_SSL_VERIFYHOST is fixed
+ * 2.1.8 20151103 Yuksel Findik: CURLOPT_CONNECTTIMEOUT is added
+ 
  */
 class BillMate{
 	var $ID = "";
@@ -122,7 +124,7 @@ class BillMate{
 		$data = curl_exec($ch);
 		if (curl_errno($ch)){
 	        $curlerror = curl_error($ch);
-	        return json_encode(array("code"=>9510,"message"=>htmlentities($curlerror)));
+	        return json_encode(array("error"=>9510,"message"=>htmlentities($curlerror)));
 		}else curl_close($ch);
 	    return $data;
 	}

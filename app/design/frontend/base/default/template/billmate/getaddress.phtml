@@ -92,6 +92,7 @@
                             $('billing:city').setValue(result.data.city);
                             $('billing:postcode').setValue(result.data.zip);
                             $('billing:country_id').setValue(result.data.country);
+                            $('billing:country_id').triggerEvent('change');
 
                         } else {
 	                        if($('getaddress_failure'))
