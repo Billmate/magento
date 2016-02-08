@@ -13,10 +13,10 @@ class Billmate_Common_Adminhtml_BillmatecommonController extends Mage_Adminhtml_
         $eid = $this->getRequest()->getParam('eid');
         $secret = $this->getRequest()->getParam('secret');
 		$status = Mage::helper('billmatecommon')->verifyCredentials($eid,$secret);
-
-	    if($status && Mage::getStoreConfig('payment/partpayment/active') == 1){
+		$store = $this->getRequest()->getParam('store_id');
+	    if($status && Mage::getStoreConfig('payment/partpayment/active',$store) == 1){
 		    $collection = Mage::getModel('partpayment/pclass')->getCollection();
-		    $store = $this->getRequest()->getParam('store');
+
 		    $collection->addFieldToFilter('store_id',$store);
 		    foreach( $collection as $item ){
 			    $item->delete();
@@ -25,7 +25,7 @@ class Billmate_Common_Adminhtml_BillmatecommonController extends Mage_Adminhtml_
 		    $countries = explode(',',Mage::getStoreConfig('payment/partpayment/countries'));
 		    $lang = explode('_',Mage::getStoreConfig('general/locale/code',$store));
 
-		    $testmode = Mage::getStoreConfig('payment/partpayment/test_mode');
+		    $testmode = Mage::getStoreConfig('payment/partpayment/test_mode',$store);
 
 
 		    $gateway = Mage::helper("partpayment");
@@ -34,7 +34,7 @@ class Billmate_Common_Adminhtml_BillmatecommonController extends Mage_Adminhtml_
 			    $gateway->savePclasses($eid, $secret, $country, $testmode, $lang[0],$store);
 
 		    $pclass = Mage::getModel('partpayment/pclass')->getCollection();
-		    $pclass->addFieldToFilter('store_id',Mage::helper('partpayment')->getStoreIdForConfig());
+		    $pclass->addFieldToFilter('store_id',$store);
 
 		    if( $pclass->count() > 0 ){
 			    $html = '<div class="grid"><table border="0" class="data"><tr class="headings"><th>PClassid</th><th>Type</th><th>Description</th><th>Months</th><th>Interest Rate</th><th>Invoice Fee</th><th>Start Fee</th><th>Min Amount</th><th>Max Amount</th><th>Expire</th><th>Country</th></tr>';
