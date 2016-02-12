@@ -107,7 +107,7 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
     {
         $baseCurrencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
         $currentCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
-		$value = Mage::helper('directory')->currencyConvert($value,$currentCurrencyCode,$baseCurrencyCode);
+		$value = Mage::helper('directory')->currencyConvert($value,$baseCurrencyCode,$currentCurrencyCode);
 	    return $value;
     }
 	function getInvoiceTaxClass($store)

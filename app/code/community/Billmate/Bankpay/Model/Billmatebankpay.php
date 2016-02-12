@@ -51,7 +51,12 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
             return $this;
         }
 	}
-
+    public function canUseForCurrency($currencyCode)
+    {
+        if($currencyCode == 'SEK')
+            return true;
+        return false;
+    }
     public function isAvailable($quote = null)
     {
         if($quote == null ) return false;
