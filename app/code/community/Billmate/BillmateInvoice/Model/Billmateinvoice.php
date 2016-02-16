@@ -89,7 +89,7 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
 
         $quote = Mage::getModel('checkout/cart')->getQuote();
         $Shipping = $quote->getShippingAddress();
-        if($invoiceFee > 0) {
+        if(strlen(Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' )) > 0 && Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' ) > 0) {
             $feeinfo = Mage::helper('billmateinvoice')
                 ->getInvoiceFeeArray($invoiceFee, $Shipping, $quote->getCustomerTaxClassId());
 
@@ -107,6 +107,8 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
 
     public function canUseForCurrency($currencyCode)
     {
+        $currencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+
         if(in_array($currencyCode,array('SEK','USD','EUR','GBP')))
             return true;
         return false;

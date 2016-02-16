@@ -71,9 +71,11 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     }
     public function canUseForCurrency($currencyCode)
     {
-        if($currencyCode == 'SEK')
-            return true;
-        else return false;
+        $currencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+
+        if($currencyCode != 'SEK')
+            return false;
+        return true;
     }
 
 	public function cancel( Varien_Object $payment )

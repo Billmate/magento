@@ -53,6 +53,8 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
 	}
     public function canUseForCurrency($currencyCode)
     {
+        $currencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+
         if($currencyCode == 'SEK')
             return true;
         return false;
