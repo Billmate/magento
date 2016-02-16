@@ -291,12 +291,14 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             else
                 $rate = 0;
 
-            $orderValues['Cart']['Shipping'] = array(
-                'withouttax' => $Shipping->getShippingAmount()*100,
-                'taxrate' => (int)$rate
-            );
-            $totalValue += $Shipping->getShippingAmount()*100;
-            $totalTax += ($Shipping->getShippingAmount()*100) * ($rate/100);
+            if($Shipping->getShippingAmount() > 0) {
+                $orderValues['Cart']['Shipping'] = array(
+                    'withouttax' => $Shipping->getShippingAmount() * 100,
+                    'taxrate' => (int)$rate
+                );
+                $totalValue += $Shipping->getShippingAmount() * 100;
+                $totalTax += ($Shipping->getShippingAmount() * 100) * ($rate / 100);
+            }
         }
 
         $round = round($quote->getGrandTotal() * 100) - round($totalValue +  $totalTax);
