@@ -70,7 +70,7 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
 		$rate          = $calc->getRate($addressTaxRequest);
 		$taxAmount     = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
 		$baseTaxAmount = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
-		$address->setPaymentTaxAmount($taxAmount);
+		$address->setPaymentTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,MAge::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
 		$address->setBasePaymentTaxAmount($baseTaxAmount);
 //
 		$address->setTaxAmount($address->getTaxAmount() + $taxAmount);
@@ -78,17 +78,21 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
 		/* clime: tax calculation end */
 		
 		
-		$address->setFeeAmount($baseInvoiceFee);
+		$address->setFeeAmount(Mage::helper('directory')->currencyConvert($baseInvoiceFee,MAge::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
 		$address->setBaseFeeAmount($baseInvoiceFee);
-	    $address->setFeeTaxAmount($taxAmount);
+	    $address->setFeeTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,MAge::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
 	    $address->setBaseFeeTaxAmount($baseTaxAmount);
 
 	    $totInv = $baseInvoiceFee+$taxAmount;
 
-        $quote->setFeeAmount($baseInvoiceFee+$taxAmount);
-	    $quote->setFeeTaxAmount($taxAmount);
 
-        $address->setGrandTotal($address->getGrandTotal() + $address->getBaseFeeAmount() );
+
+        $quote->setFeeAmount(Mage::helper('directory')->currencyConvert($baseInvoiceFee,MAge::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+        $quote->setBaseFeeAmount($baseInvoiceFee);
+        $quote->setFeeTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,MAge::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+        $quote->setBaseFeeTaxAmount($baseTaxAmount);
+
+        $address->setGrandTotal($address->getGrandTotal() + $address->getFeeAmount() );
         $address->setBaseGrandTotal($address->getBaseGrandTotal() + $address->getBaseFeeAmount() );
     }
  

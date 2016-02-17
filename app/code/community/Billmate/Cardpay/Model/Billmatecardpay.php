@@ -51,7 +51,10 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
             return $this;
         }
     }
-
+    public function canUseForCurrency($currencyCode)
+    {
+        return true;
+    }
     public function isAvailable($quote = null)
     {
         if($quote == null ) return false;

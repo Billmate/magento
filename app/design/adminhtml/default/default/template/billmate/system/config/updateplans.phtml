@@ -13,7 +13,7 @@ if (strlen($code = Mage::app()->getRequest()->getParam('store'))) { // store lev
 <script type="text/javascript">
     function updateplans(){
 
-        new Ajax.Request('<?php echo $this->getAjaxCheckUrl().'?store='.$store_id ?>',{
+        new Ajax.Request('<?php echo $this->getAjaxCheckUrl().'?store_id='.$store_id ?>',{
             method: 'get',
             onSuccess: function(transport){
                 if(transport.responseText) {

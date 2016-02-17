@@ -124,7 +124,7 @@
 					$cp        = $_item->getProduct();
 					$sp        = Mage::getModel( 'catalog/product' )->loadByAttribute( 'sku', $_item->getSku() );
 
-					$price          = $_directory->currencyConvert( $_item->getCalculationPrice(), $baseCurrencyCode, $currentCurrencyCode );
+					$price = $_item->getCalculationPrice();
 					$percent        = Mage::getSingleton( 'tax/calculation' )
 					                      ->getRate( $request->setProductClassId( $taxclassid ) );
 					$discount       = 0.0;
@@ -135,7 +135,7 @@
 						$discount      = $_item->getDiscountPercent();
 						$marginal      = ( $percent / 100 ) / ( 1 + ( $percent / 100 ) );
 
-						$discountAmount = $_item->getBaseDiscountAmount();
+						$discountAmount = $_item->getDiscountAmount();
 						// $discountPerArticle without VAT
 						$discountAmount = $discountAmount - ( $discountAmount * $marginal );
 
@@ -203,8 +203,8 @@
 
 					// For tierPrices to work, we need to get calculation price not the price on the product.
 					// If a customer buys many of a kind and get a discounted price, the price will bee on the quote item.
-					$price = $_directory->currencyConvert( $_item->getCalculationPrice(), $baseCurrencyCode, $currentCurrencyCode );
 
+					$price = $_item->getCalculationPrice();
 					//Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
 					$discount       = 0.0;
 					$discountAmount = 0;
@@ -214,7 +214,7 @@
 						$discount      = $_item->getDiscountPercent();
 						$marginal      = ( $percent / 100 ) / ( 1 + ( $percent / 100 ) );
 
-						$discountAmount = $_item->getBaseDiscountAmount();
+						$discountAmount = $_item->getDiscountAmount();
 						// $discountPerArticle without VAT
 						$discountAmount = $discountAmount - ( $discountAmount * $marginal );
 
@@ -289,13 +289,14 @@
 				{
 					$rate = 0;
 				}
-
-				$orderValues['Cart']['Shipping'] = array(
-					'withouttax' => $Shipping->getShippingAmount() * 100,
-					'taxrate'    => (int) $rate
-				);
-				$totalValue += $Shipping->getShippingAmount() * 100;
-				$totalTax += ( $Shipping->getShippingAmount() * 100 ) * ( $rate / 100 );
+				if($Shipping->getShippingAmount() > 0) {
+					$orderValues['Cart']['Shipping'] = array(
+						'withouttax' => $Shipping->getShippingAmount() * 100,
+						'taxrate' => (int)$rate
+					);
+					$totalValue += $Shipping->getShippingAmount() * 100;
+					$totalTax += ($Shipping->getShippingAmount() * 100) * ($rate / 100);
+				}
 			}
 
 
@@ -313,20 +314,21 @@
 					// $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
 
 					$orderValues['Cart']['Handling'] = array(
-						'withouttax' => $Shipping->getBaseFeeAmount() * 100,
+						'withouttax' => round($Shipping->getFeeAmount() * 100),
 						'taxrate'    => $feeinfo['rate']
 					);
-					$totalValue += $Shipping->getBaseFeeAmount() * 100;
-					$totalTax += ( $Shipping->getBaseFeeAmount() * 100 ) * ( $feeinfo['rate'] / 100 );
+					$totalValue += $Shipping->getFeeAmount() * 100;
+					$totalTax += ( $Shipping->getFeeAmount() * 100 ) * ( $feeinfo['rate'] / 100 );
 				}
 			}
-			$round = round( ( $quote->getGrandTotal() * 100 ) - ( (int) $totalValue + (int) $totalTax ) );
+			$round = round($quote->getGrandTotal() * 100) - round($totalValue +  $totalTax);
+
 
 			$orderValues['Cart']['Total'] = array(
-				'withouttax' => $totalValue,
-				'tax'        => (int) $totalTax,
-				'rounding'   => $round,
-				'withtax'    => (int) $totalValue + (int) $totalTax + (int) $round
+				'withouttax' => round($totalValue),
+				'tax'        => round($totalTax),
+				'rounding'   => round($round),
+				'withtax'    => round($totalValue +  $totalTax +  $round)
 			);
 			$result                       = $k->addPayment( $orderValues );
 

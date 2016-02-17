@@ -44,6 +44,9 @@ Copy the code below for the size that fits your needs.
 `<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_s.png" alt="Billmate Payment Gateway" /></a>`
 
 ## Changelog
+### 2.1.9 (2016-02-17)
+* Fix - Improved multicurrency calculations.
+* Fix - Multistore settings fixed.
 
 ### 2.1.8 (2016-01-29)
 * Fix - Multiple order mails. 

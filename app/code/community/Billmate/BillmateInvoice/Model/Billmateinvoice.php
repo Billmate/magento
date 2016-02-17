@@ -89,11 +89,12 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
 
         $quote = Mage::getModel('checkout/cart')->getQuote();
         $Shipping = $quote->getShippingAddress();
-        if($invoiceFee > 0) {
+        if(strlen(Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' )) > 0 && Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' ) > 0) {
             $feeinfo = Mage::helper('billmateinvoice')
                 ->getInvoiceFeeArray($invoiceFee, $Shipping, $quote->getCustomerTaxClassId());
 
             $invFee = (isset($feeinfo['rate']) && $feeinfo['rate'] != 0) ? ($feeinfo['rate'] / 100 + 1) * $invoiceFee : $invoiceFee;
+
 
             $invFee = Mage::helper('core')->currency($invFee, true, false);
             return (strlen(Mage::getStoreConfig('payment/billmateinvoice/title')) > 0) ? Mage::helper('billmateinvoice')->__(Mage::getStoreConfig('payment/billmateinvoice/title'), $invFee) : Mage::helper('billmateinvoice')->__('Billmate Invoice - %s invoice fee is added to the order.', $invFee);
@@ -104,6 +105,14 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
 
     }
 
+    public function canUseForCurrency($currencyCode)
+    {
+        $currencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+
+        if(in_array($currencyCode,array('SEK','USD','EUR','GBP')))
+            return true;
+        return false;
+    }
     public function capture(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {

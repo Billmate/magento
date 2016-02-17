@@ -12,7 +12,7 @@ class Billmate_PartPayment_Adminhtml_BillmatepartpaymentController extends Mage_
     public function updateplansAction()
     {
         $collection = Mage::getModel('partpayment/pclass')->getCollection();
-        $store = $this->getRequest()->getParam('store');
+        $store = $this->getRequest()->getParam('store_id');
         $collection->addFieldToFilter('store_id',$store);
         foreach( $collection as $item ){
             $item->delete();

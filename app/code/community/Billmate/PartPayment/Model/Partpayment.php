@@ -23,7 +23,9 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 
         if($quote == null ) return false;
         $countries = explode(',', Mage::getStoreConfig('payment/billmatepartpayment/countries'));
-
+        /**
+         * @var $quote Mage_Sales_Model_Quote
+         */
         //TODO Check active Paymentplan country instead.
         $collection = Mage::getModel('partpayment/pclass')->getCollection();
         $collection->addFieldToFilter('store_id',Mage::app()->getStore()->getId());
@@ -33,7 +35,8 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
             return false;
         }
         //$countries = $collection->getColumnValues('country');
-		
+
+
         $avail = in_array($quote->getBillingAddress()->getCountry(), $countries );
 		if( $avail ){
 			$quote = Mage::getSingleTon('checkout/session')->getQuote();
@@ -65,6 +68,14 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
             return $status;
 		}
 		return $avail;
+    }
+    public function canUseForCurrency($currencyCode)
+    {
+        $currencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+
+        if($currencyCode != 'SEK')
+            return false;
+        return true;
     }
 
 	public function cancel( Varien_Object $payment )
