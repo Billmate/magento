@@ -940,6 +940,7 @@ class BillmateCountry {
             case 'da_DK':
                 return 'da';
             case 'nn_NO':
+            case 'nb_NO':
                 return 'no';
             case (preg_match('/^en_.*/i',$locale) ? true : false):
                 return 'en';
