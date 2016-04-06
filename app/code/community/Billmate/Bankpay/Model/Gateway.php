@@ -73,7 +73,6 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
         );
         $orderValues['PaymentInfo'] = array(
             'paymentdate' => (string)date('Y-m-d'),
-            'paymentterms' => 14,
             'yourreference' => $Billing->getFirstname(). ' ' . $Billing->getLastname(),
             'delivery' => $Shipping->getShippingDescription(),
 
