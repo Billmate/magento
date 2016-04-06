@@ -74,12 +74,8 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
             'delivery' => $Shipping->getShippingDescription(),
 
         );
-        $prompt_name = Mage::getStoreConfig('payment/billmatecardpay/prompt_name') == 1 ? '1' : '0';
-        $do3dsecure = Mage::getStoreConfig('payment/billmatecardpay/do_3d_secure') == 0 ? '0' : '1';
 
         $orderValues['Card'] = array(
-            '3dsecure' => $do3dsecure,
-            'promptname' => $prompt_name,
             'accepturl' => Mage::getUrl('cardpay/cardpay/success',array('_secure' => true)),
             'cancelurl' => Mage::getUrl('cardpay/cardpay/cancel',array('_secure' => true)),
             'callbackurl' => Mage::getUrl('cardpay/cardpay/notify',array('_secure' => true)),
