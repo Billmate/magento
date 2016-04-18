@@ -107,7 +107,8 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             $order->setState('new', $status, '', $isCustomerNotified);
             $order->save();
             $magentoVersion = Mage::getVersion();
-            if(version_compare($magentoVersion,'1.9.1','>='))
+            $isEE = Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise');
+            if(version_compare($magentoVersion,'1.9.1','>=') && !$isEE)
                 $order->queueNewOrderEmail();
             else
                 $order->sendNewOrderEmail();
@@ -297,7 +298,8 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
 
             $magentoVersion = Mage::getVersion();
-            if(version_compare($magentoVersion,'1.9.1','>='))
+            $isEE = Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise');
+            if(version_compare($magentoVersion,'1.9.1','>=') && !$isEE)
                 $order->queueNewOrderEmail();
             else
                 $order->sendNewOrderEmail();
