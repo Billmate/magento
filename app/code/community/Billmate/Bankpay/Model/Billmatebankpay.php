@@ -111,6 +111,18 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
         return (strlen(Mage::getStoreConfig('payment/billmatebankpay/title')) > 0) ? Mage::helper('billmatebankpay')->__(Mage::getStoreConfig('payment/billmatebankpay/title')) : Mage::helper('billmatebankpay')->__('Billmate Bank');
     }
 
+    public function getCheckoutRedirectUrl()
+    {
+        $session = Mage::getSingleton('checkout/session');
+        $session->setBillmateQuoteId($session->getQuoteId());
+        $session->setRebuildCart(true);
+
+        $gateway = Mage::getSingleton('billmatebankpay/gateway');
+        $result = $gateway->makePayment();
+
+        return $result['url'];
+    }
+/*
     public function getOrderPlaceRedirectUrl()
     {
         //when you click on place order you will be redirected on this url, if you don't want this action remove this method
@@ -123,7 +135,7 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
 
         return $result['url'];
     }
-
+*/
 
     public function capture(Varien_Object $payment, $amount)
     {
