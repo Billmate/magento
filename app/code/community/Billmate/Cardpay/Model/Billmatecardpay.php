@@ -46,6 +46,20 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
                 }
                 $payment->setTransactionId($result['number']);
                 $payment->setIsTransactionClosed(1);
+                Mage::dispatchEvent('billmate_cardpay_voided',array('payment' => $payment));
+
+            }
+            if($paymentInfo['PaymentData']['status'] == 'Paid'){
+                $values['partcredit'] = false;
+                $paymentData['PaymentData'] = $values;
+                $result = $k->creditPayment($paymentData);
+                if(!isset($result['code'])){
+                    $k->activatePayment(array('number' => $result['number']));
+
+                    $payment->setTransactionId($result['number']);
+                    $payment->setIsTransactionClosed(1);
+                    Mage::dispatchEvent('billmate_cardpay_voided',array('payment' => $payment));
+                }
             }
 
             return $this;
@@ -104,6 +118,8 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
                 if(!isset($result['code'])){
                     $payment->setTransactionId($result['number']);
                     $payment->setIsTransactionClosed(1);
+                    Mage::dispatchEvent('billmate_cardpay_capture',array('payment' => $payment, 'amount' => $amount));
+
                 }
 
             }
@@ -132,6 +148,8 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
                 if(!isset($result['code'])){
                     $payment->setTransactionId($result['number']);
                     $payment->setIsTransactionClosed(1);
+                    Mage::dispatchEvent('billmate_cardpay_refund',array('payment' => $payment, 'amount' => $amount));
+
                 }
             }
         } else {
