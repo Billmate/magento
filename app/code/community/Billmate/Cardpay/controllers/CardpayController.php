@@ -241,6 +241,8 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', 'pending_payment', '', false);
                         $order->save();
+                        $this->sendNewOrderMail($order);
+
                     }
                 }
                 else {
@@ -258,7 +260,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                         $order->setState('new', Mage::getStoreConfig('payment/billmatecardpay/order_status'), '', false);
                         $order->save();
                         $this->addTransaction($order, $data);
-
+                        $this->sendNewOrderMail($order);
                     }
                 }
                 else {
@@ -306,6 +308,9 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', 'pending_payment', '', false);
                         $order->save();
+                        $this->addTransaction($order, $data);
+
+                        $this->sendNewOrderMail($order);
                     }
                 }
                 else {
@@ -323,6 +328,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                         $order->save();
 
                         $this->addTransaction($order, $data);
+                        $this->sendNewOrderMail($order);
                     }
 
                 }
@@ -490,5 +496,18 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
             ->save();
         $payment->save();
+    }
+
+    /**
+     * @param $order
+     */
+    public function sendNewOrderMail($order)
+    {
+        $magentoVersion = Mage::getVersion();
+        $isEE = Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise');
+        if (version_compare($magentoVersion, '1.9.1', '>=') && !$isEE)
+            $order->queueNewOrderEmail();
+        else
+            $order->sendNewOrderEmail();
     }
 }

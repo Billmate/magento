@@ -157,53 +157,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
      */
     public function cancelAction()
     {
-        $session = Mage::getSingleton('checkout/session');
-        $order = Mage::getModel('sales/order');
-		$message = 'Order canceled by user';
-        $order_id = $session->getLastRealOrderId();
-        $order->loadByIncrementId($order_id);
-
-        if (!$order->isCanceled() && !$order->hasInvoices()) {
-            $order->cancel();
-            $order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, $message);
-            $order->save();
-
-            // Rollback stock
-           // Mage::helper('billmatecardpay')->rollbackStockItems($order);
-        }
-		
-        //$session->setQuoteId($session->getBillmateQuoteId(true));
-        if ($quoteId = $session->getLastQuoteId()) {
-            $quote = Mage::getModel('sales/quote')->load($quoteId);
-            if ($quote->getId()) {
-                $quote->setIsActive(true)->save();
-                $session->setQuoteId($quoteId);
-            }
-			
-			$quoteItems = $quote->getAllItems();
-			if( sizeof( $quoteItems ) <=0 ){
-				$items = $order->getAllItems();
-				if( $items ){
-					foreach( $items as $item ){
-						$product1 = Mage::getModel('catalog/product')->load($item->getProductId());
-						$qty = $item->getQtyOrdered();
-						$quote->addProduct($product1, $qty);
-					}
-				}else{
-					$quote->setIsActive(false)->save();
-					$this->_redirect('/');
-				}
-                $quote->setReservedOrderId(null);
-				$quote->collectTotals()->save();
-			}
-        }
-		$checkouturl = $session->getBillmateCheckOutUrl();
-		$checkouturl = empty($checkouturl)?Mage::helper('checkout/url')->getCheckoutUrl():$checkouturl;
-        $session->unsRebuildCart();
-		Mage::getSingleton('core/session')->setFailureMsg('order_failed');
-		Mage::getSingleton('checkout/session')->setFirstTimeChk('0');
-		Mage::dispatchEvent('sales_model_service_quote_submit_failure', array('order'=>$order, 'quote'=>$quote));
-        header('location:'. $checkouturl);
+        $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
 		exit;
     }
 
@@ -257,6 +211,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                         $order->setState('new', Mage::getStoreConfig('payment/billmatebankpay/order_status'), '', false);
                         $order->save();
                         $this->addTransaction($order,$data);
+
+                        $this->sendNewOrderMail($order);
 
                     }
                 }
@@ -321,6 +277,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                         $order->setState('new', Mage::getStoreConfig('payment/billmatebankpay/order_status'), '', false);
                         $order->save();
                         $this->addTransaction($order,$data);
+                        $this->sendNewOrderMail($order);
+
                     }
 
                 }
@@ -485,5 +443,18 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
             ->save();
         $payment->save();
+    }
+
+    /**
+     * @param $order
+     */
+    public function sendNewOrderMail($order)
+    {
+        $magentoVersion = Mage::getVersion();
+        $isEE = Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise');
+        if (version_compare($magentoVersion, '1.9.1', '>=') && !$isEE)
+            $order->queueNewOrderEmail();
+        else
+            $order->sendNewOrderEmail();
     }
 }
