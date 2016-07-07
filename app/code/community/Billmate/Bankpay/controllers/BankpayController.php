@@ -157,8 +157,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
      */
     public function cancelAction()
     {
-        $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
-		exit;
+        $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
+		return;
     }
 
     public function callbackAction()
