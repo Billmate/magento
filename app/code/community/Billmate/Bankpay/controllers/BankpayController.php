@@ -157,6 +157,31 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
      */
     public function cancelAction()
     {
+        $k = Mage::helper('billmatebankpay')->getBillmate(true, false);
+
+        if(empty($_POST)) $_POST = $_GET;
+        $data = $k->verify_hash($_POST);
+        Mage::log('datacancel'.print_r($data,true));
+
+        if(isset($data['code'])){
+            Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your payment'));
+            $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
+            return;
+        }
+        if(isset($data['status'])){
+            switch(strtolower($data['status'])){
+                case 'cancelled':
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('You cancelled the payment'));
+                    $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    return;
+                    break;
+                case 'failed':
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your payment'));
+                    $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    return;
+                    break;
+            }
+        }
         $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
 		return;
     }
