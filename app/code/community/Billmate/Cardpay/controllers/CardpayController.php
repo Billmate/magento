@@ -173,12 +173,12 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
             switch(strtolower($data['status'])){
                 case 'cancelled':
                     Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('You cancelled the payment'));
-                    $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
                     return;
                     break;
                 case 'failed':
                     Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your payment'));
-                    $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
                     return;
                     break;
             }
