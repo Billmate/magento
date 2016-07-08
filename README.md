@@ -11,7 +11,7 @@ Billmate Gateway is a plugin that extends Magento, allowing your customers to ge
 # Supported Checkouts
 * Templates Master Firecheckout. 
 * Streamcheckout.
-* One step checkout.
+* Idev - One step checkout.
 * Standard multi and onestepcheckout.
 
 ## Installation
