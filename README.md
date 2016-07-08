@@ -8,6 +8,12 @@ Billmate Gateway is a plugin that extends Magento, allowing your customers to ge
 ## Important Note
 * The automatic order activation on status change is supported from Magento version 1.7 and above.
 
+# Supported Checkouts
+* Templates Master Firecheckout. 
+* Streamcheckout.
+* One step checkout.
+* Standard multi and onestepcheckout.
+
 ## Installation
 
 1. Download the latest release zip file.
