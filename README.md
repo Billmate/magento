@@ -17,6 +17,8 @@ Billmate Gateway is a plugin that extends Magento, allowing your customers to ge
 5. Configure payment method specific settings under "System" --> "Configuration" --> "Payment Methods".
 6. Make a test purchase for every payment method to verify that you have made the correct settings.
 
+[Link to our Configuration Manual](https://billmate.se/plugins/manual/Installation_Manual_Magento_Billmate.pdf)
+
 ## Known issues
 * Magento version 1.6 does not support different VAT rates on product the correct way and therefor Billmate Payment Gateway does not support it.
 * I entered the correct credentials but still get error code "9011 Invalid credentials". This could be due to that the current store config is not correct. [Follow this guide to resolve it.](https://github.com/Billmate/magento/wiki/Common-issues,errors-&-solutions#user-content-cant-place-orders-even-though-you-have-entered-the-correct-credentials)
@@ -44,6 +46,12 @@ Copy the code below for the size that fits your needs.
 `<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_s.png" alt="Billmate Payment Gateway" /></a>`
 
 ## Changelog
+
+### 2.2(2016-07-08)
+* Enhancement - Improved card and bank logic for creating order after valid/pending payment. 
+* Compatibility - Enterprise version.
+
+
 ### 2.1.9 (2016-02-17)
 * Fix - Improved multicurrency calculations.
 * Fix - Multistore settings fixed.
