@@ -26,13 +26,13 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
             if (!$order->isCanceled() && !$order->hasInvoices()) {
 
-                $message = Mage::helper('billmatecardpay')->__('Order canceled by callback');
+                $message = Mage::helper('billmatebankpay')->__('Order canceled by callback');
                 $order->cancel();
                 $order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, $message);
                 $order->save();
 
                 // Rollback stock
-                // Mage::helper('billmatecardpay')->rollbackStockItems($order);
+                // Mage::helper('billmatebankpay')->rollbackStockItems($order);
             }
 
             //$session->setQuoteId($session->getBillmateQuoteId(true));
@@ -161,22 +161,22 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
         if(empty($_POST)) $_POST = $_GET;
         $data = $k->verify_hash($_POST);
-        Mage::log('datacancel'.print_r($data,true));
+        
 
         if(isset($data['code'])){
-            Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your payment'));
+            Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
             $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
             return;
         }
         if(isset($data['status'])){
             switch(strtolower($data['status'])){
                 case 'cancelled':
-                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('You cancelled the payment'));
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('The bank payment has been canceled. Please try again or choose a different payment method.'));
                     $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
                     return;
                     break;
                 case 'failed':
-                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your payment'));
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
                     $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
                     return;
                     break;
@@ -222,7 +222,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                     }
                 }
                 else {
-                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your order'));
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
                     $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
                     return;
                 }
@@ -242,18 +242,18 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                     }
                 }
                 else {
-                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your order'));
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
                     $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
                     return;
                 }
                 break;
             case 'cancelled':
-                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('You have cancelled your payment, do you want to use another payment method?'));
+                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('The bank payment has been canceled. Please try again or choose a different payment method.'));
                 $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
                 return;
                 break;
             case 'failed':
-                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your payment'));
+                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
                 $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
                 return;
                 break;
@@ -273,7 +273,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         if(empty($_POST)) $_POST = $_GET;
         $data = $k->verify_hash($_POST);
         if(isset($data['code'])){
-            Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your payment'));
+            Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
             $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
             return;
         }
@@ -289,7 +289,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                     }
                 }
                 else {
-                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your order'));
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
                     $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
                     return;
                 }
@@ -308,17 +308,17 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
                 }
                 else {
-                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your order'));
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
                     $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
                     return;                }
                 break;
             case 'cancelled':
-                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('You have cancelled your payment, do you want to use another payment method?'));
+                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('The bank payment has been canceled. Please try again or choose a different payment method.'));
                 $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
                 return;
                 break;
             case 'failed':
-                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Something went wrong with your payment'));
+                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
                 $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
                 return;
                 break;
