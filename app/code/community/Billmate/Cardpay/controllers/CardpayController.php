@@ -207,8 +207,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         if(!$quote->getId()){
 
         }
-        Mage::log('quote'.print_r($quote->getData(),true));
-        Mage::log('data from billmate'.print_r($data,true));
+        
 
         switch(strtolower($data['status']))
         {
@@ -222,6 +221,13 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                         $order->save();
                         $this->sendNewOrderMail($order);
 
+                    } else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', 'pending_payment', '', false);
+                        $order->save();
+
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
                     }
                 }
                 else {
@@ -240,6 +246,13 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                         $order->save();
                         $this->addTransaction($order, $data);
                         $this->sendNewOrderMail($order);
+                    } else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new',  Mage::getStoreConfig('payment/billmatecardpay/order_status'), '', false);
+                        $order->save();
+
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
                     }
                 }
                 else {
@@ -290,6 +303,13 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                         $this->addTransaction($order, $data);
 
                         $this->sendNewOrderMail($order);
+                    }  else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', 'pending_payment', '', false);
+                        $order->save();
+
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
                     }
                 }
                 else {
@@ -308,6 +328,13 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
 
                         $this->addTransaction($order, $data);
                         $this->sendNewOrderMail($order);
+                    } else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', Mage::getStoreConfig('payment/billmatecardpay/order_status'), '', false);
+                        $order->save();
+
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
                     }
 
                 }

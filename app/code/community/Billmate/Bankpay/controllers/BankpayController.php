@@ -206,8 +206,6 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         if(!$quote->getId()){
 
         }
-        Mage::log('quote'.print_r($quote->getData(),true));
-        Mage::log('data from billmate'.print_r($data,true));
 
         switch(strtolower($data['status']))
         {
@@ -219,6 +217,13 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', 'pending_payment', '', false);
                         $order->save();
+                    }  else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', 'pending_payment', '', false);
+                        $order->save();
+
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
                     }
                 }
                 else {
@@ -239,6 +244,13 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
                         $this->sendNewOrderMail($order);
 
+                    } else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', 'pending_payment', '', false);
+                        $order->save();
+
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
                     }
                 }
                 else {
@@ -286,7 +298,15 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', 'pending_payment', '', false);
                         $order->save();
+                    } else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', 'pending_payment', '', false);
+                        $order->save();
+
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
                     }
+
                 }
                 else {
                     Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
@@ -303,7 +323,13 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                         $order->save();
                         $this->addTransaction($order,$data);
                         $this->sendNewOrderMail($order);
+                    } else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new',Mage::getStoreConfig('payment/billmatebankpay/order_status'), '', false);
+                        $order->save();
 
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
                     }
 
                 }
