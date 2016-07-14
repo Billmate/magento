@@ -55,7 +55,7 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
-### 2.2(2016-07-08)
+### 2.2(2016-07-14)
 * Enhancement - Improved card and bank logic for creating order after valid/pending payment. 
 * Compatibility - Enterprise version.
 
