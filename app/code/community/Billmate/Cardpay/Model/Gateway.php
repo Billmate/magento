@@ -59,6 +59,7 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
         $ship_address = $bill_address = array();
         $shipp = $Shipping->getStreet();
         $bill = $Billing->getStreet();
+        $quote->reserveOrderId();
         $orderValues['PaymentData'] = array(
             'method' => 8,
             'currency' => $currentCurrencyCode,
@@ -70,20 +71,15 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
         );
         $orderValues['PaymentInfo'] = array(
             'paymentdate' => (string)date('Y-m-d'),
-            'paymentterms' => 14,
             'yourreference' => $Billing->getFirstname(). ' ' . $Billing->getLastname(),
             'delivery' => $Shipping->getShippingDescription(),
 
         );
-        $prompt_name = Mage::getStoreConfig('payment/billmatecardpay/prompt_name') == 1 ? '1' : '0';
-        $do3dsecure = Mage::getStoreConfig('payment/billmatecardpay/do_3d_secure') == 0 ? '0' : '1';
 
         $orderValues['Card'] = array(
-            '3dsecure' => $do3dsecure,
-            'promptname' => $prompt_name,
-            'accepturl' => Mage::getUrl('cardpay/cardpay/success',array('_secure' => true)),
+            'accepturl' => Mage::getUrl('cardpay/cardpay/accept',array('billmate_quote_id' => $quote->getId(),'_secure' => true)),
             'cancelurl' => Mage::getUrl('cardpay/cardpay/cancel',array('_secure' => true)),
-            'callbackurl' => Mage::getUrl('cardpay/cardpay/notify',array('_secure' => true)),
+            'callbackurl' => Mage::getUrl('cardpay/cardpay/callback',array('billmate_quote_id' => $quote->getId(),'_secure' => true)),
             'returnmethod' => (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET'
         );
 

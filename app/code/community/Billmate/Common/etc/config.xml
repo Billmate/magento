@@ -86,7 +86,7 @@
             </billmatecommon>
         </routers>
         <events>
-            <controller_action_predispatch_firecheckout_index_index>
+            <!--<controller_action_predispatch_firecheckout_index_index>
                 <observers>
                     <billmate_firecheckout_index>
                         <class>Billmate_Common_Model_Observer</class>
@@ -101,7 +101,7 @@
                         <method>redirectToCancelUrl</method>
                     </billmate_onepagecheckout_index>
                 </observers>
-            </controller_action_predispatch_checkout_onepage_index>
+            </controller_action_predispatch_checkout_onepage_index>-->
         </events>
     </frontend>
 </config>

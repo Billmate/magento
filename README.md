@@ -8,14 +8,24 @@ Billmate Gateway is a plugin that extends Magento, allowing your customers to ge
 ## Important Note
 * The automatic order activation on status change is supported from Magento version 1.7 and above.
 
+# Supported Checkouts
+* Templates Master Firecheckout. 
+* Streamcheckout.
+* Idev - One step checkout.
+* Standard multi and onestepcheckout.
+
 ## Installation
 
 1. Download the latest release zip file.
 2. Extract the zip file.
 3. Upload the zip files contents into the Magento root.
-4. Configure the general settings under "System" --> "Configuration" --> "Billmate general settings". 
-5. Configure payment method specific settings under "System" --> "Configuration" --> "Payment Methods".
-6. Make a test purchase for every payment method to verify that you have made the correct settings.
+4. Go To "System" -> "Cache Management" -> "Clear All Caches".
+5. Configure the general settings under "System" --> "Configuration" --> "Billmate general settings". 
+6. If you get 404 error when heading to the general settings. Log out of admin and log in again.
+7. Configure payment method specific settings under "System" --> "Configuration" --> "Payment Methods".
+8. Make a test purchase for every payment method to verify that you have made the correct settings.
+
+[Link to our Configuration Manual](https://billmate.se/plugins/manual/Installation_Manual_Magento_Billmate.pdf)
 
 ## Known issues
 * Magento version 1.6 does not support different VAT rates on product the correct way and therefor Billmate Payment Gateway does not support it.
@@ -44,6 +54,12 @@ Copy the code below for the size that fits your needs.
 `<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_s.png" alt="Billmate Payment Gateway" /></a>`
 
 ## Changelog
+
+### 2.2(2016-07-08)
+* Enhancement - Improved card and bank logic for creating order after valid/pending payment. 
+* Compatibility - Enterprise version.
+
+
 ### 2.1.9 (2016-02-17)
 * Fix - Improved multicurrency calculations.
 * Fix - Multistore settings fixed.

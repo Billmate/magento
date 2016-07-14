@@ -60,6 +60,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
 	    $shipp = $Shipping->getStreet();
         $bill = $Billing->getStreet();
 
+        $quote->reserveOrderId();
         $orderValues['PaymentData'] = array(
             'method' => 16,
             'currency' => $currentCurrencyCode,
@@ -73,16 +74,15 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
         );
         $orderValues['PaymentInfo'] = array(
             'paymentdate' => (string)date('Y-m-d'),
-            'paymentterms' => 14,
             'yourreference' => $Billing->getFirstname(). ' ' . $Billing->getLastname(),
             'delivery' => $Shipping->getShippingDescription(),
 
         );
 
         $orderValues['Card'] = array(
-            'accepturl' => Mage::getUrl('bankpay/bankpay/success',array('_secure' => true)),
+            'accepturl' => Mage::getUrl('bankpay/bankpay/accept',array('billmate_quote_id' => $quote->getId(),'_secure' => true)),
             'cancelurl' => Mage::getUrl('bankpay/bankpay/cancel',array('_secure' => true)),
-            'callbackurl' => Mage::getUrl('bankpay/bankpay/notify',array('_secure' => true)),
+            'callbackurl' => Mage::getUrl('bankpay/bankpay/callback',array('billmate_quote_id' => $quote->getId(),'_secure' => true)),
             'returnmethod' => (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET'
         );
 

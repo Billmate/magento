@@ -26,13 +26,13 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
             if (!$order->isCanceled() && !$order->hasInvoices()) {
 
-                $message = Mage::helper('billmatecardpay')->__('Order canceled by callback');
+                $message = Mage::helper('billmatebankpay')->__('Order canceled by callback');
                 $order->cancel();
                 $order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, $message);
                 $order->save();
 
                 // Rollback stock
-                // Mage::helper('billmatecardpay')->rollbackStockItems($order);
+                // Mage::helper('billmatebankpay')->rollbackStockItems($order);
             }
 
             //$session->setQuoteId($session->getBillmateQuoteId(true));
@@ -109,7 +109,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $session->unsRebuildCart();
 
             $magentoVersion = Mage::getVersion();
-            if(version_compare($magentoVersion,'1.9.1','>='))
+            $isEE = Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise');
+            if(version_compare($magentoVersion,'1.9.1','>=') && !$isEE)
                 $order->queueNewOrderEmail();
             else
                 $order->sendNewOrderEmail();
@@ -156,54 +157,228 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
      */
     public function cancelAction()
     {
-        $session = Mage::getSingleton('checkout/session');
-        $order = Mage::getModel('sales/order');
-		$message = 'Order canceled by user';
-        $order_id = $session->getLastRealOrderId();
-        $order->loadByIncrementId($order_id);
+        $k = Mage::helper('billmatebankpay')->getBillmate(true, false);
 
-        if (!$order->isCanceled() && !$order->hasInvoices()) {
-            $order->cancel();
-            $order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, $message);
-            $order->save();
+        if(empty($_POST)) $_POST = $_GET;
+        $data = $k->verify_hash($_POST);
+        
 
-            // Rollback stock
-           // Mage::helper('billmatecardpay')->rollbackStockItems($order);
+        if(isset($data['code'])){
+            Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
+            $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
+            return;
         }
-		
-        //$session->setQuoteId($session->getBillmateQuoteId(true));
-        if ($quoteId = $session->getLastQuoteId()) {
-            $quote = Mage::getModel('sales/quote')->load($quoteId);
-            if ($quote->getId()) {
-                $quote->setIsActive(true)->save();
-                $session->setQuoteId($quoteId);
+        if(isset($data['status'])){
+            switch(strtolower($data['status'])){
+                case 'cancelled':
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('The bank payment has been canceled. Please try again or choose a different payment method.'));
+                    $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    return;
+                    break;
+                case 'failed':
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
+                    $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    return;
+                    break;
             }
-			
-			$quoteItems = $quote->getAllItems();
-			if( sizeof( $quoteItems ) <=0 ){
-				$items = $order->getAllItems();
-				if( $items ){
-					foreach( $items as $item ){
-						$product1 = Mage::getModel('catalog/product')->load($item->getProductId());
-						$qty = $item->getQtyOrdered();
-						$quote->addProduct($product1, $qty);
-					}
-				}else{
-					$quote->setIsActive(false)->save();
-					$this->_redirect('/');
-				}
-                $quote->setReservedOrderId(null);
-				$quote->collectTotals()->save();
-			}
         }
-		$checkouturl = $session->getBillmateCheckOutUrl();
-		$checkouturl = empty($checkouturl)?Mage::helper('checkout/url')->getCheckoutUrl():$checkouturl;
-        $session->unsRebuildCart();
-		Mage::getSingleton('core/session')->setFailureMsg('order_failed');
-		Mage::getSingleton('checkout/session')->setFirstTimeChk('0');
-		Mage::dispatchEvent('sales_model_service_quote_submit_failure', array('order'=>$order, 'quote'=>$quote));
-        header('location:'. $checkouturl);
-		exit;
+        $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
+		return;
+    }
+
+    public function callbackAction()
+    {
+        $_POST = file_get_contents('php://input');
+        $quoteId = $this->getRequest()->getParam('billmate_quote_id');
+
+        $_POST = empty($_POST) ? $_GET : $_POST;
+        $k = Mage::helper('billmatebankpay')->getBillmate(true,false);
+        $session = Mage::getSingleton('checkout/session');
+        $data = $k->verify_hash($_POST);
+
+
+        if(isset($data['code'])){
+            Mage::log('Something went wrong billmate bank'. print_r($data,true),0,'billmate.log',true);
+            return;
+        }
+
+        $quote = Mage::getModel('sales/quote')->load($quoteId);
+        if(!$quote->getId()){
+
+        }
+
+        switch(strtolower($data['status']))
+        {
+            case 'pending':
+                $order = $this->place($quote);
+
+                if($order ) {
+                    if($order->getStatus() != Mage::getStoreConfig('payment/billmatebankpay/order_status')) {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', 'pending_payment', '', false);
+                        $order->save();
+                    }  else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', 'pending_payment', '', false);
+                        $order->save();
+
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
+                    }
+                }
+                else {
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
+                    $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    return;
+                }
+                break;
+            case 'paid':
+                $order = $this->place($quote);
+                if($order) {
+
+                    if($order->getStatus() != Mage::getStoreConfig('payment/billmatebankpay/order_status')) {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', Mage::getStoreConfig('payment/billmatebankpay/order_status'), '', false);
+                        $order->save();
+                        $this->addTransaction($order,$data);
+
+                        $this->sendNewOrderMail($order);
+
+                    } else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', 'pending_payment', '', false);
+                        $order->save();
+
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
+                    }
+                }
+                else {
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
+                    $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    return;
+                }
+                break;
+            case 'cancelled':
+                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('The bank payment has been canceled. Please try again or choose a different payment method.'));
+                $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                return;
+                break;
+            case 'failed':
+                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
+                $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                return;
+                break;
+
+        }
+    }
+    
+    public function acceptAction()
+    {
+        $quoteId = Mage::getSingleton('checkout/session')->getBillmateQuoteId();
+
+        /** @var  $quote Mage_Sales_Model_Quote */
+        $quote = Mage::getSingleton('checkout/session')->getQuote();
+
+        $k = Mage::helper('billmatebankpay')->getBillmate(true, false);
+
+        if(empty($_POST)) $_POST = $_GET;
+        $data = $k->verify_hash($_POST);
+        if(isset($data['code'])){
+            Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
+            $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
+            return;
+        }
+        switch(strtolower($data['status']))
+        {
+            case 'pending':
+                $order = $this->place($quote);
+                if($order && $order->getStatus()) {
+                    if($order->getStatus() != Mage::getStoreConfig('payment/billmatebankpay/order_status')) {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', 'pending_payment', '', false);
+                        $order->save();
+                    } else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', 'pending_payment', '', false);
+                        $order->save();
+
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
+                    }
+
+                }
+                else {
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
+                    $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    return;
+                }
+                break;
+            case 'paid':
+                $order = $this->place($quote);
+                if($order) {
+                    if($order->getStatus() != Mage::getStoreConfig('payment/billmatebankpay/order_status')) {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new', Mage::getStoreConfig('payment/billmatebankpay/order_status'), '', false);
+                        $order->save();
+                        $this->addTransaction($order,$data);
+                        $this->sendNewOrderMail($order);
+                    } else {
+                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
+                        $order->setState('new',Mage::getStoreConfig('payment/billmatebankpay/order_status'), '', false);
+                        $order->save();
+
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+                        return;
+                    }
+
+                }
+                else {
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
+                    $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    return;                }
+                break;
+            case 'cancelled':
+                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('The bank payment has been canceled. Please try again or choose a different payment method.'));
+                $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                return;
+                break;
+            case 'failed':
+                Mage::getSingleton('core/session')->addError(Mage::helper('billmatebankpay')->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
+                $this->_redirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                return;
+                break;
+
+        }
+
+        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+        return;
+
+
+    }
+
+    public function place($quote)
+    {
+        /** @var  $quote Mage_Sales_Model_Quote */
+        $orderModel = Mage::getModel('sales/order');
+        $orderModel->load($quote->getId(), 'quote_id');
+        if($orderModel->getId()){
+           return $orderModel;
+        }
+        $quote->collectTotals();
+        $service = Mage::getModel('sales/service_quote',$quote);
+        $service->submitAll();
+        Mage::getSingleton('checkout/session')->setLastQuoteId($quote->getId())
+            ->setLastSuccessQuoteId($quote->getId())
+            ->clearHelperData();
+        $order = $service->getOrder();
+        if($order){
+            Mage::getSingleton('checkout/session')->setLastOrderId($order->getId())
+                ->setLastRealOrderId($order->getIncrementId());
+
+        }
+        $quote->setIsActive(false)->save();
+        return ($order) ? $order : false;
     }
 
     /**
@@ -220,7 +395,6 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());
 
         $status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
-        Mage::log('time success'.date('Y-m-d H:i:s'));
 
         $session->setLastSuccessQuoteId($session->getBillmateQuoteId());
         $session->setLastQuoteId($session->getBillmateQuoteId());
@@ -296,11 +470,42 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $session->setQuoteId($session->getBillmateStandardQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
             $magentoVersion = Mage::getVersion();
-            if(version_compare($magentoVersion,'1.9.1','>='))
+            $isEE = Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise');
+            if(version_compare($magentoVersion,'1.9.1','>=') && !$isEE)
 			    $order->queueNewOrderEmail();
             else
                 $order->sendNewOrderEmail();
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
         }
+    }
+    /**
+     * @param $order
+     * @param $data
+     */
+    public function addTransaction($order, $data)
+    {
+        $payment = $order->getPayment();
+        $info = $payment->getMethodInstance()->getInfoInstance();
+        $info->setAdditionalInformation('invoiceid', $data['number']);
+
+        $payment->setTransactionId($data['number']);
+        $payment->setIsTransactionClosed(0);
+        $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH, null, false, false);
+        $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
+            ->save();
+        $payment->save();
+    }
+
+    /**
+     * @param $order
+     */
+    public function sendNewOrderMail($order)
+    {
+        $magentoVersion = Mage::getVersion();
+        $isEE = Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise');
+        if (version_compare($magentoVersion, '1.9.1', '>=') && !$isEE)
+            $order->queueNewOrderEmail();
+        else
+            $order->sendNewOrderEmail();
     }
 }
