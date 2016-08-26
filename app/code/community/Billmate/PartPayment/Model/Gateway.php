@@ -25,7 +25,7 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         $methodname = $payment['method'] == 'billmateinvoice'? 'billmateinvoice': 'billmatepartpayment';
         $k = Mage::helper('partpayment')->getBillmate(true, false);
 
-        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+        $customerId = (!Mage::getSingleton('customer/session')->getCustomer()->getId()) ? $quote->getCustomerId() : Mage::getSingleton('customer/session')->getCustomer()->getId();
         $iso3 = Mage::getModel('directory/country')->load($Billing->getCountryId())->getIso3Code();
         $countryCode = Mage::getStoreConfig('general/country/default',Mage::app()->getStore());
         $storeCountryIso2 = Mage::getModel('directory/country')->loadByCode($countryCode)->getIso2Code();

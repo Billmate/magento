@@ -18,7 +18,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
 		);
         $k = Mage::helper('billmatebankpay')->getBillmate(true, false);
 
-        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+        $customerId = (!Mage::getSingleton('customer/session')->getCustomer()->getId()) ? $quote->getCustomerId() : Mage::getSingleton('customer/session')->getCustomer()->getId();
         
 
       //  $quote = Mage::getSingleton('checkout/session')->getQuote();        

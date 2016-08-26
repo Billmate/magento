@@ -18,7 +18,7 @@
 			$methodname = $payment['method'] == 'billmateinvoice' ? 'billmateinvoice' : 'billmatepartpayment';
 			$k          = Mage::helper( 'billmateinvoice' )->getBillmate( true, false );
 
-			$customerId       = Mage::getSingleton( 'customer/session' )->getCustomer()->getId();
+			$customerId = (!Mage::getSingleton('customer/session')->getCustomer()->getId()) ? $quote->getCustomerId() : Mage::getSingleton('customer/session')->getCustomer()->getId();
 			$countryCode      = Mage::getStoreConfig( 'general/country/default', Mage::app()->getStore() );
 			$storeCountryIso2 = Mage::getModel( 'directory/country' )->loadByCode( $countryCode )->getIso2Code();
 			$storeLanguage    = Mage::app()->getLocale()->getLocaleCode();
