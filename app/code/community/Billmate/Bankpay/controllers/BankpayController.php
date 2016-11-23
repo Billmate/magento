@@ -213,10 +213,11 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 $order = $this->place($quote);
 
                 if($order ) {
-                    if($order->getStatus() != Mage::getStoreConfig('payment/billmatebankpay/order_status')) {
-                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
-                        $order->setState('new', 'pending_payment', '', false);
-                        $order->save();
+                    if($order->getStatus() == Mage::getStoreConfig('payment/billmatebankpay/order_status')) {
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+
+                        break;
+
                     }  else {
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', 'pending_payment', '', false);
@@ -239,6 +240,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                     if($order->getStatus() != Mage::getStoreConfig('payment/billmatebankpay/order_status')) {
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', Mage::getStoreConfig('payment/billmatebankpay/order_status'), '', false);
+                        $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
+
                         $order->save();
                         $this->addTransaction($order,$data);
 
@@ -247,6 +250,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                     } else {
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', 'pending_payment', '', false);
+                        $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
+
                         $order->save();
 
                         $this->_redirect('checkout/onepage/success',array('_secure' => true));
@@ -294,10 +299,11 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             case 'pending':
                 $order = $this->place($quote);
                 if($order && $order->getStatus()) {
-                    if($order->getStatus() != Mage::getStoreConfig('payment/billmatebankpay/order_status')) {
-                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
-                        $order->setState('new', 'pending_payment', '', false);
-                        $order->save();
+                    if($order->getStatus() == Mage::getStoreConfig('payment/billmatebankpay/order_status')) {
+                        $this->_redirect('checkout/onepage/success',array('_secure' => true));
+
+                        break;
+
                     } else {
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', 'pending_payment', '', false);
@@ -320,12 +326,14 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                     if($order->getStatus() != Mage::getStoreConfig('payment/billmatebankpay/order_status')) {
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', Mage::getStoreConfig('payment/billmatebankpay/order_status'), '', false);
+                        $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
                         $order->save();
                         $this->addTransaction($order,$data);
                         $this->sendNewOrderMail($order);
                     } else {
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new',Mage::getStoreConfig('payment/billmatebankpay/order_status'), '', false);
+                        $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
                         $order->save();
 
                         $this->_redirect('checkout/onepage/success',array('_secure' => true));

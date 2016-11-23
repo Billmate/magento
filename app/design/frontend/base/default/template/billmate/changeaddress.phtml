@@ -39,7 +39,7 @@ if($this->isMatched()):
 	echo 'closefunc();modalWin.HideModalPopUp();paymentSave();',"\n";
 	echo '}'."\n";
 
-	echo 'if(typeof checkout.form != "undefined"  || typeof checkoutForm != "undefined" || typeof OneStepCheckoutLoginPopup != "undefined"){',"\n";
+	echo 'if((typeof checkout != "undefined" && typeof checkout.form != "undefined" ) || typeof checkoutForm != "undefined" || typeof OneStepCheckoutLoginPopup != "undefined"){',"\n";
 	if(Mage::getStoreConfig('firecheckout/general/enabled') && Mage::getSingleton('customer/session')->isLoggedIn()){
 		echo 'billing.newAddress(true)'."\n";
 

@@ -106,7 +106,7 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
             $feeinfo = Mage::helper('billmateinvoice')
                 ->getInvoiceFeeArray($invoiceFee, $Shipping, $quote->getCustomerTaxClassId());
 
-            $invFee = (isset($feeinfo['rate']) && $feeinfo['rate'] != 0) ? ($feeinfo['rate'] / 100 + 1) * $invoiceFee : $invoiceFee;
+            $invFee = (isset($feeinfo['rate']) && $feeinfo['rate'] != 0 && Mage::getStoreConfig('payment/billmateinvoice/include_tax')) ? ($feeinfo['rate'] / 100 + 1) * $invoiceFee : $invoiceFee;
 
 
             $invFee = Mage::helper('core')->currency($invFee, true, false);

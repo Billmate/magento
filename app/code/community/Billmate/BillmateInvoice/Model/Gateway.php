@@ -18,7 +18,7 @@
 			$methodname = $payment['method'] == 'billmateinvoice' ? 'billmateinvoice' : 'billmatepartpayment';
 			$k          = Mage::helper( 'billmateinvoice' )->getBillmate( true, false );
 
-			$customerId       = Mage::getSingleton( 'customer/session' )->getCustomer()->getId();
+			$customerId = (!Mage::getSingleton('customer/session')->getCustomer()->getId()) ? $quote->getCustomerId() : Mage::getSingleton('customer/session')->getCustomer()->getId();
 			$countryCode      = Mage::getStoreConfig( 'general/country/default', Mage::app()->getStore() );
 			$storeCountryIso2 = Mage::getModel( 'directory/country' )->loadByCode( $countryCode )->getIso2Code();
 			$storeLanguage    = Mage::app()->getLocale()->getLocaleCode();
@@ -218,10 +218,18 @@
 						$discountAmount = $discountAmount - ( $discountAmount * $marginal );
 
 					}
-					$total = ( $discountAdded ) ? (int) round( ( ( $price * $_item->getQty() - $discountAmount ) * 100 ) ) : (int) round( $price * 100 ) * $_item->getQty();
+					$parentItem = $_item->getParentItem();
+					if($parentItem)
+						$qty = $parentItem->getQty();
+					else
+						$qty = $_item->getQty();
+
+
+					$total = ($discountAdded) ? (int) round((($price * $qty - $discountAmount)* 100)) : (int)round($price*100) * $qty;
+
 
 					$orderValues['Articles'][] = array(
-						'quantity'   => (int) $_item->getQty(),
+						'quantity'   => (int)$qty,
 						'artnr'      => $_item->getProduct()->getSKU(),
 						'title'      => $_item->getName(),
 						'aprice'     => (int) round( $price * 100, 0 ),

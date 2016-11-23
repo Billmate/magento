@@ -60,7 +60,7 @@
                             <show_in_default>1</show_in_default>
                             <sort_order>50</sort_order>
                         </billmate_fee>
-						<tax_class translate="label">
+						<tax_class translate="label comment">
                             <label>Invoice fee tax class</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_shipping_taxclass</source_model>
@@ -70,6 +70,16 @@
                             <show_in_website>1</show_in_website>
                             <comment>Select the tax class to be used for the invoice fee.</comment>
                         </tax_class>
+                        <include_tax translate="label">
+                            <label>Include tax on invoice fee</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>65</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_store>1</show_in_store>
+                            <show_in_website>1</show_in_website>
+                            <comment>Choose if you want to show incl tax on frontend for the invoice fee</comment>
+                        </include_tax>
                         <!--<eid translate="label">
                             <label>Merchant Id</label>
                             <frontend_type>text</frontend_type>

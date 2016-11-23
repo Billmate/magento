@@ -18,7 +18,7 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
         );
         $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
 
-        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+        $customerId = (!Mage::getSingleton('customer/session')->getCustomer()->getId()) ? $quote->getCustomerId() : Mage::getSingleton('customer/session')->getCustomer()->getId();
 
 
         //  $quote = Mage::getSingleton('checkout/session')->getQuote();
@@ -237,9 +237,17 @@ class Billmate_Cardpay_Model_Gateway extends Varien_Object{
                     $discountAmount = $discountAmount - ($discountAmount * $marginal);
 
                 }
-                $total = ($discountAdded) ? (int) round((($price * $_item->getQty() - $discountAmount)* 100)) : (int)round($price*100) * $_item->getQty();
+                $parentItem = $_item->getParentItem();
+                if($parentItem)
+                    $qty = $parentItem->getQty();
+                else
+                    $qty = $_item->getQty();
+
+
+                $total = ($discountAdded) ? (int) round((($price * $qty - $discountAmount)* 100)) : (int)round($price*100) * $qty;
+
                 $orderValues['Articles'][] = array(
-                    'quantity'   => (int)$_item->getQty(),
+                    'quantity'   => (int)$qty,
                     'artnr'    => $_item->getProduct()->getSKU(),
                     'title'    => $_item->getName(),
                     'aprice'    => (int)round($price*100,0),
