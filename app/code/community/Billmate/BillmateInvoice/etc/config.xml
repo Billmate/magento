@@ -149,6 +149,7 @@
                 Billmate Invoice - %s invoice fee is added to the order.
                 ]]></title>
                 <active>1</active>
+                <include_tax>1</include_tax>
                 <min_amount>0</min_amount>
                 <max_amount>99999</max_amount>
                <payment_action>authorize</payment_action>

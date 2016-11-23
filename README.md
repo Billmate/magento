@@ -55,6 +55,10 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.2.1(2016-11-23)
+* Fix - Bundle product calculation. 
+* Enhancement - Option to choose if invoice fee should be shown incl tax in checkout/cart or not.
+
 ### 2.2(2016-07-14)
 * Enhancement - Improved card and bank logic for creating order after valid/pending payment. 
 * Compatibility - Enterprise version.
