@@ -8,3 +8,5 @@
 "Select the tax class to be used for the invoice fee.","Välj momsklass som ska användas för fakturaavgiften."
 "Specified in base currency.","Specificerad i basvalutan."
 "The tax class to use to calculate the invoice fee tax","Momssatsen som räknas på faktureringsavgiften"
+"Include tax on invoice fee","Visa fakturaavgift inkl moms."
+"Choose if you want to show incl tax on frontend for the invoice fee","Välj om du vill att fakturaavgiften ska visas inkl moms."

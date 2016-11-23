@@ -7,13 +7,6 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
     {
         parent::collect($address);
 
-		$page = $_SERVER['REQUEST_URI'];
-		$onepage = "checkout/cart";
-		$onepagecheck = strpos($page, $onepage);
-
-		if ($onepagecheck !== false) {
-			return $this;
-		}
 	
         $this->_setAmount(0);
         $this->_setBaseAmount(0);
@@ -113,7 +106,7 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
         $amt = $address->getFeeAmount();
 
 		$extra = '';
-		if(Mage::getStoreConfig('payment/billmateinvoice/tax_class') && $address->getFeeTaxAmount() > 0){
+		if(Mage::getStoreConfig('payment/billmateinvoice/tax_class') && $address->getFeeTaxAmount() > 0 && Mage::getStoreConfig('payment/billmateinvoice/include_tax')){
 			$extra = ' (Incl. Vat)';
 			$amt += $address->getFeeTaxAmount();
 		}else{
