@@ -1,12 +1,20 @@
 # Billmate Payment Gateway for Magento
 By Billmate AB - [https://billmate.se](https://billmate.se/ "billmate.se")
 
+## Documentation
+[Installation manual in English](http://billmate.se/plugins/manual/Installation_Manual_Magento_Billmate.pdf)
+
+[Installation manual in Swedish](http://billmate.se/plugins/manual/Installationsmanual_Magento_Billmate.pdf)
+
 ## Description
 
 Billmate Gateway is a plugin that extends Magento, allowing your customers to get their products first and pay by invoice to Billmate later (https://www.billmate.se/). This plugin utilizes Billmate Invoice, Billmate Card, Billmate Bank and Billmate Part Payment.
 
 ## Important Note
 * The automatic order activation on status change is supported from Magento version 1.7 and above.
+
+## COMPATIBILITY Magento versions
+1.7 - 1.9.3
 
 # Supported Checkouts
 * Templates Master Firecheckout. 
