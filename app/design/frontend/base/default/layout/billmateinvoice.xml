@@ -108,17 +108,7 @@ var oldurl = null;
             </action>
             <block type="core/template" template="billmate/getaddress.phtml"/>
         </reference>
-        <reference name="checkout.onepage.review.info.items.after">
-            <block type="core/text" name="billmate.additional.div">
-                <action method="setText">
-                    <text>
-                        <![CDATA[
-                            <div id="checkout-billmate-load" style="display:none;"></div>
-                        ]]>
-                    </text>
-                </action>
-            </block>
-        </reference>
+
     </firecheckout_index_index>
 
 

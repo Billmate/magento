@@ -66,7 +66,10 @@ paymentSave();';
 		$explanation = $this->__('Pay with invoice can only be made with a registered adress. Would you like to make the purchase with the following registered address:');
 	?>
 	<?php
-		echo json_encode(array('update_section' => array('name' => 'billmate', 'html' => "<script>html='<span style=\"line - height: 1.4em;\">$name<br>$gateway->street<br>$gateway->postcode<br/>$gateway->city<br/>$country</span><div style=\"margin - top:1em\"><input type=\"button\" id=\"updateAddressYes\" onclick=\"updateAddress()\" value=\"$yestext\" class=\"billmate_button\"/></div><div><a onclick=\"modalWin . HideModalPopUp();\" class=\"linktag\" >$notext</a></div>';\nShowMessage(html,'$explanation');</script>")));?>
+	if(Mage::getStoreConfig('firecheckout/general/enabled'))
+		echo json_encode(array('update_section' => array('name' => 'sagepay-iframe', 'html' => "<script>html='<span style=\"line - height: 1.4em;\">$name<br>$gateway->street<br>$gateway->postcode<br/>$gateway->city<br/>$country</span><div style=\"margin - top:1em\"><input type=\"button\" id=\"updateAddressYes\" onclick=\"updateAddress()\" value=\"$yestext\" class=\"billmate_button\"/></div><div><a onclick=\"modalWin . HideModalPopUp();\" class=\"linktag\" >$notext</a></div>';\nShowMessage(html,'$explanation');</script>")));
+	else
+		echo json_encode(array('update_section' => array('name' => 'billmate', 'html' => "<script>html='<span style=\"line - height: 1.4em;\">$name<br>$gateway->street<br>$gateway->postcode<br/>$gateway->city<br/>$country</span><div style=\"margin - top:1em\"><input type=\"button\" id=\"updateAddressYes\" onclick=\"updateAddress()\" value=\"$yestext\" class=\"billmate_button\"/></div><div><a onclick=\"modalWin . HideModalPopUp();\" class=\"linktag\" >$notext</a></div>';\nShowMessage(html,'$explanation');</script>")));
 
-	
-<?php endif; ?>
+
+endif;
