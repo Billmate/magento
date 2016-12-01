@@ -246,12 +246,12 @@ function changeBillEvent(){
 
     if( oldurl == null && typeof payment != 'undefined' && typeof billmateindexurl != 'undefined'){
 
-        oldurl = payment.saveUrl;
+       /* oldurl = payment.saveUrl;
         payment.saveUrl = billmateindexurl;
         payment.onComplete = function(res){
             checkout.setLoadWaiting(Billmate.getStep());
             eval(res.responseText);
-        }
+        }*/
     }
 //	if( typeof FireCheckout != 'undefined' && fireoldurl == null ){
 //		fireoldurl = checkout.urls.save;
@@ -387,8 +387,8 @@ function paymentSave(){
             checkout.save();
         }
         if(typeof streamcheckout != 'undefined'){
-            streamcheckout.placeUrl = oldurl;
-            streamcheckout.onComplete = streamcomplete;
+            //streamcheckout.placeUrl = oldurl;
+            //streamcheckout.onComplete = streamcomplete;
             streamcheckout.place();
             afterSave();
 
@@ -442,15 +442,15 @@ AddEvent(window, 'load', function(){
     modalWin = new CreateModalPopUpObject();
     if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
         $checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
-        $$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ checkAddress(); return false;};
+        //$$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ checkAddress(); return false;};
     }
     if($('checkout:savebutton')){
         $checkoutbtn = $('checkout:savebutton').onclick;
     }
     if(typeof streamcheckout != 'undefined'){
-        oldurl = streamcheckout.placeUrl;
-        streamcheckout.placeUrl = billmateindexurl;
-        streamcomplete = streamcheckout.onComplete;
+        //oldurl = streamcheckout.placeUrl;
+        //streamcheckout.placeUrl = billmateindexurl;
+        /*streamcomplete = streamcheckout.onComplete;
         streamcheckout.onCreate = function(res){
             $(streamcheckout.container).addClassName('ajax-loading');
             $(streamcheckout.container).addClassName('ajax-totals-loading');
@@ -460,7 +460,7 @@ AddEvent(window, 'load', function(){
             $(streamcheckout.container).removeClassName('ajax-totals-loading');
             eval(res.responseText);
 
-        }
+        }*/
     }
 
 });

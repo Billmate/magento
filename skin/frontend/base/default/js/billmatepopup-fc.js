@@ -362,7 +362,7 @@ function paymentSave(){
 
     if(typeof checkout.form == 'undefined'){
         checkout.setLoadWaiting(false);
-        payment.saveUrl = oldurl;
+        /*payment.saveUrl = oldurl;
         payment.onComplete = function(){
             checkout.setLoadWaiting(false);
             payment.saveUrl = billmateindexurl;
@@ -370,8 +370,8 @@ function paymentSave(){
                 checkout.setLoadWaiting(false);
                 eval(res.responseText);
             }
-        };
-        payment.save();
+        };*/
+        review.save();
     }else{
         if( typeof FireCheckout != 'undefined' ){
             checkout.save();
@@ -449,8 +449,8 @@ AddEvent(window, 'load', function(){
         if($('billing-new-address-form').visible()) {
             SaveAddress();
         }
-        $checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
-        $$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ onchange_person_number = false; checkAddress(); };
+        //$checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
+        //$$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ onchange_person_number = false; checkAddress(); };
     }
     var selectedmethod = $$('input:checked[type="radio"][name="payment[method]"]').pluck('value');
     if ($('person_number') && (selectedmethod == 'billmateinvoice' || selectedmethod == 'billmatepartpayment')) {

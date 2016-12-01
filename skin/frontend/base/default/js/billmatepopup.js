@@ -244,11 +244,11 @@ function changeBillEvent(){
 	if( oldurl == null && typeof payment != 'undefined' && typeof billmateindexurl != 'undefined'){
 
 		oldurl = payment.saveUrl;
-		payment.saveUrl = billmateindexurl;
+		/*payment.saveUrl = billmateindexurl;
 		payment.onComplete = function(res){
 			checkout.setLoadWaiting(Billmate.getStep());
 			eval(res.responseText);
-		}
+		}*/
 	}
 //	if( typeof FireCheckout != 'undefined' && fireoldurl == null ){
 //		fireoldurl = checkout.urls.save;
@@ -370,7 +370,7 @@ function paymentSave(){
 	}
 	if(typeof checkout.form == 'undefined'){
 		checkout.setLoadWaiting(Billmate.getStep());
-		payment.saveUrl = oldurl;
+		/*payment.saveUrl = oldurl;
 		payment.onComplete = function(){
 			checkout.setLoadWaiting(Billmate.getStep());
 			payment.saveUrl = billmateindexurl;
@@ -379,7 +379,8 @@ function paymentSave(){
 				eval(res.responseText);
 			}
 		};
-		payment.save();
+		payment.save();*/
+        review.save();
 	}else{
 		if( typeof FireCheckout != 'undefined' || typeof OPC != 'undefined' ){
 			checkout.save();
@@ -447,10 +448,10 @@ AddEvent(window, 'load', function(){
 
     }
 	modalWin = new CreateModalPopUpObject();
-	if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
+	/*if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
 		$checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
 		$$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ checkAddress(); return false;};
-	}
+	}*/
 
 });
 function ShowDivInCenter(divId)

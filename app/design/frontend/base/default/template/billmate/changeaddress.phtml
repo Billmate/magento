@@ -58,6 +58,15 @@ paymentSave();';
  ?>
 
 <?php else: ?>
-$html='<span style="line-height: 1.4em;"><?php echo ($gateway->company != '') ? $gateway->company : $gateway->firstname.' '.$gateway->lastname; ?><br><?php echo $gateway->street; ?><br><?php echo $gateway->postcode.'<br/>'.$gateway->city.'<br/>'.($gateway->country == 'se' ? '':$gateway->country_name); ?></span><div style="margin-top:1em"><input type="button" id="updateAddressYes" onclick="updateAddress()" value="<?php echo $this->__('Yes, make purchase with this address.')?>" class="billmate_button"/></div><div><a onclick="modalWin.HideModalPopUp();" class="linktag" ><?php echo $this->__('No, I want to specify another person / company or change payment method.')?></a></div>';
-ShowMessage($html,'<?php echo $this->__('Pay with invoice can only be made with a registered adress. Would you like to make the purchase with the following registered address:')?>');
+	<?php
+		$name = ($gateway->company != '') ? $gateway->company : $gateway->firstname.' '.$gateway->lastname;
+		$country = $gateway->country == 'se' ? '':$gateway->country_name;
+		$yestext = $this->__('Yes, make purchase with this address.');
+		$notext = $this->__('No, I want to specify another person / company or change payment method.');
+		$explanation = $this->__('Pay with invoice can only be made with a registered adress. Would you like to make the purchase with the following registered address:');
+	?>
+	<?php
+		echo json_encode(array('update_section' => array('name' => 'billmate', 'html' => "<script>html='<span style=\"line - height: 1.4em;\">$name<br>$gateway->street<br>$gateway->postcode<br/>$gateway->city<br/>$country</span><div style=\"margin - top:1em\"><input type=\"button\" id=\"updateAddressYes\" onclick=\"updateAddress()\" value=\"$yestext\" class=\"billmate_button\"/></div><div><a onclick=\"modalWin . HideModalPopUp();\" class=\"linktag\" >$notext</a></div>';\nShowMessage(html,'$explanation');</script>")));?>
+
+	
 <?php endif; ?>
