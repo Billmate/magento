@@ -104,4 +104,16 @@
             </controller_action_predispatch_checkout_onepage_index>-->
         </events>
     </frontend>
+    <crontab>
+        <jobs>
+            <check_billmate_status>
+                <schedule>
+                    <config_path>billmate/settings/check_cron</config_path>
+                </schedule>
+                <run>
+                    <model>billmate_common/OrderstatusSync::checkOrders</model>
+                </run>
+            </check_billmate_status>
+        </jobs>
+    </crontab>
 </config>

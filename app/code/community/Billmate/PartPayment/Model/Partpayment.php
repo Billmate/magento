@@ -102,7 +102,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
                 $payment->setTransactionId($result['number']);
                 $payment->setIsTransactionClosed(1);
             }
-            if($paymentInfo['PaymentData']['status'] == 'Paid'){
+            if($paymentInfo['PaymentData']['status'] == 'Partpayment'){
                 $values['partcredit'] = false;
                 $paymentData['PaymentData'] = $values;
                 $result = $k->creditPayment($paymentData);
