@@ -11,10 +11,21 @@ class Billmate_Common_Model_OrderstatusSync
     public function checkOrders(){
         Mage::log('orderstatuscheck');
         if(Mage::getStoreConfig('billmate/fraud_check/order_status_check')) {
-            $orders = Mage::getModel('sales/order')->getCollection()->addFieldToFilter('status', array('in' => Mage::getStoreConfig('billmate/fraud_check/checkstatus').',payment_review'));
+            $statusesToCheck = array();
+            $statusesToCheck = explode(',',Mage::getStoreConfig('billmate/fraud_check/checkstatus'));
+            array_push($statusesToCheck,'payment_review');
+
+
+            $orders = Mage::getModel('sales/order')->getCollection()->addAttributeToSelect('*')->addFieldToFilter('status', array('in' => $statusesToCheck));
+            Mage::log('ordersLength'.$orders->count());
             foreach ($orders as $order) {
                 $payment = $order->getPayment();
+
                 $paymentCode = $payment->getMethodInstance()->getCode();
+
+                if(!in_array($paymentCode,array('billmateinvoice','billmatebankpay','billmatecardpay','billmatepartpayment')))
+                    continue;
+
                 $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
 
                 $values = array(
@@ -24,9 +35,9 @@ class Billmate_Common_Model_OrderstatusSync
                 $billmate = Mage::helper('billmatecommon')->getBillmate();
 
                 $result = $billmate->getPaymentinfo($values);
-                Mage::log('resultPaymentInfo'.$result);
+                Mage::log('resultPaymentInfo'.print_r($result,true));
                 if(isset($result['code'])){
-                    return false;
+                    continue;
                 }
                 switch (strtolower($result['PaymentData']['status'])) {
                     case 'created':
