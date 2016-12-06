@@ -36,22 +36,23 @@ class Billmate_Common_Model_OrderstatusSync
                 if(isset($result['code'])){
                     continue;
                 }
+                $logid = $result['apiLogsid'];
                 switch (strtolower($result['PaymentData']['status'])) {
                     case 'created':
                         if($order->getStatus() != Mage::getStoreConfig('payment/'.$paymentCode.'/order_status')) {
-                            $order->addStatusHistoryComment('', Mage::getStoreConfig('payment/' . $paymentCode . '/order_status'));
+                            $order->addStatusHistoryComment(Mage::helper('billmatecommon')->__('Order is created and approved. (Data from Billmate API, API log ID %s)',$logid), Mage::getStoreConfig('payment/' . $paymentCode . '/order_status'));
                             $order->save();
                         }
                         break;
                     case 'pending':
                         if($order->getStatus() != 'payment_review') {
-                            $order->addStatusHistoryComment(Mage::helper('billmatecommon')->__('The order is reviewed by Billmate'), 'payment_review');
+                            $order->addStatusHistoryComment(Mage::helper('billmatecommon')->__('Order is pending. (Data from Billmate API, API log ID %s)',$logid), 'payment_review');
                             $order->save();
                         }
                         break;
                     case 'denied':
                         if($order->getStatus() != Mage::getStoreConfig('billmate/fraud_check/denied_status') && $order->getStatus() != 'canceled') {
-                            $order->addStatusHistoryComment(Mage::helper('billmatecommon')->__('The order is denied by Billmate'), (Mage::getStoreConfig('billmate/fraud_check/denied_status')) ? Mage::getStoreConfig('billmate/fraud_check/deniedstatus') : 'canceled');
+                            $order->addStatusHistoryComment(Mage::helper('billmatecommon')->__('Order is denied. (Data from Billmate API, API log id %s)',$logid), (Mage::getStoreConfig('billmate/fraud_check/denied_status')) ? Mage::getStoreConfig('billmate/fraud_check/deniedstatus') : 'canceled');
                             $order->save();
                         }
                         break;
@@ -71,14 +72,14 @@ class Billmate_Common_Model_OrderstatusSync
                             }
                         } else {
                             if($order->getStatus() != Mage::getStoreConfig('billmate/fraud_check/activatedstatus') && $order->getStatus() != 'processing') {
-                                $order->addStatusHistoryComment(Mage::helper('billmatecommon')->__('The order is marked as activated in BillmateOnline'), (Mage::getStoreConfig('billmate/fraud_check/activatedstatus')) ? Mage::getStoreConfig('billmate/fraud_check/activatedstatus') : 'proceccing');
+                                $order->addStatusHistoryComment(Mage::helper('billmatecommon')->__('Order is paid. (Data from Billmate API, API log ID %s)',$logid), (Mage::getStoreConfig('billmate/fraud_check/activatedstatus')) ? Mage::getStoreConfig('billmate/fraud_check/activatedstatus') : 'proceccing');
                                 $order->save();
                             }
                         }
                         break;
                     case 'cancelled':
                         if($order->getStatus() != Mage::getStoreConfig('billmate/fraud_check/cancelstatus') && $order->getStatus() != 'canceled') {
-                            $order->addStatusHistoryComment(Mage::helper('billmatecommon')->__('The order is marked as canceled in BillmateOnline'), (Mage::getStoreConfig('billmate/fraud_check/cancelstatus')) ? Mage::getStoreConfig('billmate/fraud_check/cancelstatus') : 'cancelled');
+                            $order->addStatusHistoryComment(Mage::helper('billmatecommon')->__('Order is canceled. (Data from Billmate API, API log ID %s)',$logid), (Mage::getStoreConfig('billmate/fraud_check/cancelstatus')) ? Mage::getStoreConfig('billmate/fraud_check/cancelstatus') : 'cancelled');
                             $order->save();
                         }
                         break; 
