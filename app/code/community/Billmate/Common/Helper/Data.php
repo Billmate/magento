@@ -12,7 +12,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 {
     public function getBillmate()
     {
-        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.2.1');
+        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:2.2.2');
         if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.9');
 
         $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
