@@ -10,7 +10,7 @@ class Billmate_Common_Model_OrderstatusSync
 {
     public function checkOrders(){
         Mage::log('orderstatuscheck');
-        if(Mage::getStoreConfig('billmate/settings/order_status_check')) {
+        if(Mage::getStoreConfig('billmate/fraud_check/order_status_check')) {
             $orders = Mage::getModel('sales/order')->getCollection()->addFieldToFilter('status', array('in' => Mage::getStoreConfig('billmate/fraud_check/checkstatus').',payment_review'));
             foreach ($orders as $order) {
                 $payment = $order->getPayment();
@@ -24,7 +24,8 @@ class Billmate_Common_Model_OrderstatusSync
                 $billmate = Mage::helper('billmatecommon')->getBillmate();
 
                 $result = $billmate->getPaymentinfo($values);
-                if(isset($result->code)){
+                Mage::log('resultPaymentInfo'.$result);
+                if(isset($result['code'])){
                     return false;
                 }
                 switch (strtolower($result['PaymentData']['status'])) {
