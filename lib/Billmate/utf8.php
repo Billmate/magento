@@ -5,7 +5,12 @@ function match_usernamevp( $str1, $str2 ){
     $name1 = explode(' ', utf8_strtolower( Encoding::fixUTF8( $str1 ) ) );
     $name2 = explode(' ', utf8_strtolower( Encoding::fixUTF8( $str2 ) ) );
     $foundName = array_intersect($name1, $name2);
-    return count($foundName ) > 0;                        
+	$countStr1 = count($name1);
+	$countStr2 = count($name2);
+	if($countStr1 != $countStr2){
+		return false;
+	}
+    return count($foundName ) == $countStr1;
 }
 
 function isEqual($string1, $string2 ){

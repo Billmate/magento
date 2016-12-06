@@ -107,9 +107,9 @@
     <crontab>
         <jobs>
             <check_billmate_status>
-                <schedule>
+                <!--<schedule>
                     <config_path>billmate/settings/check_cron</config_path>
-                </schedule>
+                </schedule>-->
                 <run>
                     <model>billmate_common/OrderstatusSync::checkOrders</model>
                 </run>
