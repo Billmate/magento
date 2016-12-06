@@ -111,7 +111,7 @@
                     <config_path>billmate/settings/check_cron</config_path>
                 </schedule>-->
                 <run>
-                    <model>billmate_common/OrderstatusSync::checkOrders</model>
+                    <model>billmatecommon/OrderstatusSync::checkOrders</model>
                 </run>
             </check_billmate_status>
         </jobs>

@@ -20,7 +20,7 @@ class Billmate_Common_Model_System_Config_Cron extends Mage_Core_Model_Config_Da
 
         $cronExprArray = array(
             ($frequency == $frequencyMinutely && strlen($time)) ? '*/'.$time : '*',                                   # Minute
-            ($frequencyHourly == $frequencyHourly && strlen($time)) ? '*/'.$time : '*',                                    # Hour
+            ($frequency == $frequencyHourly && strlen($time)) ? '*/'.$time : '*',                                    # Hour
             '*',      # Day of the Month
             '*',                                                # Month of the Year
             '*',       # Day of the Week
