@@ -1,0 +1,13 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Boxedsolutions
+ * Date: 2016-09-26
+ * Time: 11:59
+ */
+
+$checkout = $this->getCheckoutUrl();
+?>
+<?php echo $this->getChildHtml('checkout.cart'); ?>
+
+<iframe src="<?php echo $checkout; ?>" style="width: 100%; min-height: 800px;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>

@@ -24,7 +24,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $countryCode = Mage::getStoreConfig('general/country/default',Mage::app()->getStore());
         $storeCountryIso2 = Mage::getModel('directory/country')->loadByCode($countryCode)->getIso2Code();
 
-        $values = array();
+        $orderValues = array();
 
         $orderValues['CheckoutData'] = array(
             'windowmode' => 'iframe',
@@ -236,7 +236,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             'withtax' =>round($totalValue + $totalTax +  $round)
         );
 
-        return $billmate->addPayment($orderValues);
+        return $billmate->initCheckout($orderValues);
 
     }
 }
