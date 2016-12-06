@@ -71,4 +71,4 @@
 "Order is denied. (Data from Billmate API, API log id %s)","Ordern är avslagen. (Data från Billmate API, API logg ID %s)"
 "Order is pending. (Data from Billmate API, API log ID %s)","kontroll/pending. (Data från Billmate API, API logg ID %s)"
 "Order is paid. (Data from Billmate API, API log ID %s)","Ordern är betald. (Data från Billmate API, API logg ID %s)"
-"Order is canceled. (Data from Billmate API, API log ID %s)","Ordern är avbruten. (Data från Billmate API, API logg ID %)"
+"Order is canceled. (Data from Billmate API, API log ID %s)","Ordern är avbruten. (Data från Billmate API, API logg ID %s)"
