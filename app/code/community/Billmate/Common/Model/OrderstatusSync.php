@@ -30,7 +30,7 @@ class Billmate_Common_Model_OrderstatusSync
                     'number' => $invoiceId
                 );
 
-                $billmate = Mage::helper('billmatecommon')->getBillmate();
+                $billmate = Mage::helper('billmatecommon')->getBillmate(Mage::getStoreConfig('payment/'.$paymentCode.'/test_mode'));
 
                 $result = $billmate->getPaymentinfo($values);
                 if(isset($result['code'])){
@@ -44,8 +44,10 @@ class Billmate_Common_Model_OrderstatusSync
                         }
                         break;
                     case 'pending':
-                        $order->addStatusHistoryComment(Mage::helper('billmatecommon')->__('The order is reviewed by Billmate'),'payment_review');
-                        $order->save();
+                        if($order->getStatus() != 'payment_review') {
+                            $order->addStatusHistoryComment(Mage::helper('billmatecommon')->__('The order is reviewed by Billmate'), 'payment_review');
+                            $order->save();
+                        }
                         break;
                     case 'denied':
                         if($order->getStatus() != Mage::getStoreConfig('billmate/fraud_check/denied_status') && $order->getStatus() != 'canceled') {
