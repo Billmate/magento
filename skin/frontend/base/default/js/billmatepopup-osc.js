@@ -260,12 +260,12 @@ function changeBillEvent(){
 
     if( oldurl == null && typeof payment != 'undefined' && typeof billmateindexurl != 'undefined'){
 
-        oldurl = payment.saveUrl;
+        /*oldurl = payment.saveUrl;
         payment.saveUrl = billmateindexurl;
         payment.onComplete = function(res){
             checkout.setLoadWaiting(Billmate.getStep());
             eval(res.responseText);
-        }
+        }*/
     }
 //	if( typeof FireCheckout != 'undefined' && fireoldurl == null ){
 //		fireoldurl = checkout.urls.save;
@@ -412,7 +412,7 @@ function paymentSave(){
     }
     if( typeof checkout != 'undefined' && typeof checkout.form == 'undefined'){
         checkout.setLoadWaiting(Billmate.getStep());
-        payment.saveUrl = oldurl;
+        /*payment.saveUrl = oldurl;
         payment.onComplete = function(){
             checkout.setLoadWaiting(Billmate.getStep());
             payment.saveUrl = billmateindexurl;
@@ -420,8 +420,8 @@ function paymentSave(){
                 checkout.setLoadWaiting(false);
                 eval(res.responseText);
             }
-        };
-        payment.save();
+        };*/
+        review.save();
     }else{
         if( typeof FireCheckout != 'undefined' || typeof OPC != 'undefined'){
             checkout.save();
@@ -493,11 +493,11 @@ AddEvent(window, 'load', function(){
     modalWin = new CreateModalPopUpObject();
     if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
         $checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
-        $$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ checkAddress(); return false;};
+        //$$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ checkAddress(); return false;};
     }
     if( $$('#onestepcheckout-button-place-order').length > 0){
         $checkoutbtn = $$('#onestepcheckout-button-place-order')[0].onclick;
-        $$('#onestepcheckout-button-place-order')[0].onclick = function(){ checkAddress(); return false;}
+        //$$('#onestepcheckout-button-place-order')[0].onclick = function(){ checkAddress(); return false;}
 
     }
 

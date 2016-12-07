@@ -342,7 +342,19 @@
 			if ( isset( $result['code'] ) )
 			{
 
-				Mage::throwException( utf8_encode( $result['message'] ) );
+				switch($result['code']){
+					case 2401:
+					case 2402:
+					case 2403:
+					case 2404:
+					case 2405:
+						$this->init();
+						echo Mage::app()->getLayout()->createBlock('billmateinvoice/changeaddress')->toHtml();
+						die();
+						break;
+					default:
+						Mage::throwException( utf8_encode( $result['message'] ) );
+				}
 
 
 			}

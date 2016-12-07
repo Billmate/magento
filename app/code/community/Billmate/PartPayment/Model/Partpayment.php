@@ -80,7 +80,6 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 
 	public function cancel( Varien_Object $payment )
 	{
-
 		$this->void($payment);
 		return $this;
 	}
@@ -88,7 +87,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 	public function void( Varien_Object $payment )
 	{
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('partpayment')->getBillmate(true, false);
+            $k = Mage::helper('partpayment')->getBillmate(true, false,null);
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
                 'number' => $invoiceId
@@ -102,7 +101,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
                 $payment->setTransactionId($result['number']);
                 $payment->setIsTransactionClosed(1);
             }
-            if($paymentInfo['PaymentData']['status'] == 'Paid'){
+            if($paymentInfo['PaymentData']['status'] == 'Partpayment'){
                 $values['partcredit'] = false;
                 $paymentData['PaymentData'] = $values;
                 $result = $k->creditPayment($paymentData);
@@ -137,7 +136,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     public function capture(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('partpayment')->getBillmate(true, false);
+            $k = Mage::helper('partpayment')->getBillmate(true, false,null);
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
 
             $values = array(
@@ -168,13 +167,13 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     public function refund(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('partpayment')->getBillmate(true, false);
+            $k = Mage::helper('partpayment')->getBillmate(true, false,null);
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
                 'number' => $invoiceId
             );
             $paymentInfo = $k->getPaymentInfo($values);
-            if ($paymentInfo['PaymentData']['status'] == 'Paid' || $paymentInfo['PaymentData']['status'] == 'Factoring') {
+            if ($paymentInfo['PaymentData']['status'] == 'Paid' || $paymentInfo['PaymentData']['status'] == 'Partpayment') {
                 $values['partcredit'] = false;
                 $result = $k->creditPayment(array('PaymentData' => $values));
                 if(isset($result['code']) )

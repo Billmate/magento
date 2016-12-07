@@ -63,6 +63,10 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.2.2(2016-12-06)
+* Enhancement - Improved addressvalidation. 
+* Enhancement - Improved status handling by cron to fetch statuses from Billmate.
+
 ### 2.2.1(2016-11-23)
 * Fix - Bundle product calculation. 
 * Enhancement - Option to choose if invoice fee should be shown incl tax in checkout/cart or not.

@@ -319,8 +319,19 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         $result  = $k->addPayment($orderValues);
 
         if(isset($result['code'])){
-
-            Mage::throwException(utf8_encode($result['message']));
+            switch($result['code']){
+                case 2401:
+                case 2402:
+                case 2403:
+                case 2404:
+                case 2405:
+                    $this->init();
+                    echo Mage::app()->getLayout()->createBlock('partpayment/changeaddress')->toHtml();
+                    die();
+                    break;
+                default:
+                    Mage::throwException( utf8_encode( $result['message'] ) );
+            }
         } else {
             $session = Mage::getSingleton('core/session', array('name' => 'frontend'));
             $session->setData('billmateinvoice_id', $result['number']);
@@ -409,7 +420,8 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             !isEqual($shippingStreet[0], $billingStreet[0] ) ||
             !isEqual($Shipping->getPostcode(), $Billing->getPostcode()) ||
             !isEqual($Shipping->getCity(), $Billing->getCity()) ||
-            !isEqual($Shipping->getCountryId, $Billing->getCountryId) ;
+            !isEqual($Shipping->getCountryId(), $Billing->getCountryId()) ;
+
         if( $addressNotMatched || $shippingAndBilling ){
             $this->isMatched = false;
         }

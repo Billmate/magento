@@ -37,10 +37,45 @@ var oldurl = null;
         <reference name="head">
             <block type="core/template" template="billmate/getaddress.phtml"/>
         </reference>
+        <reference name="checkout.onepage.payment.additional">
+            <block type="core/text" name="billmate.additional.div">
+                <action method="setText">
+                    <text>
+                        <![CDATA[
+                            <div id="checkout-billmate-load" style="display:none;"></div>
+                        ]]>
+                    </text>
+                </action>
+            </block>
+        </reference>
     </checkout_onepage_index>
+    <checkout_onepage_paymentmethod>
+        <reference name="checkout.onepage.payment.methods.additional">
+            <block type="core/text" name="billmate.additional.div">
+                <action method="setText">
+                    <text>
+                        <![CDATA[
+                            <div id="checkout-billmate-load" style="display:none;"></div>
+                        ]]>
+                    </text>
+                </action>
+            </block>
+        </reference>
+    </checkout_onepage_paymentmethod>
     <onestepcheckout_index_index>
         <reference name="head">
             <block type="core/template" template="billmate/getaddress.phtml"/>
+        </reference>
+        <reference name="before_body_end">
+            <block type="core/text" name="billmate.additional.div">
+                <action method="setText">
+                    <text>
+                        <![CDATA[
+                            <div id="checkout-billmate-load" style="display:none;"></div>
+                        ]]>
+                    </text>
+                </action>
+            </block>
         </reference>
     </onestepcheckout_index_index>
     <streamcheckout_index_index>
@@ -52,6 +87,17 @@ var oldurl = null;
                 <name>css/billmatestyle-stream.css</name>
             </action>
         </reference>
+        <reference name="before_body_end">
+            <block type="core/text" name="billmate.additional.div">
+                <action method="setText">
+                    <text>
+                        <![CDATA[
+                            <div id="checkout-billmate-load" style="display:none;"></div>
+                        ]]>
+                    </text>
+                </action>
+            </block>
+        </reference>
     </streamcheckout_index_index>
     <firecheckout_index_index>
         <reference name="head">
@@ -62,6 +108,7 @@ var oldurl = null;
             </action>
             <block type="core/template" template="billmate/getaddress.phtml"/>
         </reference>
+
     </firecheckout_index_index>
 
 
