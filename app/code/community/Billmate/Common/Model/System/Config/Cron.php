@@ -17,7 +17,7 @@ class Billmate_Common_Model_System_Config_Cron extends Mage_Core_Model_Config_Da
 
         $frequencyHourly = Billmate_Common_Model_System_Config_Frequency::CRON_HOURLY;
         $frequencyMinutely = Billmate_Common_Model_System_Config_Frequency::CRON_MINUTELY;
-
+      
         $cronExprArray = array(
             ($frequency == $frequencyMinutely && strlen($time)) ? '*/'.$time : '*',                                   # Minute
             ($frequency == $frequencyHourly && strlen($time)) ? '*/'.$time : '*',                                    # Hour
