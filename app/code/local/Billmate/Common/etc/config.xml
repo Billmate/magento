@@ -120,4 +120,13 @@
             </updates>
         </layout>
     </frontend>
+    <crontab>
+        <jobs>
+            <check_billmate_status>
+                <run>
+                    <model>billmatecommon/OrderstatusSync::checkOrders</model>
+                </run>
+            </check_billmate_status>
+        </jobs>
+    </crontab>
 </config>
