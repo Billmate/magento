@@ -16,7 +16,7 @@
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class Billmate_Partpayment_Block_ChangeAddress extends Mage_Payment_Block_Form
+class Billmate_PartPayment_Block_Changeaddress extends Mage_Payment_Block_Form
 {
     private $matched = null;
     

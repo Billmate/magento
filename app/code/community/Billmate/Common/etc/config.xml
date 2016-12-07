@@ -85,33 +85,12 @@
                 </args>
             </billmatecommon>
         </routers>
-        <events>
-            <!--<controller_action_predispatch_firecheckout_index_index>
-                <observers>
-                    <billmate_firecheckout_index>
-                        <class>Billmate_Common_Model_Observer</class>
-                        <method>redirectToCancelUrl</method>
-                    </billmate_firecheckout_index>
-                </observers>
-            </controller_action_predispatch_firecheckout_index_index>
-            <controller_action_predispatch_checkout_onepage_index>
-                <observers>
-                    <billmate_onepagecheckout_index>
-                        <class>Billmate_Common_Model_Observer</class>
-                        <method>redirectToCancelUrl</method>
-                    </billmate_onepagecheckout_index>
-                </observers>
-            </controller_action_predispatch_checkout_onepage_index>-->
-        </events>
     </frontend>
     <crontab>
         <jobs>
             <check_billmate_status>
-                <schedule>
-                    <config_path>billmate/settings/check_cron</config_path>
-                </schedule>
                 <run>
-                    <model>billmate_common/OrderstatusSync::checkOrders</model>
+                    <model>billmatecommon/OrderstatusSync::checkOrders</model>
                 </run>
             </check_billmate_status>
         </jobs>
