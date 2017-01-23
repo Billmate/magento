@@ -18,7 +18,7 @@
                 <settings translate="label" module="billmatecommon">
                     <label>General settings</label>
                     <frontend_type>text</frontend_type>
-                    <sort_order>2000</sort_order>
+                    <sort_order>600</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
@@ -68,7 +68,7 @@
                 <credentials translate="label" module="billmatecommon">
                     <label>Billmate credentials</label>
                     <frontend_type>text</frontend_type>
-                    <sort_order>1000</sort_order>
+                    <sort_order>500</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
@@ -104,7 +104,7 @@
                 <checkout translate="label comment" module="billmatecommon">
                     <label>Billmate Checkout</label>
                     <frontend_type>text</frontend_type>
-                    <sort_order>1000</sort_order>
+                    <sort_order>1500</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
