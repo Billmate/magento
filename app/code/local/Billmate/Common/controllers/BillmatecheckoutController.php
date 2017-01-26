@@ -18,6 +18,12 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         
     }
 
+    public function termsAction()
+    {
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
     public function updatequoteAction()
     {
         // Set shipping and billing on quote.
@@ -28,41 +34,49 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $post = $this->getRequest()->getParams();
         $cart = Mage::getSingleton('checkout/cart');
 
-        $billingAddress = $cart->getQuote()->getBillingAddress();
-        $billingAddress->setFirstname($post['Customer']['Billing']['firstname']);
-        $billingAddress->setLastname($post['Customer']['Billing']['lastname']);
-        $billingAddress->setStreet($post['Customer']['Billing']['street']);
-        $billingAddress->setCompany(isset($post['Customer']['Billing']['company']) ? $post['Customer']['Billing']['company'] : '');
-        $billingAddress->setCity($post['Customer']['Billing']['city']);
-        $billingAddress->setCountryId($post['Customer']['Billing']['country'])
-            ->setPostcode($post['Customer']['Billing']['zip']);
+        $connection = Mage::helper('billmatecommon')->getBillmate();
+        $result = $connection->getCheckout(array('PaymentData' => array('hash' => $post['hash'])));
+        if(!$result['code']) {
+            Mage::getSingleton('checkout/session')->setBillmateHash($post['hash']);
 
-        $shippingAddress = $cart->getQuote()->getShippingAddress();
-        $shippingAddress->setFirstname($post['Custoemer']['Shipping']['firstname']);
-        $shippingAddress->setLastname($post['Custoemer']['Shipping']['lastname']);
-        $shippingAddress->setStreet($post['Custoemer']['Shipping']['street']);
-        $shippingAddress->setCompany(isset($post['Custoemer']['Shipping']['company']) ? $post['Custoemer']['Shipping']['company'] : '');
-        $shippingAddress->setCity($post['Custoemer']['Shipping']['city']);
-        $shippingAddress->setCountryId($post['Custoemer']['Shipping']['country'])
-            ->setPostcode($post['Custoemer']['Shipping']['zip'])
-            ->setCollectShippingrates(true);
-        $billingAddress->save();
-        $shippingAddress->save();
-        $cart->save();
-
-        // Find if our shipping has been included.
-        $rates = $shippingAddress->collectShippingRates()
-            ->getGroupedAllShippingRates();
-        $shippingRates = array();
-        foreach ($rates as $carrier) {
-            foreach ($carrier as $rate) {
-                //print_r($rate->getData());
-                $shippingRates[$carrier][] = $rate->getData();
+            $billingAddress = $cart->getQuote()->getBillingAddress();
+            $billingAddress->setFirstname($result['Customer']['Billing']['firstname']);
+            $billingAddress->setLastname($result['Customer']['Billing']['lastname']);
+            $billingAddress->setStreet($result['Customer']['Billing']['street']);
+            $billingAddress->setCompany(isset($result['Customer']['Billing']['company']) ? $result['Customer']['Billing']['company'] : '');
+            $billingAddress->setCity($result['Customer']['Billing']['city']);
+            $billingAddress->setCountryId($result['Customer']['Billing']['country'])
+                ->setPostcode($result['Customer']['Billing']['zip']);
+            if (!isset($result['Customer']['Shipping'])) {
+                $result['Customer']['Shipping'] = $result['Customer']['Billing'];
             }
+            $shippingAddress = $cart->getQuote()->getShippingAddress();
+            $shippingAddress->setFirstname($result['Customer']['Shipping']['firstname']);
+            $shippingAddress->setLastname($result['Customer']['Shipping']['lastname']);
+            $shippingAddress->setStreet($result['Customer']['Shipping']['street']);
+            $shippingAddress->setCompany(isset($result['Customer']['Shipping']['company']) ? $result['Customer']['Shipping']['company'] : '');
+            $shippingAddress->setCity($result['Customer']['Shipping']['city']);
+            $shippingAddress->setCountryId($result['Customer']['Shipping']['country'])
+                ->setPostcode($result['Customer']['Shipping']['zip'])
+                ->setCollectShippingrates(true);
+            $billingAddress->save();
+            $shippingAddress->save();
+            $cart->save();
+
+            // Find if our shipping has been included.
+            $rates = $shippingAddress->collectShippingRates()
+                ->getGroupedAllShippingRates();
+            $shippingRates = array();
+            foreach ($rates as $carrier) {
+                foreach ($carrier as $rate) {
+                    //print_r($rate->getData());
+                    $shippingRates[$carrier][] = $rate->getData();
+                }
+            }
+
+
+            $this->getResponse()->setBody($this->getLayout()->createBlock('checkout/cart_shipping', 'checkout.cart.shipping')->setTemplate('billmatecheckout/shipping.phtml')->toHtml());
         }
-
-
-        $this->getResponse()->setBody($this->getLayout()->createBlock('checkout/cart_shipping','checkout.cart.shipping')->setTemplate('billmatecheckout/shipping.phtml')->toHtml());
     }
 
     public function _getQuote()
@@ -74,12 +88,15 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function updateshippingmethodAction()
     {
+        $checkout = Mage::getModel('billmatecommon/checkout');
+
         $code = (string) $this->getRequest()->getParam('estimate_method');
         if (!empty($code)) {
 
             $this->_getQuote()->getShippingAddress()->setShippingMethod($code)->collectTotals()->save();
         }
-        $result = $this->updatePayment();
+        
+        $result = $checkout->updateCheckout();
         if(!isset($result['code'])){
             $response['success'] = true;
         } else {
@@ -112,7 +129,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
         $result =  $checkout->updateCheckout();
 
-        $result = $this->updatePayment();
+        //$result = $this->updatePayment();
         if(!isset($result['code'])){
             $response['success'] = true;
         } else {

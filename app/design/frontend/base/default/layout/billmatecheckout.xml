@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layout version="0.1.0">
+    <billmatecommon_billmatecheckout_terms>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/print.phtml</template>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="checkout/agreements" template="billmatecheckout/agreements.phtml"/>
+        </reference>
+    </billmatecommon_billmatecheckout_terms>
     <billmatecommon_billmatecheckout_index>
         <reference name="head">
-            <action method="addItem"><type>skin_css</type><name>billmate/checkout.css</name></action>
+            <action method="addItem"><type>skin_css</type><name>css/billmate/checkout.css</name></action>
             <action method="addItem"><type>skin_js</type><name>js/billmate/checkout.js</name></action>
 
         </reference>

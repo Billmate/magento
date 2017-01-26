@@ -29,6 +29,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $orderValues['CheckoutData'] = array(
             'windowmode' => 'iframe',
             'sendreciept' => 'yes',
+            'terms' => Mage::getUrl('billmatecommon/billmatecheckout/terms')
         );
         if(!$quote->getReservedOrderId())
             $quote->reserveOrderId();
@@ -255,7 +256,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $countryCode = Mage::getStoreConfig('general/country/default',Mage::app()->getStore());
         $storeCountryIso2 = Mage::getModel('directory/country')->loadByCode($countryCode)->getIso2Code();
 
-        $orderValues = array();
+        $orderValues = $billmate->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
 
         /*$orderValues['CheckoutData'] = array(
             'windowmode' => 'iframe',
@@ -276,13 +277,13 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         } elseif(!$quote->isVirtual() && isset($codeToMethod[$quote->getShippingAddress()->getPaymentMethod()])) {
             $method = $codeToMethod[$quote->getShippingAddress()->getPaymentMethod()];
         }
-        $orderValues['PaymentData'] = array(
-            'method' => $method,
-            'currency' => Mage::app()->getStore()->getCurrentCurrencyCode(),
-            'language' => BillmateCountry::fromLocale($storeLanguage),
-            'country' => $storeCountryIso2,
-            'orderid' => $quote->getReservedOrderId()
-        );
+
+        $orderValues['PaymentData']['currency'] = Mage::app()->getStore()->getCurrentCurrencyCode();
+        $orderValues['PaymentData']['language'] = BillmateCountry::fromLocale($storeLanguage);
+        $orderValues['PaymentData']['country'] = $storeCountryIso2;
+        $orderValues['PaymentData']['orderid'] = $quote->getReservedOrderId();
+        //$orderValues['PaymentData']['method'] = $method;
+
         $_taxHelper  = Mage::helper('tax');
         $_weeeHelper = Mage::helper('weee');
         $percent = 0;
@@ -298,6 +299,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $discountTax = 0;
         $discounts = array();
         $configSku = false;
+        unset($orderValues['Articles']);
         foreach( $quote->getAllItems() as $_item){
             /**
              * @var $_item Mage_Sales_Model_Quote_Item

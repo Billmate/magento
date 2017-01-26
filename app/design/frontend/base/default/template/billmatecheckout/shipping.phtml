@@ -65,11 +65,15 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
     }
     $$('[name="estimate_method"].radio').each(function(el){
         el.observe('click',function(e){
-            new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/billmatecheckout/setshippingmethod') ?>',{
+            new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod') ?>',{
                 parameters: {estimate_method: $$('[name="estimate_method"]:checked')[0].value},
                 method: 'post',
                 onSuccess: function(transport){
-                    console.log(transport.responseText);
+                    var result = transport.responseText.evalJSON();
+                    if(result.success){
+                        b_iframe.updateCheckout();
+                    }
+                    
                 }
             })
         })

@@ -3,6 +3,7 @@
  */
 var BillmateIframe = new function(){
     var self = this;
+    var childWindow = null;
     this.updateAddress = function (data) {
         // When address in checkout updates;
 
@@ -54,12 +55,13 @@ var BillmateIframe = new function(){
     this.handleEvent = function(event){
         console.log(event);
         var json = JSON.parse(event.data);
+        self.childWindow = json.source;
         console.log(json);
         switch(json.event){
             case 'address_selected':
                 self.updateAddress(json.data);
                 break;
-            case 'payment_method_change':
+            case 'payment_method_selected':
                 self.updatePaymentMethod(json.data);
                 break;
             case 'create_order':
@@ -73,6 +75,12 @@ var BillmateIframe = new function(){
         }
 
     };
+
+    this.updateCheckout = function(){
+        var win = document.getElementById('checkout').contentWindow;
+        win.postMessage(JSON.stringify({event: 'update_checkout'}),'*')
+    }
+
     
 };
 

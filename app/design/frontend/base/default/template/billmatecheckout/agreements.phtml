@@ -1,0 +1,16 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Boxedsolutions
+ * Date: 2017-01-26
+ * Time: 11:29
+ */
+ if ($this->getAgreements()): ?>
+    <?php foreach ($this->getAgreements() as $_a): ?>
+        <?php if ($_a->getIsHtml()):?>
+            <?php echo $_a->getContent() ?>
+        <?php else:?>
+            <?php echo nl2br($this->escapeHtml($_a->getContent())) ?>
+        <?php endif; ?>
+    <?php endforeach ?>
+<?php endif; ?>
