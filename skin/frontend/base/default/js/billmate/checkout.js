@@ -64,7 +64,7 @@ var BillmateIframe = new function(){
             case 'payment_method_selected':
                 self.updatePaymentMethod(json.data);
                 break;
-            case 'create_order':
+            case 'checkout_success':
                 self.createOrder(json.data);
                 break;
             default:
