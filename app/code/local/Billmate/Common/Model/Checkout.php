@@ -453,6 +453,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
 
 
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
+        unset($orderValues['Cart']['Shipping']);
         if(!empty($rates)){
             if( $Shipping->getBaseShippingTaxAmount() > 0 ){
                 $taxCalculation = Mage::getModel('tax/calculation');
