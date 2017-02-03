@@ -207,6 +207,27 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             }
         }
 
+        if ($Shipping->getFeeAmount() && $Shipping->getFeeAmount() > 0)
+        {
+            $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
+            $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
+
+            //if(Mage::getStoreConfig('payment/billmateinvoice/tax_class')){
+            $feeinfo = Mage::helper( 'billmateinvoice' )
+                ->getInvoiceFeeArray( $invoiceFee, $Shipping, $quote->getCustomerTaxClassId() );
+            //}
+            if ( ! empty( $invoiceFee ) && $invoiceFee > 0 )
+            {
+                // $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
+
+                $orderValues['Cart']['Handling'] = array(
+                    'withouttax' => round($Shipping->getFeeAmount() * 100),
+                    'taxrate'    => $feeinfo['rate']
+                );
+                $totalValue += $Shipping->getFeeAmount() * 100;
+                $totalTax += ( $Shipping->getFeeAmount() * 100 ) * ( $feeinfo['rate'] / 100 );
+            }
+        }
 
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
         if(!empty($rates)){
@@ -277,7 +298,8 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         } elseif(!$quote->isVirtual() && isset($codeToMethod[$quote->getShippingAddress()->getPaymentMethod()])) {
             $method = $codeToMethod[$quote->getShippingAddress()->getPaymentMethod()];
         }
-
+        if(!isset($orderValues['PaymentData']) || (isset($orderValues['PaymentData']) && !is_array($orderValues['PaymentData'])))
+            $orderValues['PaymentData'] = array();
         $orderValues['PaymentData']['currency'] = Mage::app()->getStore()->getCurrentCurrencyCode();
         $orderValues['PaymentData']['language'] = BillmateCountry::fromLocale($storeLanguage);
         $orderValues['PaymentData']['country'] = $storeCountryIso2;
@@ -453,6 +475,28 @@ class Billmate_Common_Model_Checkout extends Varien_Object
 
 
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
+        unset($orderValues['Cart']['Handling']);
+        if ( $method == 1  )
+        {
+            $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
+            $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
+
+            //if(Mage::getStoreConfig('payment/billmateinvoice/tax_class')){
+            $feeinfo = Mage::helper( 'billmateinvoice' )
+                ->getInvoiceFeeArray( $invoiceFee, $Shipping, $quote->getCustomerTaxClassId() );
+            //}
+            if ( ! empty( $invoiceFee ) && $invoiceFee > 0 )
+            {
+                // $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
+
+                $orderValues['Cart']['Handling'] = array(
+                    'withouttax' => round($Shipping->getFeeAmount() * 100),
+                    'taxrate'    => $feeinfo['rate']
+                );
+                $totalValue += $Shipping->getFeeAmount() * 100;
+                $totalTax += ( $Shipping->getFeeAmount() * 100 ) * ( $feeinfo['rate'] / 100 );
+            }
+        }
         unset($orderValues['Cart']['Shipping']);
         if(!empty($rates)){
             if( $Shipping->getBaseShippingTaxAmount() > 0 ){

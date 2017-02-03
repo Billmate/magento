@@ -25,7 +25,10 @@ var BillmateIframe = new function(){
                 data: data,
                 type: 'POST',
                 success: function(response){
-                    console.log(response);
+                    var result = response.evalJSON();
+                    if(result.success){
+                        //self.updateCheckout();
+                    }
                 }
             });
         
@@ -33,14 +36,15 @@ var BillmateIframe = new function(){
     this.updateShippingMethod = function(){
 
     }
-    this.createOrder = function(){
+    this.createOrder = function(data){
       // Create Order
             jQuery.ajax({
                 url : CREATE_ORDER_URL,
                 data: data,
                 type: 'POST',
                 success: function(response){
-                    console.log(response);
+                    var result = response.evalJSON();
+                    location.href=result.url;
                 }
             });
 
@@ -77,6 +81,7 @@ var BillmateIframe = new function(){
     };
 
     this.updateCheckout = function(){
+        console.log('update_checkout');
         var win = document.getElementById('checkout').contentWindow;
         win.postMessage(JSON.stringify({event: 'update_checkout'}),'*')
     }
