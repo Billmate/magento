@@ -10,11 +10,11 @@ class Billmate_Common_Model_OrderstatusSync
 {
     public function checkOrders(){
         if(Mage::getStoreConfig('billmate/fraud_check/order_status_check')) {
-            //$statusesToCheck = array();
-            //$statusesToCheck = explode(',',Mage::getStoreConfig('billmate/fraud_check/checkstatus'));
-            //array_push($statusesToCheck,'payment_review');
 
             $statusesToCheck = array();
+            $statusesToCheck = explode(',',Mage::getStoreConfig('billmate/fraud_check/checkstatus'));
+            array_push($statusesToCheck,'payment_review');
+
             foreach(array('billmateinvoice','billmatebankpay','billmatecardpay','billmatepartpayment') as $payment){
                 if(!in_array(Mage::getStoreConfig('payment/'.$payment.'/order_status'),$statusesToCheck)){
                     array_push($statusesToCheck,Mage::getStoreConfig('payment/'.$payment.'/order_status'));
@@ -22,10 +22,9 @@ class Billmate_Common_Model_OrderstatusSync
             }
             if(Mage::getStoreConfig('billmate/fraud_check/pendingstatus')){
                 array_push($statusesToCheck,Mage::getStoreConfig('billmate/fraud_check/pendingstatus'));
-            } else {
-                array_push($statusesToCheck, 'payment_review');
             }
             array_push($statusesToCheck,'pending_payment');
+            
             $orders = Mage::getModel('sales/order')->getCollection()->addAttributeToSelect('*')->addFieldToFilter('status', array('in' => $statusesToCheck));
             foreach ($orders as $order) {
                 $payment = $order->getPayment();

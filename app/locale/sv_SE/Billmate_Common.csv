@@ -84,3 +84,4 @@
 "Should invoice be created in Magento if order is marked as activated from Billmate API?","Ska faktura skapas i Magento om ordern får tillbaka status aktiverad av Billmate API?"
 "Minutely","Minutvis"
 "Hourly","Timvis"
+"Add any custom statuses you are using. payment_review and pending_payment are automatically checked against.","Lägg till alla specialstatusar ni använder. payment_review och pending_payment kontrolleras automatiskt"
