@@ -26,15 +26,15 @@
             <remove name="right.poll"/>
             <remove name="right.reports.product.viewed"/>
             <remove name="right.reports.product.compared"/>
-            <block type="checkout/cart_sidebar" name="cart_sidebar" template="checkout/cart/sidebar.phtml" before="-">
+            <!--<block type="checkout/cart_sidebar" name="cart_sidebar" template="checkout/cart/sidebar.phtml" before="-">
                 <action method="addItemRender"><type>simple</type><block>checkout/cart_item_renderer</block><template>checkout/cart/sidebar/default.phtml</template></action>
                 <action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>checkout/cart/sidebar/default.phtml</template></action>
                 <action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>checkout/cart/sidebar/default.phtml</template></action>
                 <block type="core/text_list" name="cart_sidebar.extra_actions" as="extra_actions" translate="label" module="checkout">
                     <label>Shopping Cart Sidebar Extra Actions</label>
                 </block>
-            </block>
-            <!--<block type="checkout/cart" name="checkout.cart">
+            </block>-->
+            <block type="checkout/cart" name="checkout.cart">
                 <action method="setCartTemplate">
                     <value>billmatecheckout/cart.phtml</value>
                 </action>
@@ -42,21 +42,9 @@
                     <value>checkout/cart/noItems.phtml</value>
                 </action>
                 <action method="chooseTemplate"/>
-                <action method="addItemRender">
-                    <type>simple</type>
-                    <block>checkout/cart_item_renderer</block>
-                    <template>checkout/cart/item/default.phtml</template>
-                </action>
-                <action method="addItemRender">
-                    <type>grouped</type>
-                    <block>checkout/cart_item_renderer_grouped</block>
-                    <template>checkout/cart/item/default.phtml</template>
-                </action>
-                <action method="addItemRender">
-                    <type>configurable</type>
-                    <block>checkout/cart_item_renderer_configurable</block>
-                    <template>checkout/cart/item/default.phtml</template>
-                </action>
+                <action method="addItemRender"><type>simple</type><block>checkout/cart_item_renderer</block><template>billmatecheckout/cart/item/default.phtml</template></action>
+                <action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>billmatecheckout/cart/item/default.phtml</template></action>
+                <action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>billmatecheckout/cart/item/default.phtml</template></action>
 
                 <block type="core/text_list" name="checkout.cart.top_methods" as="top_methods" translate="label">
                     <label>Payment Methods Before Checkout Button</label>
@@ -71,14 +59,14 @@
                 </block>
 
                 <block type="checkout/cart_coupon" name="checkout.cart.coupon" as="coupon"
-                       template="checkout/cart/coupon.phtml"/>
+                       template="billmatecheckout/cart/coupon.phtml"/>
 
                 <block type="checkout/cart_crosssell" name="checkout.cart.crosssell" as="crosssell"
-                       template="checkout/cart/crosssell.phtml"/>
+                       template="billmatecheckout/cart/crosssell.phtml"/>
 
                 <block type="checkout/cart_totals" name="checkout.cart.totals" as="totals"
-                       template="checkout/cart/totals.phtml"/>
-            </block>-->
+                       template="billmatecheckout/cart/totals.phtml"/>
+            </block>
         </reference>
         <reference name="content">
             <block type="billmatecommon/checkout" template="billmatecheckout/checkout.phtml" name="billmatecheckout">

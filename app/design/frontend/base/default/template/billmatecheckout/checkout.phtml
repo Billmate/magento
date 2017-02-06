@@ -8,9 +8,7 @@
 
 $checkout = $this->getCheckoutUrl();
 ?>
-<div id="shipping-container">
-    
-</div>
+
 <?php echo $this->getChildHtml('checkout.cart'); ?>
 <script>
     var UPDATE_ADDRESS_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateaddress'); ?>";

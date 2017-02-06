@@ -1,6 +1,8 @@
 /**
  * Created by Boxedsolutions on 2016-12-07.
  */
+window.method = null;
+window.address_selected = null;
 var BillmateIframe = new function(){
     var self = this;
     var childWindow = null;
@@ -15,22 +17,29 @@ var BillmateIframe = new function(){
 
 
                 jQuery('#shipping-container').html(response);
+                window.address_selected = true;
             }
         });
 
     };
     this.updatePaymentMethod = function(data){
+        if(window.method != data.method) {
             jQuery.ajax({
-                url : UPDATE_PAYMENT_METHOD_URL,
+                url: UPDATE_PAYMENT_METHOD_URL,
                 data: data,
                 type: 'POST',
-                success: function(response){
+                success: function (response) {
                     var result = response.evalJSON();
-                    if(result.success){
-                        //self.updateCheckout();
+                    if (result.success) {
+
+                        self.updateCheckout();
+
+                        window.method = data.method;
+
                     }
                 }
             });
+        }
         
     };
     this.updateShippingMethod = function(){
@@ -66,7 +75,9 @@ var BillmateIframe = new function(){
                 self.updateAddress(json.data);
                 break;
             case 'payment_method_selected':
-                self.updatePaymentMethod(json.data);
+                if(window.address_selected !== null) {
+                    self.updatePaymentMethod(json.data);
+                }
                 break;
             case 'checkout_success':
                 self.createOrder(json.data);
