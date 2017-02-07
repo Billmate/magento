@@ -63,6 +63,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.0 (2017-02-08)
+* First version of Billmate Checkout.
+
 ### 2.2.2(2016-12-06)
 * Enhancement - Improved addressvalidation. 
 * Enhancement - Improved status handling by cron to fetch statuses from Billmate.
