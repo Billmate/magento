@@ -76,47 +76,7 @@
                 </tr>
             <?php endif; ?>
             </thead>
-            <tfoot>
-            <tr>
-                <td colspan="50" class="a-right cart-footer-actions">
-
-                    <!-- Make this button the first responder rather than empty cart -->
-                    <button type="submit" style="visibility:hidden;" data-cart-item-update name="update_cart_action" value="update_qty" title="<?php echo $this->quoteEscape($this->__('Update Shopping Cart')); ?>" class="button2 btn-update"><span><span><?php echo $this->__('Update Shopping Cart'); ?></span></span></button>
-
-                    <button type="submit" name="update_cart_action" data-cart-empty value="empty_cart" title="<?php echo $this->quoteEscape($this->__('Empty Cart')); ?>" class="button2 btn-empty" id="empty_cart_button"><span><span><?php echo $this->__('Empty Cart'); ?></span></span></button>
-
-                    <button type="submit" name="update_cart_action" data-cart-item-update value="update_qty" title="<?php echo $this->quoteEscape($this->__('Update Shopping Cart')); ?>" class="button2 btn-update"><span><span><?php echo $this->__('Update Shopping Cart'); ?></span></span></button>
-
-                    <span class="or">-<?php echo $this->__('or'); ?>-</span>
-
-                    <?php if($this->getContinueShoppingUrl()): ?>
-                        <button type="button" title="<?php echo $this->quoteEscape($this->__('Continue Shopping')) ?>" class="button2 btn-continue" onclick="setLocation('<?php echo Mage::helper('core')->quoteEscape($this->getContinueShoppingUrl()) ?>')"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
-                    <?php endif; ?>
-                    <!--[if lt IE 8]>
-                    <input type="hidden" id="update_cart_action_container" data-cart-item-update />
-                    <script type="text/javascript">
-                        //<![CDATA[
-                            Event.observe(window, 'load', function()
-                            {
-                                // Internet Explorer (lt 8) does not support value attribute in button elements
-                                $emptyCartButton = $('empty_cart_button');
-                                $cartActionContainer = $('update_cart_action_container');
-                                if ($emptyCartButton && $cartActionContainer) {
-                                    Event.observe($emptyCartButton, 'click', function()
-                                    {
-                                        $emptyCartButton.setAttribute('name', 'update_cart_action_temp');
-                                        $cartActionContainer.setAttribute('name', 'update_cart_action');
-                                        $cartActionContainer.setValue('empty_cart');
-                                    });
-                                }
-
-                            });
-                        //]]>
-                        </script>
-                        <![endif]-->
-                </td>
-            </tr>
-            </tfoot>
+            
             <tbody>
             <?php foreach($this->getItems() as $_item): ?>
                 <?php echo $this->getItemHtml($_item) ?>
