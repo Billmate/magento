@@ -292,7 +292,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             'billmatecardpay' => 8,
             'billmatebankpay' => 16
         );
-        $method = 93;
+        $method = $orderValues['PaymentData']['method'];
         if($quote->isVirtual() && isset($codeToMethod[$quote->getBillingAddress()->getPaymentMethod()]) ){
             $method = $codeToMethod[$quote->getBillingAddress()->getPaymentMethod()];
         } elseif(!$quote->isVirtual() && isset($codeToMethod[$quote->getShippingAddress()->getPaymentMethod()])) {
@@ -476,6 +476,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
 
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
         unset($orderValues['Cart']['Handling']);
+        Mage::log('Method'.$method);
         if ( $method == 1  )
         {
             $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
