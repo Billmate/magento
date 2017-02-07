@@ -42,9 +42,21 @@
                     <value>checkout/cart/noItems.phtml</value>
                 </action>
                 <action method="chooseTemplate"/>
-                <action method="addItemRender"><type>simple</type><block>checkout/cart_item_renderer</block><template>billmatecheckout/cart/item/default.phtml</template></action>
-                <action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>billmatecheckout/cart/item/default.phtml</template></action>
-                <action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>billmatecheckout/cart/item/default.phtml</template></action>
+                <action method="addItemRender">
+                    <type>simple</type>
+                    <block>checkout/cart_item_renderer</block>
+                    <template>billmatecheckout/cart/item/default.phtml</template>
+                </action>
+                <action method="addItemRender">
+                    <type>grouped</type>
+                    <block>checkout/cart_item_renderer_grouped</block>
+                    <template>billmatecheckout/cart/item/default.phtml</template>
+                </action>
+                <action method="addItemRender">
+                    <type>configurable</type>
+                    <block>checkout/cart_item_renderer_configurable</block>
+                    <template>billmatecheckout/cart/item/default.phtml</template>
+                </action>
 
                 <block type="core/text_list" name="checkout.cart.top_methods" as="top_methods" translate="label">
                     <label>Payment Methods Before Checkout Button</label>
@@ -66,6 +78,10 @@
 
                 <block type="checkout/cart_totals" name="checkout.cart.totals" as="totals"
                        template="billmatecheckout/cart/totals.phtml"/>
+                <block type="checkout/cart_shipping" name="checkout.cart.shipping" as="shipping"
+                       template="billmatecheckout/shipping.phtml">
+
+                </block>
             </block>
         </reference>
         <reference name="content">

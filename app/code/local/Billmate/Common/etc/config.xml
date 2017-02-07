@@ -50,6 +50,7 @@
                     </PartPayment>
                 </observers>
             </admin_system_config_changed_section_billmate> -->
+
         </events>
     </global>
     <admin>
@@ -111,6 +112,14 @@
                     </billmate_onepagecheckout_index>
                 </observers>
             </controller_action_predispatch_checkout_onepage_index>-->
+            <sales_order_place_after>
+                <observers>
+                    <billmate_common_clearHash>
+                        <class>Billmate_Common_Model_Observer</class>
+                        <method>salesOrderPlaceAfter</method>
+                    </billmate_common_clearHash>
+                </observers>
+            </sales_order_place_after>
         </events>
         <layout>
             <updates>

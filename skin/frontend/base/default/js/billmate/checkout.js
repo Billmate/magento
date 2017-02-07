@@ -73,6 +73,7 @@ var BillmateIframe = new function(){
         switch(json.event){
             case 'address_selected':
                 self.updateAddress(json.data);
+                self.updatePaymentMethod(json.data);
                 break;
             case 'payment_method_selected':
                 if(window.address_selected !== null) {
@@ -105,3 +106,5 @@ var BillmateIframe = new function(){
 
 var b_iframe = BillmateIframe;
 b_iframe.initListeners();
+
+

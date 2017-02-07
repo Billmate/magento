@@ -63,6 +63,9 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
         }*/
         return VarienForm.prototype.submit.bind(coShippingMethodForm)();
     }
+    <?php if(Mage::registry('update_checkout')): ?>
+    b_iframe.updateCheckout();
+    <?php endif; ?>
     $$('[name="estimate_method"].radio').each(function(el){
         el.observe('click',function(e){
             new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod') ?>',{

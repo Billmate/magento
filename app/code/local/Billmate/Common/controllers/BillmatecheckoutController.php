@@ -11,6 +11,16 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function indexAction()
     {
+        $quote = Mage::getSingleton('checkout/session')->getQuote();
+        if(!$quote->isVirtual() && $quote->getShippingAddress()->getCountryId() == ''){
+            $quote->getShippingAddress()->addData(array('country_id' => Mage::getStoreConfig('general/country/default')));
+            $method = Mage::getStoreConfig('billmate/checkout/shipping_method');
+            $freeshipping = false;
+            if($method == 'freeshipping_freeshipping')
+                $freeshipping = true;
+            $quote->getShippingAddress()->setFreeShipping($freeshipping)->setCollectShippingRates(true)->collectShippingRates()->setShippingMethod($method)->collectTotals()->save();
+            $quote->save();
+        }
         
         $this->loadLayout();
         $this->renderLayout();
@@ -95,7 +105,9 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $code = (string) $this->getRequest()->getParam('estimate_method');
         if (!empty($code)) {
 
-            $this->_getQuote()->getShippingAddress()->setShippingMethod($code)->collectTotals()->save();
+            if($code == 'freeshipping_freeshipping')
+                $freeshipping = true;
+            $this->_getQuote()->getShippingAddress()->setFreeShipping($freeshipping)->setCollectShippingRates(true)->collectShippingRates()->setShippingMethod($code)->collectTotals()->save();
         }
         
         $result = $checkout->updateCheckout();
