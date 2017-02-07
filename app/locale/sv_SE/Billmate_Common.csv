@@ -84,3 +84,4 @@
 "Should invoice be created in Magento if order is marked as activated from Billmate API?","Ska faktura skapas i Magento om ordern får tillbaka status aktiverad av Billmate API?"
 "Minutely","Minutvis"
 "Hourly","Timvis"
+"Rowtotal","Summa"

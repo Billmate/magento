@@ -82,6 +82,9 @@ var BillmateIframe = new function(){
             case 'checkout_success':
                 self.createOrder(json.data);
                 break;
+            case 'content_height':
+                $('checkout').height = json.data;
+                break;
             default:
                 console.log(event);
                 console.log('not implemented')
