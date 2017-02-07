@@ -63,6 +63,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 2.2.3(2017-02-07)
+* Enhancement - Added possibility to add other statuses to check against Billmate.
+
 ### 2.2.2(2016-12-06)
 * Enhancement - Improved addressvalidation. 
 * Enhancement - Improved status handling by cron to fetch statuses from Billmate.
