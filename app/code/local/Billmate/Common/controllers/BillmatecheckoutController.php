@@ -91,6 +91,12 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         }
     }
 
+    public function updatetotalsAction()
+    {
+        $this->getResponse()->setBody($this->getLayout()->createBlock('checkout/cart_totals', 'checkout.cart.totals')->setTemplate('billmatecheckout/cart/totals.phtml')->toHtml());
+
+    }
+
     public function _getQuote()
     {
         $cart = Mage::getSingleton('checkout/cart');
@@ -105,9 +111,11 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $code = (string) $this->getRequest()->getParam('estimate_method');
         if (!empty($code)) {
 
+            $freeshipping = false;
             if($code == 'freeshipping_freeshipping')
                 $freeshipping = true;
-            $this->_getQuote()->getShippingAddress()->setFreeShipping($freeshipping)->setCollectShippingRates(true)->collectShippingRates()->setShippingMethod($code)->collectTotals()->save();
+            $this->_getQuote()->getShippingAddress()->removeAllShippingRates()->setFreeShipping($freeshipping)->setCollectShippingRates(true)->collectShippingRates()->setShippingMethod($code)->collectTotals()->save();
+            $this->_getQuote()->collectTotals()->save();
         }
         
         $result = $checkout->updateCheckout();

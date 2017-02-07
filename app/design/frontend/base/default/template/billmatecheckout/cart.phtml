@@ -85,7 +85,7 @@
     </div>
     <div class="billmate-cart-totals-wrapper">
         <div class="cart-totals">
-            <?php echo $this->getChildHtml('totals'); ?>
+            <div id="billmate-totals"><?php echo $this->getChildHtml('totals'); ?></div>
             <?php if(!$this->hasError()): ?>
                 <ul class="checkout-types bottom">
                     <?php foreach ($this->getMethods('methods') as $method): ?>

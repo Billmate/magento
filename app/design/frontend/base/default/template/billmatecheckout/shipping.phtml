@@ -74,7 +74,10 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
                 onSuccess: function(transport){
                     var result = transport.responseText.evalJSON();
                     if(result.success){
+                        b_iframe.updateTotals();
                         b_iframe.updateCheckout();
+
+
                     }
                     
                 }
