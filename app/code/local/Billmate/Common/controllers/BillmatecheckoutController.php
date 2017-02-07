@@ -104,6 +104,61 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         return $cart->getQuote();
     }
 
+    protected function _getCart()
+    {
+        return Mage::getSingleton('checkout/cart');
+    }
+    
+    public function setdiscountAction()
+    {
+        /**
+         * No reason continue with empty shopping cart
+         */
+        $response = array();
+        if (!$this->_getCart()->getQuote()->getItemsCount()) {
+            $response['success'] = false;
+            
+        }
+
+        $couponCode = (string) $this->getRequest()->getParam('coupon_code');
+        if ($this->getRequest()->getParam('remove') == 1) {
+            $couponCode = '';
+        }
+        $oldCouponCode = $this->_getQuote()->getCouponCode();
+
+        if (!strlen($couponCode) && !strlen($oldCouponCode)) {
+            $response['success'] = false;
+        }
+
+        try {
+            $codeLength = strlen($couponCode);
+            $isCodeLengthValid = $codeLength && $codeLength <= Mage_Checkout_Helper_Cart::COUPON_CODE_MAX_LENGTH;
+
+            $this->_getQuote()->getShippingAddress()->setCollectShippingRates(true);
+            $this->_getQuote()->setCouponCode($isCodeLengthValid ? $couponCode : '')
+                ->collectTotals()
+                ->save();
+
+            if ($codeLength) {
+                if ($isCodeLengthValid && $couponCode == $this->_getQuote()->getCouponCode()) {
+                    $response['success'] = true;
+                } else {
+                    $response['success'] = false;
+                }
+            } else {
+                $response['success'] = true;
+            }
+
+        } catch (Mage_Core_Exception $e) {
+            $response['success'] = false;
+        } catch (Exception $e) {
+            $response['success'] = false;
+            Mage::logException($e);
+        }
+
+        $this->getResponse()->setBody(json_encode($response));
+    }
+    
     public function updateshippingmethodAction()
     {
         $checkout = Mage::getModel('billmatecommon/checkout');

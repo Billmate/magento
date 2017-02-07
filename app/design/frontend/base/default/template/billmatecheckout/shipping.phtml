@@ -36,9 +36,6 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
                 </dd>
             <?php endforeach; ?>
         </dl>
-        <div class="buttons-set">
-            <button type="submit" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Update Total')) ?>" class="button" name="do" value="<?php echo Mage::helper('core')->quoteEscape($this->__('Update Total')) ?>"><span><span><?php echo $this->__('Update Total') ?></span></span></button>
-        </div>
     </form>
 <?php endif; ?>
 <script type="text/javascript">

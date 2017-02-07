@@ -446,7 +446,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                     $discounts[$percent] = $temp;
             }
         }
-        $totals = Mage::getSingleton('checkout/session')->getQuote()->getTotals();
+        $totals = Mage::getSingleton('checkout/session')->getQuote()->collectTotals()->getTotals();
 
         //print_r($quote1['subtotal']->getData());
 

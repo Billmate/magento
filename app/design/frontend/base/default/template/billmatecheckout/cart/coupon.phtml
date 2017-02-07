@@ -35,9 +35,9 @@
             </div>
             <div class="buttons-set">
                 <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Apply Coupon')) ?>" class="button" onclick="discountForm.submit(false)" value="<?php echo Mage::helper('core')->quoteEscape($this->__('Apply Coupon')) ?>"><span><span><?php echo $this->__('Apply Coupon') ?></span></span></button>
-                <?php if(strlen($this->getCouponCode())): ?>
+                <div id="discount-cancel-button" style="display:none;">
                     &nbsp; <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Cancel Coupon')) ?>" class="button" onclick="discountForm.submit(true)" value="<?php echo Mage::helper('core')->quoteEscape($this->__('Cancel Coupon')) ?>"><span><span><?php echo $this->__('Cancel Coupon') ?></span></span></button>
-                <?php endif;?>
+                </div>
             </div>
         </div>
     </div>
@@ -53,7 +53,30 @@ discountForm.submit = function (isRemove) {
         $('coupon_code').addClassName('required-entry');
         $('remove-coupone').value = "0";
     }
-    return VarienForm.prototype.submit.bind(discountForm)();
+    if(discountForm.validator.validate()){
+        jQuery.ajax({
+            url:UPDATE_DISCOUNT_URL,
+            type:'POST',
+            data:'ajax=true&'+jQuery('#discount-coupon-form').serialize(),
+            success:function(data)
+            {
+                var result = data.evalJSON();
+                if(result.success){
+                    if($('remove-coupone').value == '0')
+                        jQuery('#discount-cancel-button').show();
+                    else
+                        jQuery('#discount-cancel-button').hide();
+
+                    b_iframe.updateTotals();
+                    b_iframe.updateCheckout();
+                }
+            }
+        });
+    } else {
+        return false;
+    }
+    //return VarienForm.prototype.submit.bind(discountForm)();
 }
+
 //]]>
 </script>
