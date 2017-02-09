@@ -18,7 +18,7 @@
                 <settings translate="label" module="billmatecommon">
                     <label>General settings</label>
                     <frontend_type>text</frontend_type>
-                    <sort_order>2000</sort_order>
+                    <sort_order>600</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
@@ -63,13 +63,12 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </logo>
-
                     </fields>
                 </settings>
                 <credentials translate="label" module="billmatecommon">
                     <label>Billmate credentials</label>
                     <frontend_type>text</frontend_type>
-                    <sort_order>1000</sort_order>
+                    <sort_order>500</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
@@ -102,6 +101,49 @@
                         </verify>
                     </fields>
                 </credentials>
+                <checkout translate="label comment" module="billmatecommon">
+                    <label>Billmate Checkout</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1500</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label" module="billmatecommon">
+                            <label>Activate Billmate checkout</label>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[
+                                Activate Billmate Checkout for your customers.
+                            ]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </active>
+                        <testmode translate="label" module="billmatecommon">
+                            <label>Testmode</label>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[
+                                Testmode, no real orders
+                            ]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </testmode>
+                        <shipping_method translate="label" module="billmatecommon">
+                            <label>Default Shipping Method</label>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>select</frontend_type>
+                            <source_model>billmatecommon/system_config_shipping</source_model>
+                        </shipping_method>
+                    </fields>
+                </checkout>
                 <fraud_check translate="label" module="billmatecommon">
                     <label>Pending settings</label>
                     <frontend_type>text</frontend_type>

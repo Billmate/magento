@@ -3,7 +3,10 @@
     <modules>
         <Billmate_Common>
             <active>true</active>
-            <codePool>community</codePool>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Sales />
+            </depends>
         </Billmate_Common>
     </modules>
 

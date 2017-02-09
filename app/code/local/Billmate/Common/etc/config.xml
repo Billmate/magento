@@ -15,6 +15,14 @@
             <billmatecommon>
                 <class>Billmate_Common_Block</class>
             </billmatecommon>
+            <checkout>
+                <rewrite>
+                    <links>Billmate_Common_Block_Checkout_Links</links>
+                    <onepage_link>Billmate_Common_Block_Checkout_Onepage_Link</onepage_link>
+                    <cart>Billmate_Common_Block_Checkout_Cart</cart>
+                    <cart_sidebar>Billmate_Common_Block_Checkout_Cart_Sidebar</cart_sidebar>
+                </rewrite>
+            </checkout>
         </blocks>
         <models>
             <billmatecommon>
@@ -42,6 +50,7 @@
                     </PartPayment>
                 </observers>
             </admin_system_config_changed_section_billmate> -->
+
         </events>
     </global>
     <admin>
@@ -84,7 +93,41 @@
                     <frontName>billmatecommon</frontName>
                 </args>
             </billmatecommon>
+
         </routers>
+        <events>
+            <!--<controller_action_predispatch_firecheckout_index_index>
+                <observers>
+                    <billmate_firecheckout_index>
+                        <class>Billmate_Common_Model_Observer</class>
+                        <method>redirectToCancelUrl</method>
+                    </billmate_firecheckout_index>
+                </observers>
+            </controller_action_predispatch_firecheckout_index_index>
+            <controller_action_predispatch_checkout_onepage_index>
+                <observers>
+                    <billmate_onepagecheckout_index>
+                        <class>Billmate_Common_Model_Observer</class>
+                        <method>redirectToCancelUrl</method>
+                    </billmate_onepagecheckout_index>
+                </observers>
+            </controller_action_predispatch_checkout_onepage_index>-->
+            <sales_order_place_after>
+                <observers>
+                    <billmate_common_clearHash>
+                        <class>Billmate_Common_Model_Observer</class>
+                        <method>salesOrderPlaceAfter</method>
+                    </billmate_common_clearHash>
+                </observers>
+            </sales_order_place_after>
+        </events>
+        <layout>
+            <updates>
+                <billmate_common>
+                    <file>billmatecheckout.xml</file>
+                </billmate_common>
+            </updates>
+        </layout>
     </frontend>
     <crontab>
         <jobs>

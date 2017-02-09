@@ -85,3 +85,4 @@
 "Minutely","Minutvis"
 "Hourly","Timvis"
 "Add any custom statuses you are using. payment_review and pending_payment are automatically checked against.","Lägg till alla specialstatusar ni använder. payment_review och pending_payment kontrolleras automatiskt"
+"Rowtotal","Summa"

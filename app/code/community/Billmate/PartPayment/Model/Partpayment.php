@@ -191,27 +191,37 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 
     public function authorize(Varien_Object $payment, $amount)
     {
-    	
-       $gateway =  Mage::getSingleton('partpayment/gateway');
-       $invoiceId = $gateway->makePayment();
-	    $payment->setTransactionId($invoiceId);
-	    $payment->setIsTransactionClosed(0);
+
+        if($hash = Mage::getSingleton('checkout/session')->getBillmateHash()) {
+            $result = Mage::helper('billmatecommon')->getBillmate()->getCheckout(array('PaymentData' => array('hash' => $hash)));
+            $payment->setTransactionId($result['PaymentData']['order']['number']);
+
+            $payment->setIsTransactionClosed(0);
+        } else {
+            $gateway = Mage::getSingleton('partpayment/gateway');
+            $invoiceId = $gateway->makePayment();
+            $payment->setTransactionId($invoiceId);
+
+            $payment->setIsTransactionClosed(0);
+        }
     }
     public function validate()
     {
         parent::validate();
-        $payment = $_POST['payment'];
-        if(Mage::getStoreConfig('firecheckout/general/enabled') || Mage::getStoreConfig('streamcheckout/general/enabled')){
-            if( empty( $payment['person_number'] ) && empty( $payment['billmatepartpayment_pno'] ) ){
-                Mage::throwException(Mage::helper('payment')->__('Missing Personal number') );
+        if(isset($_POST['payment'])) {
+            $payment = $_POST['payment'];
+            if (Mage::getStoreConfig('firecheckout/general/enabled') || Mage::getStoreConfig('streamcheckout/general/enabled')) {
+                if (empty($payment['person_number']) && empty($payment['billmatepartpayment_pno'])) {
+                    Mage::throwException(Mage::helper('payment')->__('Missing Personal number'));
+                }
+            } else {
+                if (empty($payment['billmatepartpayment_pno'])) {
+                    Mage::throwException(Mage::helper('payment')->__('Missing Personal number'));
+                }
             }
-        } else {
-            if( empty( $payment['billmatepartpayment_pno'] ) ){
-                Mage::throwException(Mage::helper('payment')->__('Missing Personal number') );
+            if (empty($payment['billmatepartpayment_phone'])) {
+                Mage::throwException(Mage::helper('payment')->__('Missing phone number'));
             }
-        }
-        if( empty( $payment['billmatepartpayment_phone'] ) ){
-            Mage::throwException(Mage::helper('payment')->__('Missing phone number') );
         }
     }
 }
