@@ -3,7 +3,7 @@
     <modules>
         <Billmate_Common>
             <active>true</active>
-            <codePool>community</codePool>
+            <codePool>local</codePool>
         </Billmate_Common>
     </modules>
 

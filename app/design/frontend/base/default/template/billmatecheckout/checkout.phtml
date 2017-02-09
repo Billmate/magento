@@ -1,0 +1,21 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Boxedsolutions
+ * Date: 2016-09-26
+ * Time: 11:59
+ */
+
+$checkout = $this->getCheckoutUrl();
+?>
+
+<?php echo $this->getChildHtml('checkout.cart'); ?>
+<script>
+    var UPDATE_ADDRESS_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateaddress'); ?>";
+    var UPDATE_PAYMENT_METHOD_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updatepaymentmethod'); ?>";
+    var UPDATE_SHIPPING_METHOD_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod'); ?>";
+    var CREATE_ORDER_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/createorder'); ?>";
+    var UPDATE_TOTALS_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updatetotals'); ?>";
+    var UPDATE_DISCOUNT_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/setdiscount'); ?>";
+</script>
+<iframe id="checkout" src="<?php echo $checkout; ?>" style="width: 100%; min-height: 800px; border:none;" sandbox="allow-same-origin allow-scripts allow-modals allow-popups allow-forms"></iframe>

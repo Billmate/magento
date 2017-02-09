@@ -13,6 +13,11 @@ class Billmate_Common_Model_Observer extends Mage_Core_Model_Abstract
 
     }
 
+    public function salesOrderPlaceAfter(Varien_Event_Observer $observer)
+    {
+        Mage::getSingleton('checkout/session')->unsBillmateHash();
+    }
+
     public function redirectToCancelUrl(Varien_Event_Observer $observer)
     {
         $controllerAction = $observer->getEvent()->getControllerAction();
