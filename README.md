@@ -12,6 +12,7 @@ Billmate Gateway is a plugin that extends Magento, allowing your customers to ge
 
 ## Important Note
 * The automatic order activation on status change is supported from Magento version 1.7 and above.
+* When updating to 3.0 please delete folder /app/code/community/Billmate/Common as this is moved to local.
 
 ## COMPATIBILITY Magento versions
 1.7 - 1.9.3
@@ -63,11 +64,11 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
-### 2.2.3(2017-02-07)
-* Enhancement - Added possibility to add other statuses to check against Billmate.
-
 ### 3.0 (2017-02-08)
 * First version of Billmate Checkout.
+
+### 2.2.3(2017-02-07)
+* Enhancement - Added possibility to add other statuses to check against Billmate.
 
 ### 2.2.2(2016-12-06)
 * Enhancement - Improved addressvalidation. 
