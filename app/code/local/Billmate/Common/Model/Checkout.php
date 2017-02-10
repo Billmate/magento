@@ -305,7 +305,19 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $orderValues['PaymentData']['country'] = $storeCountryIso2;
         $orderValues['PaymentData']['orderid'] = $quote->getReservedOrderId();
         //$orderValues['PaymentData']['method'] = $method;
+        if(8 == $orderValues['PaymentData']['method']) {
+            $orderValues['PaymentData']['accepturl'] = Mage::getUrl('cardpay/cardpay/accept', array('billmate_quote_id' => $quote->getId(), '_secure' => true));
+            $orderValues['PaymentData']['cancelurl'] = Mage::getUrl('cardpay/cardpay/cancel', array('_secure' => true));
+            $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('cardpay/cardpay/callback', array('billmate_quote_id' => $quote->getId(), '_secure' => true));
+            $orderValues['PaymentData']['returnmethod'] = (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET';
+        }
 
+        if(16 == $orderValues['PaymentData']['method']) {
+            $orderValues['PaymentData']['accepturl'] = Mage::getUrl('bankpay/bankpay/accept', array('billmate_quote_id' => $quote->getId(), '_secure' => true));
+            $orderValues['PaymentData']['cancelurl'] = Mage::getUrl('bankpay/bankpay/cancel', array('_secure' => true));
+            $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('bankpay/bankpay/callback', array('billmate_quote_id' => $quote->getId(), '_secure' => true));
+            $orderValues['PaymentData']['returnmethod'] = (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET';
+        }
         $_taxHelper  = Mage::helper('tax');
         $_weeeHelper = Mage::helper('weee');
         $percent = 0;
@@ -476,8 +488,12 @@ class Billmate_Common_Model_Checkout extends Varien_Object
 
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
         unset($orderValues['Cart']['Handling']);
+        $orderValues['Cart']['Handling'] = array(
+            'withouttax' => 0,
+            'taxrate'    => 0
+        );
         Mage::log('Method'.$method);
-        if ( $method == 1  )
+        if ($orderValues['PaymentData']['method'] == 1 )
         {
             $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
             $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
@@ -515,6 +531,11 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 );
                 $totalValue += $Shipping->getShippingAmount() * 100;
                 $totalTax += ($Shipping->getShippingAmount() * 100) * ($rate / 100);
+            } else {
+                $orderValues['Cart']['Shipping'] = array(
+                    'withouttax' => 0,
+                    'taxrate' => 0
+                );
             }
         }
         $round = round($quote->getGrandTotal() * 100) - round($totalValue +  $totalTax);

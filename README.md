@@ -64,6 +64,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.0.1 (2017-02-10)
+* Fix - Callback/Accept - Card and bankpayment.
+
 ### 3.0 (2017-02-08)
 * First version of Billmate Checkout.
 
