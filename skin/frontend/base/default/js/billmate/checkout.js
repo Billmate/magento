@@ -76,7 +76,11 @@ var BillmateIframe = new function(){
     }
     this.handleEvent = function(event){
         console.log(event);
-        var json = JSON.parse(event.data);
+        try {
+            var json = JSON.parse(event.data);
+        } catch(e){
+            return;
+        }
         self.childWindow = json.source;
         console.log(json);
         switch(json.event){
