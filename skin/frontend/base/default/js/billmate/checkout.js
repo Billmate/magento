@@ -76,36 +76,38 @@ var BillmateIframe = new function(){
     }
     this.handleEvent = function(event){
         console.log(event);
-        try {
-            var json = JSON.parse(event.data);
-        } catch(e){
-            return;
-        }
-        self.childWindow = json.source;
-        console.log(json);
-        switch(json.event){
-            case 'address_selected':
-                self.updateAddress(json.data);
-                self.updatePaymentMethod(json.data);
-                self.updateTotals();
-                break;
-            case 'payment_method_selected':
-                if(window.address_selected !== null) {
+        if(event.origin == "https://checkout.billmate.se") {
+            try {
+                var json = JSON.parse(event.data);
+            } catch (e) {
+                return;
+            }
+            self.childWindow = json.source;
+            console.log(json);
+            switch (json.event) {
+                case 'address_selected':
+                    self.updateAddress(json.data);
                     self.updatePaymentMethod(json.data);
                     self.updateTotals();
-                }
-                break;
-            case 'checkout_success':
-                self.createOrder(json.data);
-                break;
-            case 'content_height':
-                $('checkout').height = json.data;
-                break;
-            default:
-                console.log(event);
-                console.log('not implemented')
-                break;
+                    break;
+                case 'payment_method_selected':
+                    if (window.address_selected !== null) {
+                        self.updatePaymentMethod(json.data);
+                        self.updateTotals();
+                    }
+                    break;
+                case 'checkout_success':
+                    self.createOrder(json.data);
+                    break;
+                case 'content_height':
+                    $('checkout').height = json.data;
+                    break;
+                default:
+                    console.log(event);
+                    console.log('not implemented')
+                    break;
 
+            }
         }
 
     };
