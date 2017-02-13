@@ -28,7 +28,7 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
 	
     function getBillmate($ssl = true, $debug = false ){
 
-        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.0.1');
+        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.0.2');
         if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.9');
 
         $lang = explode('_',Mage::getStoreConfig('general/locale/code'));

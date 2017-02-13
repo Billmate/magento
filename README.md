@@ -64,6 +64,10 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.0.2 (2017-02-13)
+* Fix - Javascript on Postmessage fix.
+* Fix - Empty array as Shipping.
+
 ### 3.0.1 (2017-02-10)
 * Fix - Callback/Accept - Card and bankpayment.
 
