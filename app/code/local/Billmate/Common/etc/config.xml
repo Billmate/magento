@@ -10,6 +10,11 @@
             <billmatecommon>
                 <class>Billmate_Common_Helper</class>
             </billmatecommon>
+            <checkout>
+                <rewrite>
+                    <url>Billmate_Common_Helper_Url</url>
+                </rewrite>
+            </checkout>
         </helpers>
         <blocks>
             <billmatecommon>

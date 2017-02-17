@@ -6,6 +6,7 @@
             <codePool>local</codePool>
             <depends>
                 <Mage_Sales />
+                <!-- Uncomment if Firecheckout <TM_FireCheckout/> -->
             </depends>
         </Billmate_Common>
     </modules>
