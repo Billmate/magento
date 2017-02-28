@@ -68,8 +68,16 @@
                 </args>
             </adminhtml>
         </routers>
+
     </admin>
     <adminhtml>
+        <layout>
+            <updates>
+                <billmate_common>
+                    <file>billmatecheckout.xml</file>
+                </billmate_common>
+            </updates>
+        </layout>
         <translate>
             <modules>
                 <Billmate_Common>

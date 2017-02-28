@@ -142,6 +142,24 @@
                             <frontend_type>select</frontend_type>
                             <source_model>billmatecommon/system_config_shipping</source_model>
                         </shipping_method>
+                        <cart_left translate="label" module="billmatecommon">
+                            <label>Show cart to the left of checkout</label>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </cart_left>
+                        <cart_right translate="label" module="billmatecommon">
+                            <label>Show cart to the right of checkout</label>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </cart_right>
                     </fields>
                 </checkout>
                 <fraud_check translate="label" module="billmatecommon">
