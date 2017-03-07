@@ -17,7 +17,9 @@ var BillmateIframe = new function(){
 
 
                 jQuery('#shipping-container').html(response);
-                
+                if(jQuery('input[name="estimate_method"]:checked').length != 1){
+                    jQuery('input[name="estimate_method"]:first').click();
+                }
                 window.address_selected = true;
             }
         });
