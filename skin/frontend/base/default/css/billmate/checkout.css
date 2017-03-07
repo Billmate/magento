@@ -1,7 +1,7 @@
 .col-main{
     width: 55% !important
 }
-.col-left{
+.col-left, .col-right{
     width: 43% !important
 }
 .button2 > span{
@@ -44,8 +44,6 @@
 
 
 .td, .th{
-    float: left;
-    box-sizing: border-box;
     text-align: left !important
 }
 .tr{
@@ -63,10 +61,6 @@
 .th:nth-of-type(2){
     display: none
 }
-.cart-price, .th:nth-of-type(3), .product-cart-actions, .product-cart-total, .th:nth-of-type(3), .th:nth-of-type(4){
-    width: 15%;
-    float: left
-}
 .product-cart-remove{
     width: 5%;
     float: left
@@ -76,4 +70,145 @@
 }
 .cart-links a{
     font-size: 11px !important
+}
+.cart-table .product-cart-info{
+    padding-left: 0 !important
+}
+.cart .cart-totals table tfoot td{
+    font-size: 14px !important;
+}
+.billmate-shipping{
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    margin-top: 20px;
+    font-size: 22px;
+}
+.buttons-set{
+    margin-top: 20px !important;
+    padding-top: 0 !important;
+    border-top: 0 !important;
+    text-align: left !important;
+    margin-top: 10px !important
+}
+.buttons-set button.button{
+    float: left !important;
+    margin-left: 0 !important;
+}
+.sp-methods dt{
+    font-size: 14px !important;
+    font-weight: 300 !important
+}
+#co-shipping-method-form{
+    margin-top: 10px
+}
+.discount-form, .cart-totals{
+    background: #f4f4f4 !important;
+    float: left;
+    width: 100%;
+    border-radius: 3px;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    border: 1px solid #ddd !important
+}
+.cart-totals{
+    margin-top: 15px
+}
+#co-shipping-method-form .sp-methods dd label{
+    border: 1px solid #ddd !important;
+    background: #f4f4f4 !important;
+    border-radius: 3px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.cart-table .product-cart-actions{
+    padding-left: 0 !important
+}
+.cart .page-title, .billmate-shipping{
+    border-bottom: 0 !important;
+    border-top: 0 !important
+}
+#shopping-cart-table > .thead > .tr{
+    padding: 0 !important;
+}
+#shopping-cart-table > .thead > .tr:nth-of-type(1){
+    height: 23px !important;
+    padding-bottom: 0;
+    margin-bottom: -0px !important
+}
+
+.discount-form label {
+    width: 100%;
+}
+.input-box {
+    padding-top: 2px;
+    width: 200px;
+    float: left;
+}
+.buttons-set{
+    float: left;
+    width: 150px;
+    clear: none !important;
+    margin-top: 4px !important
+}
+
+
+@media only screen and (min-width : 800px) {
+    .cart-price, .th:nth-of-type(3), .product-cart-actions, .product-cart-total, .th:nth-of-type(3), .th:nth-of-type(4){
+        width: 15%;
+        float: left
+    }
+}
+@media only screen and (max-width : 1000px) and (min-width : 850px){
+    .tr, .cart-table h2{
+        font-size: 11px !important
+    }
+    .product-cart-sku .label{
+        display: none
+    }
+}
+@media only screen and (max-width : 850px) {
+    .col-main, .col-left.sidebar, .col-right.sidebar{
+        width: 100% !important
+    }
+    .cart-table .product-cart-price{
+        float: left !important
+    }
+    .cart-price{
+        float: right !important
+    }
+    .cart-table .product-cart-info .btn-remove{
+        display: none !important
+    }
+    .td.product-cart-price, .a-center.product-cart-remove, .td.product-cart-actions, .tr .th.a-center:nth-of-type(3), .tr .th.a-center:nth-of-type(4){
+        display: none !important
+    }
+    .price, .th.a-center.cart-total-head{
+        float: right !important;
+    }
+}
+@media only screen and (max-width: 599px){
+    .cart-table .product-cart-info, .cart-table td[data-rwd-label], .td.product-cart-info{
+        float: left !important;
+        width: auto !important
+    }
+    .cart-table .product-cart-total{
+        display: block !important;
+        float: right !important;
+        font-size: 14px !important
+    }
+    .td, .th{
+        float: left;
+        box-sizing: border-box;
+        text-align: left !important
+    }
+    .discount-form, .cart-totals{
+        margin-top: 15px
+    }
+    .input-box, .input-text, .sp-methods label{
+        width: 100% !important
+    }
+    .buttons-set{
+        margin-top: 10px !important
+    }
 }

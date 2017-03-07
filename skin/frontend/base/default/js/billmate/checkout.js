@@ -17,6 +17,7 @@ var BillmateIframe = new function(){
 
 
                 jQuery('#shipping-container').html(response);
+                
                 window.address_selected = true;
             }
         });

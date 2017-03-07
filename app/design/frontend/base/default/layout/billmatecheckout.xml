@@ -23,6 +23,9 @@
             <action method="setTemplate" ifconfig="billmate/checkout/cart_right">
                 <template>page/2columns-right.phtml</template>
             </action>
+            <action method="addBodyClass" ifconfig="billmate/checkout/cart_right"><classname>billmate-cart-right</classname></action>
+            <action method="addBodyClass" ifconfig="billmate/checkout/cart_left"><classname>billmate-cart-left</classname></action>
+
         </reference>
         <reference name="left">
 
