@@ -3,6 +3,7 @@
  */
 window.method = null;
 window.address_selected = null;
+window.latestScroll = null;
 var BillmateIframe = new function(){
     var self = this;
     var childWindow = null;
