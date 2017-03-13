@@ -45,9 +45,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $cart = Mage::getSingleton('checkout/cart');
 
         $connection = Mage::helper('billmatecommon')->getBillmate();
-        $result = $connection->getCheckout(array('PaymentData' => array('hash' => $post['hash'])));
+        $result = $connection->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
         if(!isset($result['code'])) {
-            Mage::getSingleton('checkout/session')->setBillmateHash($post['hash']);
 
             $billingAddress = $cart->getQuote()->getBillingAddress();
             $billingAddress->setFirstname($result['Customer']['Billing']['firstname']);
@@ -176,7 +175,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $result = $checkout->updateCheckout();
         if(!isset($result['code'])){
             $response['success'] = true;
-            $response['update_checkout'] = $result['update_checkout'];
+            $response['update_checkout'] = ($result['update_checkout']) ? true : false;
         } else {
             $response['success'] = false;
             
@@ -197,18 +196,17 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             16 => 'billmatebankpay'
         );
         $method = $methodtoModuleMap[$post['method']];
-        Mage::log('method'.$method);
         /** @var $quote Mage_Sales_Model_Quote */
         $quote = $this->_getQuote();
         $quote->getPayment()->importData(array('method' => $method));
         $quote->save();
-
+        error_log('paymentMethod'.$quote->getPayment()->getMethodInstance()->getCode());
         $result =  $checkout->updateCheckout();
 
         //$result = $this->updatePayment();
         if(!isset($result['code'])){
             $response['success'] = true;
-            $response['update_checkout'] = $result['update_checkout'];
+            $response['update_checkout'] = ($result['update_checkout']) ? true : false;
 
         } else {
             $response['success'] = false;

@@ -76,6 +76,8 @@ var BillmateIframe = new function(){
             console.log('initEventListeners');
             window.addEventListener("message",self.handleEvent);
 
+
+
         })
     }
     this.handleEvent = function(event){
@@ -129,7 +131,17 @@ var BillmateIframe = new function(){
 
     
 };
+jQuery(document).ready(function(){
+    jQuery(document).ajaxStart(function(){
+        jQuery('#checkoutdiv').addClass('loading');
+        jQuery("#checkoutdiv.loading .billmateoverlay").height(jQuery("#checkoutdiv").height());
 
+    })
+    jQuery(document).ajaxComplete(function(){
+        jQuery('#checkoutdiv').removeClass('loading');
+
+    })
+})
 var b_iframe = BillmateIframe;
 b_iframe.initListeners();
 
