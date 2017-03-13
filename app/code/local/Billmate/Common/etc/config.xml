@@ -151,4 +151,11 @@
             </check_billmate_status>
         </jobs>
     </crontab>
+    <default>
+        <billmate>
+            <checkout>
+                <cart_left>1</cart_left>
+            </checkout>
+        </billmate>
+    </default>
 </config>
