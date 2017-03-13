@@ -20,6 +20,7 @@ var BillmateIframe = new function(){
                 if(jQuery('input[name="estimate_method"]:checked').length != 1){
                     jQuery('input[name="estimate_method"]:first').click();
                 }
+                
                 window.address_selected = true;
             }
         });
@@ -34,8 +35,8 @@ var BillmateIframe = new function(){
                 success: function (response) {
                     var result = response.evalJSON();
                     if (result.success) {
-
-                        self.updateCheckout();
+                        if(result.hasOwnProperty("update_checkout") && result.update_checkout === true)
+                            self.updateCheckout();
 
                         window.method = data.method;
 

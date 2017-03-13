@@ -283,6 +283,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             'windowmode' => 'iframe',
             'sendreciept' => 'yes',
         );*/
+        $previousTotal = $orderValues['Cart']['Total']['withtax'];
         if(!$quote->getReservedOrderId())
             $quote->reserveOrderId();
 
@@ -548,6 +549,12 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             'withtax' =>round($totalValue + $totalTax +  $round)
         );
 
-        return $billmate->updateCheckout($orderValues);
+        $result = $billmate->updateCheckout($orderValues);
+        if($previousTotal != $orderValues['Cart']['Total']['withtax']){
+            $result['update_total'] = true;
+        } else {
+            $result['update_total'] = false;
+
+        }
     }
 }

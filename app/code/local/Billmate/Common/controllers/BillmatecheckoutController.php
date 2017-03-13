@@ -176,8 +176,10 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $result = $checkout->updateCheckout();
         if(!isset($result['code'])){
             $response['success'] = true;
+            $response['update_checkout'] = $result['update_checkout'];
         } else {
             $response['success'] = false;
+            
         }
         $this->getResponse()->setBody(json_encode($response));
     }
@@ -206,6 +208,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         //$result = $this->updatePayment();
         if(!isset($result['code'])){
             $response['success'] = true;
+            $response['update_checkout'] = $result['update_checkout'];
+
         } else {
             $response['success'] = false;
         }
