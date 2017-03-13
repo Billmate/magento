@@ -105,6 +105,11 @@ var BillmateIframe = new function(){
                 case 'content_height':
                     $('checkout').height = json.data;
                     break;
+                case 'content_scroll_position':
+                    console.log('Scroll position'+json.data);
+                    window.latestScroll = jQuery(document).find( "#checkout" ).offset().top + json.data;
+                    jQuery('html, body').animate({scrollTop: jQuery(document).find( "#checkout" ).offset().top + json.data}, 400);
+                    break;
                 default:
                     console.log(event);
                     console.log('not implemented')
