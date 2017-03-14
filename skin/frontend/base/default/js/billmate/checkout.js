@@ -69,6 +69,7 @@ var BillmateIframe = new function(){
             type: 'POST',
             success: function(response){
                 jQuery('#billmate-totals').html(response);
+
             }
         });
     };
@@ -93,14 +94,20 @@ var BillmateIframe = new function(){
             console.log(json);
             switch (json.event) {
                 case 'address_selected':
-                    self.updateAddress(json.data);
+                    self.updateAss(json.data);
                     self.updatePaymentMethod(json.data);
                     self.updateTotals();
+                    if(window.method == json.data.method) {
+                        jQuery('#checkoutdiv').removeClass('loading');
+                    }
                     break;
                 case 'payment_method_selected':
                     if (window.address_selected !== null) {
                         self.updatePaymentMethod(json.data);
                         self.updateTotals();
+                        if(window.method == json.data.method) {
+                            jQuery('#checkoutdiv').removeClass('loading');
+                        }
                     }
                     break;
                 case 'checkout_success':
