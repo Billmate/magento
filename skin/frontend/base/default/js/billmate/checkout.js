@@ -38,6 +38,8 @@ var BillmateIframe = new function(){
                     if (result.success) {
                         if(result.hasOwnProperty("update_checkout") && result.update_checkout === true)
                             self.updateCheckout();
+                        if(data.method == 8 || data.method == 16)
+                            self.updateCheckout();
 
                         window.method = data.method;
 
