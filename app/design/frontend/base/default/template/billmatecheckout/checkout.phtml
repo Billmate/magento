@@ -18,8 +18,10 @@ $checkout = $this->getCheckoutUrl();
     var UPDATE_TOTALS_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updatetotals'); ?>";
     var UPDATE_DISCOUNT_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/setdiscount'); ?>";
 </script>
+<?php if(count(Mage::getSingleton('checkout/cart')->getQuote()->getAllVisibleItems()) > 0 ){ ?>
 <div id="checkoutdiv">
     <iframe id="checkout" src="<?php echo $checkout; ?>" style="width: 100%; min-height: 800px; border:none;" sandbox="allow-same-origin allow-scripts allow-modals allow-popups allow-forms allow-top-navigation"></iframe>
     <div class="billmateoverlay"></div>
     <div class="billmateloading"></div>
 </div>
+<?php } ?>
