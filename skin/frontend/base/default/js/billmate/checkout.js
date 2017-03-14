@@ -114,6 +114,9 @@ var BillmateIframe = new function(){
                     window.latestScroll = jQuery(document).find( "#checkout" ).offset().top + json.data;
                     jQuery('html, body').animate({scrollTop: jQuery(document).find( "#checkout" ).offset().top + json.data}, 400);
                     break;
+                case 'checkout_loaded':
+                    jQuery('#checkoutdiv').removeClass('loading');
+                    break;
                 default:
                     console.log(event);
                     console.log('not implemented')
@@ -138,10 +141,7 @@ jQuery(document).ready(function(){
         jQuery("#checkoutdiv.loading .billmateoverlay").height(jQuery("#checkoutdiv").height());
 
     })
-    jQuery(document).ajaxComplete(function(){
-        jQuery('#checkoutdiv').removeClass('loading');
 
-    })
 })
 var b_iframe = BillmateIframe;
 b_iframe.initListeners();
