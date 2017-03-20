@@ -67,8 +67,8 @@ discountForm.submit = function (isRemove) {
                     else
                         jQuery('#discount-cancel-button').hide();
 
-                    b_iframe.updateTotals();
-                    b_iframe.updateCheckout();
+                    b_iframe.updateTotals(true);
+                    
                 }
             }
         });

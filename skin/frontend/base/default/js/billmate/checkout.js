@@ -65,12 +65,15 @@ var BillmateIframe = new function(){
             });
 
     };
-    this.updateTotals = function(){
+    this.updateTotals = function(update){
         jQuery.ajax({
             url : UPDATE_TOTALS_URL,
             type: 'POST',
             success: function(response){
                 jQuery('#billmate-totals').html(response);
+                if(update){
+                    b_iframe.updateCheckout();
+                }
 
             }
         });
@@ -98,7 +101,7 @@ var BillmateIframe = new function(){
                 case 'address_selected':
                     self.updateAddress(json.data);
                     self.updatePaymentMethod(json.data);
-                    self.updateTotals();
+                    self.updateTotals(false);
                     if(window.method == null || window.method == json.data.method) {
                         jQuery('#checkoutdiv').removeClass('loading');
                     }
@@ -106,7 +109,7 @@ var BillmateIframe = new function(){
                 case 'payment_method_selected':
                     if (window.address_selected !== null) {
                         self.updatePaymentMethod(json.data);
-                        self.updateTotals();
+                        self.updateTotals(false);
                         if(window.method == json.data.method) {
                             jQuery('#checkoutdiv').removeClass('loading');
                         }

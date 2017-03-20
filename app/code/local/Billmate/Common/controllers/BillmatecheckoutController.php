@@ -92,6 +92,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function updatetotalsAction()
     {
+        $checkout = Mage::getModel('billmatecommon/checkout');
+        $checkout->updateCheckout();
         $this->getResponse()->setBody($this->getLayout()->createBlock('checkout/cart_totals', 'checkout.cart.totals')->setTemplate('billmatecheckout/cart/totals.phtml')->toHtml());
 
     }
