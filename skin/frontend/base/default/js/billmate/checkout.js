@@ -96,10 +96,10 @@ var BillmateIframe = new function(){
             console.log(json);
             switch (json.event) {
                 case 'address_selected':
-                    self.updateAss(json.data);
+                    self.updateAddress(json.data);
                     self.updatePaymentMethod(json.data);
                     self.updateTotals();
-                    if(window.method == json.data.method) {
+                    if(window.method == null || window.method == json.data.method) {
                         jQuery('#checkoutdiv').removeClass('loading');
                     }
                     break;

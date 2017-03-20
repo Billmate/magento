@@ -63,26 +63,37 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
     <?php if(Mage::registry('update_checkout')): ?>
     b_iframe.updateCheckout();
     <?php endif; ?>
+    var billmateCheckoutShippingTimer;
+    var selectedShippingMethod = $$('[name="estimate_method"]:checked')[0].value;
     $$('[name="estimate_method"].radio').each(function(el){
         el.observe('click',function(e){
-            new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod') ?>',{
-                parameters: {estimate_method: $$('[name="estimate_method"]:checked')[0].value},
-                method: 'post',
-                onSuccess: function(transport){
-                    var result = transport.responseText.evalJSON();
-                    if(result.success){
-                        b_iframe.updateTotals();
-                        if(result.hasOwnProperty("update_checkout") && result.update_checkout === true)
-                           b_iframe.updateCheckout();
 
-
-
-                    }
-                    
+            clearTimeout(billmateCheckoutShippingTimer);
+            billmateCheckoutShippingTimer = setTimeout(function() {
+                if($$('[name="estimate_method"]:checked')[0].value != selectedShippingMethod) {
+                    selectedShippingMethod = $$('[name="estimate_method"]:checked')[0].value;
+                    updateShippingMethod($$('[name="estimate_method"]:checked')[0].value);
                 }
-            })
-        })
-    })
+            }, 500);
+        });
+
+    });
+
+    function updateShippingMethod(method) {
+        new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod') ?>',{
+            parameters: {estimate_method: method},
+            method: 'post',
+            onSuccess: function(transport){
+                var result = transport.responseText.evalJSON();
+                if(result.success){
+                    b_iframe.updateTotals();
+                    if(result.hasOwnProperty("update_checkout") && result.update_checkout === true)
+                       b_iframe.updateCheckout();
+                }
+            }
+        });
+    }
+
     //]]>
 </script>
 </div>
