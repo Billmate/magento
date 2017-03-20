@@ -45,9 +45,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $cart = Mage::getSingleton('checkout/cart');
 
         $connection = Mage::helper('billmatecommon')->getBillmate();
-        $result = $connection->getCheckout(array('PaymentData' => array('hash' => $post['hash'])));
+        $result = $connection->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
         if(!isset($result['code'])) {
-            Mage::getSingleton('checkout/session')->setBillmateHash($post['hash']);
 
             $billingAddress = $cart->getQuote()->getBillingAddress();
             $billingAddress->setFirstname($result['Customer']['Billing']['firstname']);
@@ -93,6 +92,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function updatetotalsAction()
     {
+        $checkout = Mage::getModel('billmatecommon/checkout');
+        $checkout->updateCheckout();
         $this->getResponse()->setBody($this->getLayout()->createBlock('checkout/cart_totals', 'checkout.cart.totals')->setTemplate('billmatecheckout/cart/totals.phtml')->toHtml());
 
     }
@@ -169,15 +170,17 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $freeshipping = false;
             if($code == 'freeshipping_freeshipping')
                 $freeshipping = true;
-            $this->_getQuote()->getShippingAddress()->removeAllShippingRates()->setFreeShipping($freeshipping)->setCollectShippingRates(true)->collectShippingRates()->setShippingMethod($code)->collectTotals()->save();
+            $this->_getQuote()->getShippingAddress()->removeAllShippingRates()->setCollectShippingRates(true)->collectShippingRates()->setShippingMethod($code)->collectTotals()->save();
             $this->_getQuote()->collectTotals()->save();
         }
         
         $result = $checkout->updateCheckout();
         if(!isset($result['code'])){
             $response['success'] = true;
+            $response['update_checkout'] = ($result['update_checkout']) ? true : false;
         } else {
             $response['success'] = false;
+            
         }
         $this->getResponse()->setBody(json_encode($response));
     }
@@ -195,17 +198,17 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             16 => 'billmatebankpay'
         );
         $method = $methodtoModuleMap[$post['method']];
-        Mage::log('method'.$method);
         /** @var $quote Mage_Sales_Model_Quote */
         $quote = $this->_getQuote();
         $quote->getPayment()->importData(array('method' => $method));
         $quote->save();
-
         $result =  $checkout->updateCheckout();
 
         //$result = $this->updatePayment();
         if(!isset($result['code'])){
             $response['success'] = true;
+            $response['update_checkout'] = ($result['update_checkout']) ? true : false;
+
         } else {
             $response['success'] = false;
         }

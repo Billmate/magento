@@ -64,6 +64,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.0.3 (2017-03-20)
+* Fixes for better checkout flow. 
+
 ### 3.0.2 (2017-02-13)
 * Fix - Javascript on Postmessage fix.
 * Fix - Empty array as Shipping.

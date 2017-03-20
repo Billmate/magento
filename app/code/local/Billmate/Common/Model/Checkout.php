@@ -258,7 +258,16 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             'withtax' =>round($totalValue + $totalTax +  $round)
         );
 
-        return $billmate->initCheckout($orderValues);
+        $result = $billmate->initCheckout($orderValues);
+
+        if(!isset($result['code'])){
+            $url = $result['url'];
+            $parts = explode('/',$url);
+            $sum = count($parts);
+            $hash = ($parts[$sum-1] == 'test') ? str_replace('\\','',$parts[$sum-2]) : str_replace('\\','',$parts[$sum-1]);
+            Mage::getSingleton('checkout/session')->setBillmateHash($hash);
+        }
+        return $result;
 
     }
 
@@ -276,13 +285,13 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $storeLanguage = Mage::app()->getLocale()->getLocaleCode();
         $countryCode = Mage::getStoreConfig('general/country/default',Mage::app()->getStore());
         $storeCountryIso2 = Mage::getModel('directory/country')->loadByCode($countryCode)->getIso2Code();
-
         $orderValues = $billmate->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
 
         /*$orderValues['CheckoutData'] = array(
             'windowmode' => 'iframe',
             'sendreciept' => 'yes',
         );*/
+        $previousTotal = $orderValues['Cart']['Total']['withtax'];
         if(!$quote->getReservedOrderId())
             $quote->reserveOrderId();
 
@@ -488,11 +497,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
 
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
         unset($orderValues['Cart']['Handling']);
-        $orderValues['Cart']['Handling'] = array(
-            'withouttax' => 0,
-            'taxrate'    => 0
-        );
-        Mage::log('Method'.$method);
+       
         if ($orderValues['PaymentData']['method'] == 1 )
         {
             $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
@@ -548,6 +553,14 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             'withtax' =>round($totalValue + $totalTax +  $round)
         );
 
-        return $billmate->updateCheckout($orderValues);
+        $result = array();
+        $result = $billmate->updateCheckout($orderValues);
+        if($previousTotal != $orderValues['Cart']['Total']['withtax']){
+            $result['update_checkout'] = true;
+        } else {
+            $result['update_checkout'] = false;
+
+        }
+        return $result;
     }
 }

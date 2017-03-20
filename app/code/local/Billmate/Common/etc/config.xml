@@ -10,6 +10,11 @@
             <billmatecommon>
                 <class>Billmate_Common_Helper</class>
             </billmatecommon>
+            <checkout>
+                <rewrite>
+                    <url>Billmate_Common_Helper_Url</url>
+                </rewrite>
+            </checkout>
         </helpers>
         <blocks>
             <billmatecommon>
@@ -63,8 +68,16 @@
                 </args>
             </adminhtml>
         </routers>
+
     </admin>
     <adminhtml>
+        <layout>
+            <updates>
+                <billmate_common>
+                    <file>billmatecheckout.xml</file>
+                </billmate_common>
+            </updates>
+        </layout>
         <translate>
             <modules>
                 <Billmate_Common>
@@ -138,4 +151,11 @@
             </check_billmate_status>
         </jobs>
     </crontab>
+    <default>
+        <billmate>
+            <checkout>
+                <cart_left>1</cart_left>
+            </checkout>
+        </billmate>
+    </default>
 </config>

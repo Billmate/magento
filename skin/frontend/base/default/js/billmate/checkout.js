@@ -3,6 +3,7 @@
  */
 window.method = null;
 window.address_selected = null;
+window.latestScroll = null;
 var BillmateIframe = new function(){
     var self = this;
     var childWindow = null;
@@ -17,6 +18,10 @@ var BillmateIframe = new function(){
 
 
                 jQuery('#shipping-container').html(response);
+                if(jQuery('input[name="estimate_method"]:checked').length != 1){
+                    jQuery('input[name="estimate_method"]:first').click();
+                }
+                
                 window.address_selected = true;
             }
         });
@@ -31,8 +36,10 @@ var BillmateIframe = new function(){
                 success: function (response) {
                     var result = response.evalJSON();
                     if (result.success) {
-
-                        self.updateCheckout();
+                        if(result.hasOwnProperty("update_checkout") && result.update_checkout === true)
+                            self.updateCheckout();
+                        if(data.method == 8 || data.method == 16)
+                            self.updateCheckout();
 
                         window.method = data.method;
 
@@ -58,12 +65,16 @@ var BillmateIframe = new function(){
             });
 
     };
-    this.updateTotals = function(){
+    this.updateTotals = function(update){
         jQuery.ajax({
             url : UPDATE_TOTALS_URL,
             type: 'POST',
             success: function(response){
                 jQuery('#billmate-totals').html(response);
+                if(update){
+                    b_iframe.updateCheckout();
+                }
+
             }
         });
     };
@@ -71,6 +82,8 @@ var BillmateIframe = new function(){
         document.observe('dom:loaded',function () {
             console.log('initEventListeners');
             window.addEventListener("message",self.handleEvent);
+
+
 
         })
     }
@@ -88,12 +101,18 @@ var BillmateIframe = new function(){
                 case 'address_selected':
                     self.updateAddress(json.data);
                     self.updatePaymentMethod(json.data);
-                    self.updateTotals();
+                    self.updateTotals(false);
+                    if(window.method == null || window.method == json.data.method) {
+                        jQuery('#checkoutdiv').removeClass('loading');
+                    }
                     break;
                 case 'payment_method_selected':
                     if (window.address_selected !== null) {
                         self.updatePaymentMethod(json.data);
-                        self.updateTotals();
+                        self.updateTotals(false);
+                        if(window.method == json.data.method) {
+                            jQuery('#checkoutdiv').removeClass('loading');
+                        }
                     }
                     break;
                 case 'checkout_success':
@@ -101,6 +120,14 @@ var BillmateIframe = new function(){
                     break;
                 case 'content_height':
                     $('checkout').height = json.data;
+                    break;
+                case 'content_scroll_position':
+                    console.log('Scroll position'+json.data);
+                    window.latestScroll = jQuery(document).find( "#checkout" ).offset().top + json.data;
+                    jQuery('html, body').animate({scrollTop: jQuery(document).find( "#checkout" ).offset().top + json.data}, 400);
+                    break;
+                case 'checkout_loaded':
+                    jQuery('#checkoutdiv').removeClass('loading');
                     break;
                 default:
                     console.log(event);
@@ -120,7 +147,14 @@ var BillmateIframe = new function(){
 
     
 };
+jQuery(document).ready(function(){
+    jQuery(document).ajaxStart(function(){
+        jQuery('#checkoutdiv').addClass('loading');
+        jQuery("#checkoutdiv.loading .billmateoverlay").height(jQuery("#checkoutdiv").height());
 
+    })
+
+})
 var b_iframe = BillmateIframe;
 b_iframe.initListeners();
 
