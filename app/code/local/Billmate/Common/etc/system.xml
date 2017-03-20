@@ -7,6 +7,7 @@
         </billmate_tab>
     </tabs>
     <sections>
+
         <billmate translate="label" module="billmatecommon">
             <label>General settings</label>
             <tab>billmate_tab</tab>
@@ -15,6 +16,15 @@
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>
             <groups>
+                <about translate="label comment" module="billmatecommon">
+                    <label>Our Manuals</label>
+                    <frontend_type>text</frontend_type>
+                    <frontend_model>billmatecommon/adminhtml_system_config_form_fieldset_about</frontend_model>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                </about>
                 <settings translate="label" module="billmatecommon">
                     <label>General settings</label>
                     <frontend_type>text</frontend_type>
@@ -23,6 +33,7 @@
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
+
                         <customcss translate="label comment tooltip" module="billmatecommon">
                             <label>Use custom stylesheet</label>
                             <tooltip><![CDATA[Activate if you want to use a custom stylesheet, add a file in directory:<br/> /skin/frontend/base/default/css<br/>named<br/>billmatestyle-custom.css]]></tooltip>
