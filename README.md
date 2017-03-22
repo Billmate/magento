@@ -63,6 +63,9 @@ Copy the code below for the size that fits your needs.
 `<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_s.png" alt="Billmate Payment Gateway" /></a>`
 
 ## Changelog
+### 3.0.4 (2017-03-22)
+* Enhancement - Improved thank you page.
+* Enhancemnet - Improved scrollfocus.
 
 ### 3.0.3 (2017-03-20)
 * Fixes for better checkout flow. 

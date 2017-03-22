@@ -28,6 +28,34 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         
     }
 
+    public function confirmationAction()
+    {
+        $redirect = false;
+        $billmate = Mage::helper('billmatecommon')->getBillmate();
+
+        $hash = $this->getRequest()->getParam('hash');
+        $checkout = $billmate->getCheckout(array('PaymentData' => array('hash' => $hash)));
+
+
+        if(in_array(strtolower($checkout['PaymentData']['order']['status']),array('paid','created'))){
+            $quote = Mage::getSingleton('checkout/session')->getQuote();
+            $quote->setIsActive(false)->save();
+            Mage::getSingleton('checkout/session')->clear();
+            $this->loadLayout();
+
+            Mage::register('billmate_confirmation_url',$checkout['PaymentData']['url']);
+            $this->renderLayout();
+        }
+        else {
+            $redirect = true;
+        }
+
+        if($redirect){
+            header('Location: ' . Mage::helper('checkout/url')->getCartUrl());
+            exit();
+        }
+    }
+
     public function termsAction()
     {
         $this->loadLayout();
@@ -239,7 +267,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                 $order = $this->place($quote);
                 if($order && $order->getStatus()) {
                     if($order->getStatus() == Mage::getStoreConfig('payment/'.$method.'/order_status')) {
-                        $url = Mage::getUrl('checkout/onepage/success',array('_secure' => true));
+                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $post['hash']),'_secure' => true));
 
                         break;
 
@@ -248,7 +276,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                         $order->setState('new', 'pending_payment', '', false);
                         $order->save();
 
-                        $url = Mage::getUrl('checkout/onepage/success',array('_secure' => true));
+                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $post['hash']),'_secure' => true));
 
                     }
 
@@ -276,7 +304,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                         $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
                         $order->save();
 
-                        $url = Mage::getUrl('checkout/onepage/success',array('_secure' => true));
+                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $post['hash']),'_secure' => true));
 
                     }
 

@@ -305,7 +305,11 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                         $this->sendNewOrderMail($order);
                     }  else {
 
+                        if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] === true){
+                            $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash()),'_secure' => true));
+                            return;
 
+                        }
                         $this->_redirect('checkout/onepage/success',array('_secure' => true));
                         return;
                     }
@@ -334,7 +338,11 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                         $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
 
                         $order->save();
+                        if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] === true){
+                            $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash()),'_secure' => true));
+                            return;
 
+                        }
                         $this->_redirect('checkout/onepage/success',array('_secure' => true));
                         return;
                     }
@@ -357,7 +365,11 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
                 break;
 
         }
+        if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] === true){
+            $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash()),'_secure' => true));
+            return;
 
+        }
         $this->_redirect('checkout/onepage/success',array('_secure' => true));
         return;
 

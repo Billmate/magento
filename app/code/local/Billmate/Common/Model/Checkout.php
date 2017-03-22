@@ -315,14 +315,14 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $orderValues['PaymentData']['orderid'] = $quote->getReservedOrderId();
         //$orderValues['PaymentData']['method'] = $method;
         if(8 == $orderValues['PaymentData']['method']) {
-            $orderValues['PaymentData']['accepturl'] = Mage::getUrl('cardpay/cardpay/accept', array('billmate_quote_id' => $quote->getId(), '_secure' => true));
+            $orderValues['PaymentData']['accepturl'] = Mage::getUrl('cardpay/cardpay/accept', array('billmate_checkout' => true,'billmate_quote_id' => $quote->getId(), '_secure' => true));
             $orderValues['PaymentData']['cancelurl'] = Mage::getUrl('cardpay/cardpay/cancel', array('_secure' => true));
             $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('cardpay/cardpay/callback', array('billmate_quote_id' => $quote->getId(), '_secure' => true));
             $orderValues['PaymentData']['returnmethod'] = (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET';
         }
 
         if(16 == $orderValues['PaymentData']['method']) {
-            $orderValues['PaymentData']['accepturl'] = Mage::getUrl('bankpay/bankpay/accept', array('billmate_quote_id' => $quote->getId(), '_secure' => true));
+            $orderValues['PaymentData']['accepturl'] = Mage::getUrl('bankpay/bankpay/accept', array('billmate_checkout' => true,'billmate_quote_id' => $quote->getId(), '_secure' => true));
             $orderValues['PaymentData']['cancelurl'] = Mage::getUrl('bankpay/bankpay/cancel', array('_secure' => true));
             $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('bankpay/bankpay/callback', array('billmate_quote_id' => $quote->getId(), '_secure' => true));
             $orderValues['PaymentData']['returnmethod'] = (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET';
