@@ -44,6 +44,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $this->loadLayout();
 
             Mage::register('billmate_confirmation_url',$checkout['PaymentData']['url']);
+            $this->renderLayout();
         }
         else {
             $redirect = true;
@@ -266,7 +267,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                 $order = $this->place($quote);
                 if($order && $order->getStatus()) {
                     if($order->getStatus() == Mage::getStoreConfig('payment/'.$method.'/order_status')) {
-                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash(),'_secure' => true));
+                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $post['hash']),'_secure' => true));
 
                         break;
 
@@ -275,7 +276,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                         $order->setState('new', 'pending_payment', '', false);
                         $order->save();
 
-                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash(),'_secure' => true));
+                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $post['hash']),'_secure' => true));
 
                     }
 
@@ -303,7 +304,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                         $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
                         $order->save();
 
-                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash(),'_secure' => true));
+                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $post['hash']),'_secure' => true));
 
                     }
 

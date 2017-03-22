@@ -17,9 +17,9 @@ class Billmate_Common_Block_Confirmation extends Mage_Core_Block_Template
 
     public function getIframe()
     {
-        $url = Mage::registry('billmate_confirmaion_url');
+        $url = Mage::registry('billmate_confirmation_url');
 
-        $html = '<iframe src="'.$url.'"></iframe>';
+        $html = '<iframe style="width: 100%; min-height: 800px; border:none;" src="'.$url.'"></iframe>';
         return $html;
     }
 
