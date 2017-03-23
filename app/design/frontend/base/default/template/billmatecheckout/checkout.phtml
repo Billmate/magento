@@ -11,12 +11,12 @@ $checkout = $this->getCheckoutUrl();
 
 <?php echo $this->getChildHtml('checkout.cart'); ?>
 <script>
-    var UPDATE_ADDRESS_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateaddress'); ?>";
-    var UPDATE_PAYMENT_METHOD_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updatepaymentmethod'); ?>";
-    var UPDATE_SHIPPING_METHOD_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod'); ?>";
-    var CREATE_ORDER_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/createorder'); ?>";
-    var UPDATE_TOTALS_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updatetotals'); ?>";
-    var UPDATE_DISCOUNT_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/setdiscount'); ?>";
+    var UPDATE_ADDRESS_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateaddress',array('_secure' => true)); ?>";
+    var UPDATE_PAYMENT_METHOD_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updatepaymentmethod',array('_secure' => true)); ?>";
+    var UPDATE_SHIPPING_METHOD_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod',array('_secure' => true)); ?>";
+    var CREATE_ORDER_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/createorder',array('_secure' => true)); ?>";
+    var UPDATE_TOTALS_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updatetotals',array('_secure' => true)); ?>";
+    var UPDATE_DISCOUNT_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/setdiscount',array('_secure' => true)); ?>";
 </script>
 <?php if(count(Mage::getSingleton('checkout/cart')->getQuote()->getAllVisibleItems()) > 0 ){ ?>
 <div id="checkoutdiv">
