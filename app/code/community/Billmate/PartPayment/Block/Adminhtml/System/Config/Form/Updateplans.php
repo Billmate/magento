@@ -21,7 +21,7 @@ class Billmate_PartPayment_Block_Adminhtml_System_Config_Form_Updateplans extend
 
     public function getAjaxCheckUrl()
     {
-        return Mage::helper('adminhtml')->getUrl('adminhtml/adminhtml_billmatepartpayment/updateplans');
+        return Mage::helper('adminhtml')->getUrl('adminhtml/adminhtml_billmatepartpayment/updateplans',array('_secure' => true));
     }
 
     public function getButtonHtml()
