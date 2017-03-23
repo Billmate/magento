@@ -80,7 +80,7 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
     });
 
     function updateShippingMethod(method) {
-        new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod') ?>',{
+        new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod', array('_secure' => true)) ?>',{
             parameters: {estimate_method: method},
             method: 'post',
             onSuccess: function(transport){
