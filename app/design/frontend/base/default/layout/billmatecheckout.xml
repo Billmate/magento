@@ -26,10 +26,7 @@
                 <type>skin_css</type>
                 <name>css/billmate/checkout.css</name>
             </action>
-            <action method="addItem" ifconfig="billmate/settings/customcss">
-                <type>skin_css</type>
-                <name>css/billmatestyle-custom.css</name>
-            </action>
+
             <action method="addItem">
                 <type>skin_js</type>
                 <name>js/billmate/checkout.js</name>
