@@ -64,10 +64,12 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
     b_iframe.updateCheckout();
     <?php endif; ?>
     var billmateCheckoutShippingTimer;
+    var selectedShippingMethod = null;
     if($$('[name="estimate_method"]:checked').length == 0){
         jQuery('[name="estimate_method"]').last().click();
+    } else {
+        selectedShippingMethod = $$('[name="estimate_method"]:checked')[0].value;
     }
-    var selectedShippingMethod = $$('[name="estimate_method"]:checked')[0].value;
     $$('[name="estimate_method"].radio').each(function(el){
         el.observe('click',function(e){
 
