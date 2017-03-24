@@ -59,11 +59,14 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
             $('postcode').addClassName('required-entry');
         }*/
         return VarienForm.prototype.submit.bind(coShippingMethodForm)();
-    }
+    };
     <?php if(Mage::registry('update_checkout')): ?>
     b_iframe.updateCheckout();
     <?php endif; ?>
     var billmateCheckoutShippingTimer;
+    if($$('[name="estimate_method"]:checked').length == 0){
+        jQuery('[name="estimate_method"]').last().click();
+    }
     var selectedShippingMethod = $$('[name="estimate_method"]:checked')[0].value;
     $$('[name="estimate_method"].radio').each(function(el){
         el.observe('click',function(e){
