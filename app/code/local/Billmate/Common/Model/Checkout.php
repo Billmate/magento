@@ -560,6 +560,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             $result['data'] = $orderValues;
         } else {
             $result['update_checkout'] = false;
+            $result['data'] = array();
 
         }
         return $result;
