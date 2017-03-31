@@ -160,6 +160,10 @@ jQuery(document).ready(function(){
 
     });
 
+    jQuery('.qty').on('change',function(e){
+        jQuery('.qty').closest('form').append('<input name="return_url" type="hidden" value="'+CHECKOUT_URL+'"/>');
+        jQuery('.btn-update').click();
+    });
     b_iframe.updateTotals(true);
 
 });

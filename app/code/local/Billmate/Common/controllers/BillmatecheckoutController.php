@@ -56,6 +56,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         }
     }
 
+    
+
     public function termsAction()
     {
         $this->loadLayout();
@@ -206,6 +208,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         if(!isset($result['code'])){
             $response['success'] = true;
             $response['update_checkout'] = ($result['update_checkout']) ? true : false;
+            $response['data'] = $result['data'];
+
         } else {
             $response['success'] = false;
             
@@ -236,6 +240,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         if(!isset($result['code'])){
             $response['success'] = true;
             $response['update_checkout'] = ($result['update_checkout']) ? true : false;
+            $response['data'] = $result['data'];
 
         } else {
             $response['success'] = false;

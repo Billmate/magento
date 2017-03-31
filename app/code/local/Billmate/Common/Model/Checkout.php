@@ -557,6 +557,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $result = $billmate->updateCheckout($orderValues);
         if($previousTotal != $orderValues['Cart']['Total']['withtax']){
             $result['update_checkout'] = true;
+            $result['data'] = $orderValues;
         } else {
             $result['update_checkout'] = false;
 

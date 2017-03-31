@@ -17,6 +17,7 @@ $checkout = $this->getCheckoutUrl();
     var CREATE_ORDER_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/createorder',array('_secure' => true)); ?>";
     var UPDATE_TOTALS_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updatetotals',array('_secure' => true)); ?>";
     var UPDATE_DISCOUNT_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/setdiscount',array('_secure' => true)); ?>";
+    var CHECKOUT_URL = "<?php echo Mage::getUrl('billmatecommon/billmatecheckout/index',array('_secure' => true)); ?>"
 </script>
 <?php if(count(Mage::getSingleton('checkout/cart')->getQuote()->getAllVisibleItems()) > 0 ){ ?>
 <div id="checkoutdiv">
