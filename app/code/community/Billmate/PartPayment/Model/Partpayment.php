@@ -17,11 +17,15 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     
     public function isAvailable($quote = null)
     {
-    	if( Mage::getStoreConfig('payment/billmatepartpayment/active') != 1 ){
-    		return false;
-    	}
+
+
 
         if($quote == null ) return false;
+
+        if(Mage::getSingleton('checkout/session')->getBillmateHash()) return true;
+        if( Mage::getStoreConfig('payment/billmatepartpayment/active') != 1 ){
+            return false;
+        }
         $countries = explode(',', Mage::getStoreConfig('payment/billmatepartpayment/countries'));
         /**
          * @var $quote Mage_Sales_Model_Quote

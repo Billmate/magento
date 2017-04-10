@@ -76,6 +76,7 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
     public function isAvailable($quote = null)
     {
         if($quote == null ) return false;
+        if(Mage::getSingleton('checkout/session')->getBillmateHash()) return true;
 		if( Mage::getStoreConfig('payment/billmatebankpay/active') != 1 ) return false;
         $countries = explode(',', Mage::getStoreConfig('payment/billmatebankpay/countries'));
 

@@ -18,6 +18,8 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
     public function isAvailable($quote = null)
     {
         if($quote == null ) return false;
+        if(Mage::getSingleton('checkout/session')->getBillmateHash()) return true;
+
         if( Mage::getStoreConfig('payment/billmateinvoice/active') != 1 ) return false;
         $countries = explode(',', Mage::getStoreConfig('payment/billmateinvoice/countries'));
 
