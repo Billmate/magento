@@ -38,7 +38,7 @@
             <billmatecommon_setup>
                 <setup>
                     <module>Billmate_Common</module>
-                    <class>Mage_Sales_Model_Entity_Setup</class>
+                    <class>Mage_Sales_Model_Resource_Setup</class>
                 </setup>
                 <connection>
                     <use>core_setup</use>
