@@ -79,6 +79,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         if(!isset($result['code'])) {
 
             $billingAddress = $cart->getQuote()->getBillingAddress();
+            $cart->getQuote()->setCustomerEmail($result['Customer']['Billing']['email']);
+            
             $billingAddress->setFirstname($result['Customer']['Billing']['firstname']);
             $billingAddress->setLastname($result['Customer']['Billing']['lastname']);
             $billingAddress->setEmail($result['Customer']['Billing']['email']);
