@@ -164,7 +164,7 @@ jQuery(document).ready(function(){
         jQuery('.qty').closest('form').append('<input name="return_url" type="hidden" value="'+CHECKOUT_URL+'"/>');
         jQuery('.btn-update').click();
     });
-    b_iframe.updateTotals(true);
+    //b_iframe.updateTotals(true);
 
 });
 
