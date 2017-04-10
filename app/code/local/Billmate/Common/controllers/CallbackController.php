@@ -255,4 +255,35 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
 
 
     }
+
+    public function cancelAction()
+    {
+        $k = Mage::helper('billmatecommon')->getBillmate();
+
+        if(empty($_POST)) $_POST = $_GET;
+        $data = $k->verify_hash($_POST);
+
+
+        if(isset($data['code'])){
+            Mage::getSingleton('core/session')->addError(Mage::helper('billmatecommon')->__('Unfortunately your payment was not processed correctly. Please try again or choose another payment method.'));
+            $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
+            return;
+        }
+        if(isset($data['status'])){
+            switch(strtolower($data['status'])){
+                case 'cancelled':
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatecommon')->__('Thepayment has been canceled. Please try again or choose a different payment method.'));
+                    $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    return;
+                    break;
+                case 'failed':
+                    Mage::getSingleton('core/session')->addError(Mage::helper('billmatecommon')->__('Unfortunately your payment was not processed correctly. Please try again or choose another payment method.'));
+                    $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
+                    return;
+                    break;
+            }
+        }
+        $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCheckoutUrl());
+        return;
+    }
 }

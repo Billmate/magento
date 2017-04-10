@@ -31,6 +31,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             'sendreciept' => 'yes',
             'terms' => Mage::getUrl('billmatecommon/billmatecheckout/terms')
         );
+
         if(!$quote->getReservedOrderId())
             $quote->reserveOrderId();
 
@@ -41,6 +42,12 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             'country' => $storeCountryIso2,
             'orderid' => $quote->getReservedOrderId()
         );
+        $orderValues['PaymentData']['accepturl'] = Mage::getUrl('billmatecommon/callback/accept', array('_query' => array('billmate_checkout' => true,'billmate_quote_id' => $quote->getId()), '_secure' => true));
+        $orderValues['PaymentData']['cancelurl'] = Mage::getUrl('billmatecommon/callback/cancel', array('_secure' => true));
+        $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('billmatecommon/callback/callback', array('_query' => array('billmate_quote_id' => $quote->getId()), '_secure' => true));
+
+        $orderValues['PaymentData']['returnmethod'] = (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET';
+
         $_taxHelper  = Mage::helper('tax');
         $_weeeHelper = Mage::helper('weee');
         $percent = 0;
@@ -316,19 +323,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $orderValues['PaymentData']['country'] = $storeCountryIso2;
         $orderValues['PaymentData']['orderid'] = $quote->getReservedOrderId();
         //$orderValues['PaymentData']['method'] = $method;
-        if(8 == $orderValues['PaymentData']['method']) {
-            $orderValues['PaymentData']['accepturl'] = Mage::getUrl('cardpay/cardpay/accept', array('_query' => array('billmate_checkout' => true,'billmate_quote_id' => $quote->getId()), '_secure' => true));
-            $orderValues['PaymentData']['cancelurl'] = Mage::getUrl('cardpay/cardpay/cancel', array('_secure' => true));
-            $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('cardpay/cardpay/callback', array('_query' => array('billmate_quote_id' => $quote->getId()), '_secure' => true));
-            $orderValues['PaymentData']['returnmethod'] = (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET';
-        }
-
-        if(16 == $orderValues['PaymentData']['method']) {
-            $orderValues['PaymentData']['accepturl'] = Mage::getUrl('bankpay/bankpay/accept', array('_query' => array('billmate_checkout' => true,'billmate_quote_id' => $quote->getId()), '_secure' => true));
-            $orderValues['PaymentData']['cancelurl'] = Mage::getUrl('bankpay/bankpay/cancel', array('_secure' => true));
-            $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('bankpay/bankpay/callback', array('_query' => array('billmate_quote_id' => $quote->getId()), '_secure' => true));
-            $orderValues['PaymentData']['returnmethod'] = (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET';
-        }
+        
         $_taxHelper  = Mage::helper('tax');
         $_weeeHelper = Mage::helper('weee');
         $percent = 0;
