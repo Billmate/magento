@@ -265,6 +265,8 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             $parts = explode('/',$url);
             $sum = count($parts);
             $hash = ($parts[$sum-1] == 'test') ? str_replace('\\','',$parts[$sum-2]) : str_replace('\\','',$parts[$sum-1]);
+            $quote->setBillmateHash($hash);
+            $quote->save();
             Mage::getSingleton('checkout/session')->setBillmateHash($hash);
         }
         return $result;
