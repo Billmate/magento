@@ -81,6 +81,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $billingAddress = $cart->getQuote()->getBillingAddress();
             $billingAddress->setFirstname($result['Customer']['Billing']['firstname']);
             $billingAddress->setLastname($result['Customer']['Billing']['lastname']);
+            $billingAddress->setEmail($result['Customer']['Billing']['email']);
             $billingAddress->setStreet($result['Customer']['Billing']['street']);
             $billingAddress->setCompany(isset($result['Customer']['Billing']['company']) ? $result['Customer']['Billing']['company'] : '');
             $billingAddress->setCity($result['Customer']['Billing']['city']);
@@ -93,6 +94,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $shippingAddress = $cart->getQuote()->getShippingAddress();
             $shippingAddress->setFirstname($result['Customer']['Shipping']['firstname']);
             $shippingAddress->setLastname($result['Customer']['Shipping']['lastname']);
+            $shippingAddress->setEmail(isset($result['Customer']['Shipping']['email']) ? $result['Customer']['Shipping']['email'] : $result['Customer']['Billing']['email']);
+
             $shippingAddress->setStreet($result['Customer']['Shipping']['street']);
             $shippingAddress->setCompany(isset($result['Customer']['Shipping']['company']) ? $result['Customer']['Shipping']['company'] : '');
             $shippingAddress->setCity($result['Customer']['Shipping']['city']);

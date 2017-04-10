@@ -214,7 +214,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             }
         }
 
-        
+
 
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
         if(!empty($rates)){
@@ -249,11 +249,11 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             // $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
 
             $orderValues['Cart']['Handling'] = array(
-                'withouttax' => round($Shipping->getFeeAmount() * 100),
+                'withouttax' => round($invoiceFee * 100),
                 'taxrate'    => $feeinfo['rate']
             );
-            $totalValue += $Shipping->getFeeAmount() * 100;
-            $totalTax += ( $Shipping->getFeeAmount() * 100 ) * ( $feeinfo['rate'] / 100 );
+            $totalValue += $invoiceFee * 100;
+            $totalTax += ( $invoiceFee * 100 ) * ( $feeinfo['rate'] / 100 );
         }
 
         $orderValues['Cart']['Total'] = array(
