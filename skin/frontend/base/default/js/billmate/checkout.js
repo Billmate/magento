@@ -101,7 +101,7 @@ var BillmateIframe = new function(){
                 case 'address_selected':
                     self.updateAddress(json.data);
                     //self.updatePaymentMethod(json.data);
-                    self.updateTotals(false);
+                    //self.updateTotals(false);
                     if(window.method == null || window.method == json.data.method) {
                         jQuery('#checkoutdiv').removeClass('loading');
                     }

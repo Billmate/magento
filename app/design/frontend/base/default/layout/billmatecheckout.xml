@@ -103,8 +103,7 @@
                 <block type="checkout/cart_crosssell" name="checkout.cart.crosssell" as="crosssell"
                        template="billmatecheckout/cart/crosssell.phtml"/>
 
-                <block type="checkout/cart_totals" name="checkout.cart.totals" as="totals"
-                       template="billmatecheckout/cart/totals.phtml"/>
+
                 <block type="checkout/cart_shipping" name="checkout.cart.shipping" as="shipping"
                        template="billmatecheckout/shipping.phtml">
 
@@ -166,8 +165,7 @@
                 <block type="checkout/cart_crosssell" name="checkout.cart.crosssell" as="crosssell"
                        template="billmatecheckout/cart/crosssell.phtml"/>
 
-                <block type="checkout/cart_totals" name="checkout.cart.totals" as="totals"
-                       template="billmatecheckout/cart/totals.phtml"/>
+
                 <block type="checkout/cart_shipping" name="checkout.cart.shipping" as="shipping"
                        template="billmatecheckout/shipping.phtml">
 

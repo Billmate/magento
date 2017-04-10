@@ -44,7 +44,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         );
         $orderValues['PaymentData']['accepturl'] = Mage::getUrl('billmatecommon/callback/accept', array('_query' => array('billmate_checkout' => true,'billmate_quote_id' => $quote->getId()), '_secure' => true));
         $orderValues['PaymentData']['cancelurl'] = Mage::getUrl('billmatecommon/callback/cancel', array('_secure' => true));
-        $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('billmatecommon/callback/callback', array('_query' => array('billmate_quote_id' => $quote->getId()), '_secure' => true));
+        $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('billmatecommon/callback/callback', array('_query' => array('billmate_quote_id' => $quote->getId(),'billmate_checkout' => true), '_secure' => true));
 
         $orderValues['PaymentData']['returnmethod'] = (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET';
 
@@ -493,6 +493,8 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
 
         unset($orderValues['Cart']['Shipping']);
+        unset($orderValues['Cart']['Handling']);
+        unset($orderValues['Customer']);
         if(!empty($rates)){
             if( $Shipping->getBaseShippingTaxAmount() > 0 ){
                 $taxCalculation = Mage::getModel('tax/calculation');
@@ -518,7 +520,24 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         }
         $round = round($quote->getGrandTotal() * 100) - round($totalValue +  $totalTax);
 
+        $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
+        $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
 
+        //if(Mage::getStoreConfig('payment/billmateinvoice/tax_class')){
+        $feeinfo = Mage::helper( 'billmateinvoice' )
+            ->getInvoiceFeeArray( $invoiceFee, $Shipping, $quote->getCustomerTaxClassId() );
+        //}
+        if ( ! empty( $invoiceFee ) && $invoiceFee > 0 )
+        {
+            // $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
+
+            $orderValues['Cart']['Handling'] = array(
+                'withouttax' => round($invoiceFee * 100),
+                'taxrate'    => $feeinfo['rate']
+            );
+            $totalValue += $invoiceFee * 100;
+            $totalTax += ( $invoiceFee * 100 ) * ( $feeinfo['rate'] / 100 );
+        }
 
         $orderValues['Cart']['Total'] = array(
             'withouttax' => round($totalValue),

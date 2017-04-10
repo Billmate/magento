@@ -34,10 +34,11 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $billmate = Mage::helper('billmatecommon')->getBillmate();
 
         $hash = $this->getRequest()->getParam('hash');
+        $status = $this->getRequest()->getParam('status');
         $checkout = $billmate->getCheckout(array('PaymentData' => array('hash' => $hash)));
+        
 
-
-        if(in_array(strtolower($checkout['PaymentData']['order']['status']),array('paid','created'))){
+        if(in_array(strtolower($status),array('paid','created','pending'))){
             $quote = Mage::getSingleton('checkout/session')->getQuote();
             $quote->setIsActive(false)->save();
             Mage::getSingleton('checkout/session')->clear();
@@ -80,7 +81,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
             $billingAddress = $cart->getQuote()->getBillingAddress();
             $cart->getQuote()->setCustomerEmail($result['Customer']['Billing']['email']);
-            
+
             $billingAddress->setFirstname($result['Customer']['Billing']['firstname']);
             $billingAddress->setLastname($result['Customer']['Billing']['lastname']);
             $billingAddress->setEmail($result['Customer']['Billing']['email']);
