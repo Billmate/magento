@@ -89,7 +89,8 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
             onSuccess: function(transport){
                 var result = transport.responseText.evalJSON();
                 if(result.success){
-
+                    if(result.hasOwnProperty("update_checkout") && result.update_checkout === true)
+                        b_iframe.updateCheckout();
                 }
             }
         });

@@ -34,9 +34,9 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $billmate = Mage::helper('billmatecommon')->getBillmate();
 
         $hash = $this->getRequest()->getParam('hash');
-        $status = $this->getRequest()->getParam('status');
+
         $checkout = $billmate->getCheckout(array('PaymentData' => array('hash' => $hash)));
-        
+        $status = $checkout['PaymentData']['order']['status'];
 
         if(in_array(strtolower($status),array('paid','created','pending'))){
             $quote = Mage::getSingleton('checkout/session')->getQuote();
