@@ -22,7 +22,7 @@
     </div>
     <?php echo $this->getMessagesBlock()->toHtml() ?>
     <?php echo $this->getChildHtml('form_before') ?>
-    <form action="<?php echo $this->getFormActionUrl() ?>" method="post">
+    <form action="<?php echo $this->getUrl('checkout/cart/updatePost') ?>" method="post">
         <?php echo $this->getBlockHtml('formkey'); ?>
         <div id="shopping-cart-table" class="cart-table data-table table">
 
