@@ -31,6 +31,7 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
             $this->getResponse()->setRedirect(Mage::helper('billmatecommon/url')->getCheckoutUrl());
             return;
         }
+        Mage::register('billmate_checkout_complete',true);
 
         $methodtoModuleMap = array(
             1 => 'billmateinvoice',
@@ -156,6 +157,8 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
             $this->getResponse()->setRedirect(Mage::helper('billmatecommon/url')->getCheckoutUrl());
             return;
         }
+
+        Mage::register('billmate_checkout_complete',true);
 
         $methodtoModuleMap = array(
             1 => 'billmateinvoice',

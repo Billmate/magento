@@ -90,7 +90,7 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
 
     public function authorize(Varien_Object $payment, $amount)
     {
-        if($hash = Mage::getSingleton('checkout/session')->getBillmateHash()) {
+        if($hash = Mage::getSingleton('checkout/session')->getBillmateHash() && Mage::registry('billmate_checkout_complete')) {
             $result = Mage::helper('billmatecommon')->getBillmate()->getCheckout(array('PaymentData' => array('hash' => $hash)));
             $payment->setTransactionId($result['PaymentData']['order']['number']);
 

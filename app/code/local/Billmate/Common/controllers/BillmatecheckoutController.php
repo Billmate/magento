@@ -261,6 +261,9 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $quote = $this->_getQuote();
         $post = $this->getRequest()->getParams();
         $result = Mage::helper('billmatecommon')->getBillmate()->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
+        if(!isset($result['code'])){
+            Mage::register('billmate_checkout_complete',true);
+        }
         $codeToMethod = array(
             1 => 'billmateinvoice',
             4 => 'billmatepartpayment',
