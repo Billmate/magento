@@ -10,6 +10,27 @@
             <block type="billmatecommon/confirmation" name="billmatecheckout.confirmation" as="confirmaion"/>
         </reference>
     </billmatecommon_billmatecheckout_confirmation>
+    <checkout_cart_index>
+        <update handle="billmatecommon_replace_checkout_links"/>
+    </checkout_cart_index>
+    <billmatecommon_replace_checkout_links>
+        <reference name="checkout.cart.top_methods">
+            <action method="unsetChild" ifconfig="billmate/checkout/active"><name>checkout.cart.methods.onepage</name></action>
+            <action method="unsetChild" ifconfig="billmate/checkout/active"><name>checkout.cart.methods.onepage.top</name></action>
+            <action method="unsetChild" ifconfig="billmate/checkout/active"><name>checkout.cart.methods.fire</name></action>
+        </reference>
+        <reference name="checkout.cart.methods">
+            <action method="unsetChild" ifconfig="billmate/checkout/active"><name>checkout.cart.methods.onepage</name></action>
+            <action method="unsetChild" ifconfig="billmate/checkout/active"><name>checkout.cart.methods.onepage.bottom</name></action>
+            <action method="unsetChild" ifconfig="billmate/checkout/active"><name>checkout.cart.methods.fire</name></action>
+        </reference>
+        <reference name="checkout.cart.top_methods">
+            <block type="billmatecommon/checkout_link" name="checkout.cart.methods.billmate" template="billmatecheckout/link.phtml"/>
+        </reference>
+        <reference name="checkout.cart.methods">
+            <block type="billmatecommon/checkout_link" name="checkout.cart.methods.billmate" template="billmatecheckout/link.phtml" before="checkout.cart.methods.multishipping"/>
+        </reference>
+    </billmatecommon_replace_checkout_links>
     <billmatecommon_billmatecheckout_terms>
         <reference name="root">
             <action method="setTemplate">

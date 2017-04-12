@@ -1,0 +1,11 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Boxedsolutions
+ * Date: 2017-04-12
+ * Time: 15:58
+ */
+?>
+<?php if (Mage::getStoreConfig('billmate/checkout/active')):?>
+    <button type="button" title="<?php echo $this->__('Proceed to Checkout') ?>" class="button btn-proceed-checkout btn-checkout" onclick="window.location='<?php echo $this->getCheckoutUrl() ?>';"><span><span><?php echo $this->__('Proceed to Checkout') ?></span></span></button>
+<?php endif?>
