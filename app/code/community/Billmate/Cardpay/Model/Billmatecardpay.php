@@ -72,7 +72,9 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
     public function isAvailable($quote = null)
     {
         if($quote == null ) return false;
-		if( Mage::getStoreConfig('payment/billmatecardpay/active') != 1 ) return false;
+        if(Mage::getSingleton('checkout/session')->getBillmateHash()) return true;
+
+        if( Mage::getStoreConfig('payment/billmatecardpay/active') != 1 ) return false;
         $countries = explode(',', Mage::getStoreConfig('payment/billmatecardpay/countries'));	
         if( in_array($quote->getShippingAddress()->getCountry(), $countries ) ){
 			//$data = $quote->getTotals();

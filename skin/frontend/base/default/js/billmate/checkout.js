@@ -100,13 +100,13 @@ var BillmateIframe = new function(){
             switch (json.event) {
                 case 'address_selected':
                     self.updateAddress(json.data);
-                    self.updatePaymentMethod(json.data);
-                    self.updateTotals(false);
+                    //self.updatePaymentMethod(json.data);
+                    //self.updateTotals(false);
                     if(window.method == null || window.method == json.data.method) {
                         jQuery('#checkoutdiv').removeClass('loading');
                     }
                     break;
-                case 'payment_method_selected':
+                /*case 'payment_method_selected':
                     if (window.address_selected !== null) {
                         self.updatePaymentMethod(json.data);
                         self.updateTotals(false);
@@ -114,7 +114,7 @@ var BillmateIframe = new function(){
                             jQuery('#checkoutdiv').removeClass('loading');
                         }
                     }
-                    break;
+                    break;*/
                 case 'checkout_success':
                     self.createOrder(json.data);
                     break;
@@ -160,7 +160,11 @@ jQuery(document).ready(function(){
 
     });
 
-    b_iframe.updateTotals(true);
+    jQuery('.qty').on('change',function(e){
+        jQuery('.qty').closest('form').append('<input name="return_url" type="hidden" value="'+CHECKOUT_URL+'"/>');
+        jQuery('.btn-update').click();
+    });
+    //b_iframe.updateTotals(true);
 
 });
 

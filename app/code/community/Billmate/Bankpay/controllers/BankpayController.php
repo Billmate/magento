@@ -300,6 +300,11 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 $order = $this->place($quote);
                 if($order && $order->getStatus()) {
                     if($order->getStatus() == Mage::getStoreConfig('payment/billmatebankpay/order_status')) {
+                        if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] ==1){
+                            $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash()),'_secure' => true));
+                            return;
+
+                        }
                         $this->_redirect('checkout/onepage/success',array('_secure' => true));
 
                         break;
@@ -308,7 +313,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', 'pending_payment', '', false);
                         $order->save();
-                        if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] === true){
+                        if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] ==1){
                             $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash()),'_secure' => true));
                             return;
 
@@ -339,7 +344,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                         $order->setState('new',Mage::getStoreConfig('payment/billmatebankpay/order_status'), '', false);
                         $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
                         $order->save();
-                        if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] === true){
+                        if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] == 1){
                             $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash()),'_secure' => true));
                             return;
 

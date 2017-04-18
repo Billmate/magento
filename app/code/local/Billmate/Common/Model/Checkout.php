@@ -31,6 +31,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             'sendreciept' => 'yes',
             'terms' => Mage::getUrl('billmatecommon/billmatecheckout/terms')
         );
+
         if(!$quote->getReservedOrderId())
             $quote->reserveOrderId();
 
@@ -41,6 +42,12 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             'country' => $storeCountryIso2,
             'orderid' => $quote->getReservedOrderId()
         );
+        $orderValues['PaymentData']['accepturl'] = Mage::getUrl('billmatecommon/callback/accept', array('_query' => array('billmate_checkout' => true,'billmate_quote_id' => $quote->getId()), '_secure' => true));
+        $orderValues['PaymentData']['cancelurl'] = Mage::getUrl('billmatecommon/callback/cancel', array('_secure' => true));
+        $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('billmatecommon/callback/callback', array('_query' => array('billmate_quote_id' => $quote->getId(),'billmate_checkout' => true), '_secure' => true));
+
+        $orderValues['PaymentData']['returnmethod'] = (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET';
+
         $_taxHelper  = Mage::helper('tax');
         $_weeeHelper = Mage::helper('weee');
         $percent = 0;
@@ -207,27 +214,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             }
         }
 
-        if ($Shipping->getFeeAmount() && $Shipping->getFeeAmount() > 0)
-        {
-            $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
-            $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
 
-            //if(Mage::getStoreConfig('payment/billmateinvoice/tax_class')){
-            $feeinfo = Mage::helper( 'billmateinvoice' )
-                ->getInvoiceFeeArray( $invoiceFee, $Shipping, $quote->getCustomerTaxClassId() );
-            //}
-            if ( ! empty( $invoiceFee ) && $invoiceFee > 0 )
-            {
-                // $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
-
-                $orderValues['Cart']['Handling'] = array(
-                    'withouttax' => round($Shipping->getFeeAmount() * 100),
-                    'taxrate'    => $feeinfo['rate']
-                );
-                $totalValue += $Shipping->getFeeAmount() * 100;
-                $totalTax += ( $Shipping->getFeeAmount() * 100 ) * ( $feeinfo['rate'] / 100 );
-            }
-        }
 
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
         if(!empty($rates)){
@@ -250,6 +237,24 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         }
         $round = round($quote->getGrandTotal() * 100) - round($totalValue +  $totalTax);
 
+        $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
+        $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
+
+        //if(Mage::getStoreConfig('payment/billmateinvoice/tax_class')){
+        $feeinfo = Mage::helper( 'billmateinvoice' )
+            ->getInvoiceFeeArray( $invoiceFee, $Shipping, $quote->getCustomerTaxClassId() );
+        //}
+        if ( ! empty( $invoiceFee ) && $invoiceFee > 0 )
+        {
+            // $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
+
+            $orderValues['Cart']['Handling'] = array(
+                'withouttax' => round($invoiceFee * 100),
+                'taxrate'    => $feeinfo['rate']
+            );
+            $totalValue += $invoiceFee * 100;
+            $totalTax += ( $invoiceFee * 100 ) * ( $feeinfo['rate'] / 100 );
+        }
 
         $orderValues['Cart']['Total'] = array(
             'withouttax' => round($totalValue),
@@ -265,6 +270,8 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             $parts = explode('/',$url);
             $sum = count($parts);
             $hash = ($parts[$sum-1] == 'test') ? str_replace('\\','',$parts[$sum-2]) : str_replace('\\','',$parts[$sum-1]);
+            $quote->setBillmateHash($hash);
+            $quote->save();
             Mage::getSingleton('checkout/session')->setBillmateHash($hash);
         }
         return $result;
@@ -314,19 +321,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $orderValues['PaymentData']['country'] = $storeCountryIso2;
         $orderValues['PaymentData']['orderid'] = $quote->getReservedOrderId();
         //$orderValues['PaymentData']['method'] = $method;
-        if(8 == $orderValues['PaymentData']['method']) {
-            $orderValues['PaymentData']['accepturl'] = Mage::getUrl('cardpay/cardpay/accept', array('billmate_checkout' => true,'billmate_quote_id' => $quote->getId(), '_secure' => true));
-            $orderValues['PaymentData']['cancelurl'] = Mage::getUrl('cardpay/cardpay/cancel', array('_secure' => true));
-            $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('cardpay/cardpay/callback', array('billmate_quote_id' => $quote->getId(), '_secure' => true));
-            $orderValues['PaymentData']['returnmethod'] = (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET';
-        }
 
-        if(16 == $orderValues['PaymentData']['method']) {
-            $orderValues['PaymentData']['accepturl'] = Mage::getUrl('bankpay/bankpay/accept', array('billmate_checkout' => true,'billmate_quote_id' => $quote->getId(), '_secure' => true));
-            $orderValues['PaymentData']['cancelurl'] = Mage::getUrl('bankpay/bankpay/cancel', array('_secure' => true));
-            $orderValues['PaymentData']['callbackurl'] = Mage::getUrl('bankpay/bankpay/callback', array('billmate_quote_id' => $quote->getId(), '_secure' => true));
-            $orderValues['PaymentData']['returnmethod'] = (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET';
-        }
         $_taxHelper  = Mage::helper('tax');
         $_weeeHelper = Mage::helper('weee');
         $percent = 0;
@@ -496,30 +491,10 @@ class Billmate_Common_Model_Checkout extends Varien_Object
 
 
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
-        unset($orderValues['Cart']['Handling']);
-       
-        if ($orderValues['PaymentData']['method'] == 1 )
-        {
-            $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
-            $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
 
-            //if(Mage::getStoreConfig('payment/billmateinvoice/tax_class')){
-            $feeinfo = Mage::helper( 'billmateinvoice' )
-                ->getInvoiceFeeArray( $invoiceFee, $Shipping, $quote->getCustomerTaxClassId() );
-            //}
-            if ( ! empty( $invoiceFee ) && $invoiceFee > 0 )
-            {
-                // $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
-
-                $orderValues['Cart']['Handling'] = array(
-                    'withouttax' => round($Shipping->getFeeAmount() * 100),
-                    'taxrate'    => $feeinfo['rate']
-                );
-                $totalValue += $Shipping->getFeeAmount() * 100;
-                $totalTax += ( $Shipping->getFeeAmount() * 100 ) * ( $feeinfo['rate'] / 100 );
-            }
-        }
         unset($orderValues['Cart']['Shipping']);
+        unset($orderValues['Cart']['Handling']);
+        unset($orderValues['Customer']);
         if(!empty($rates)){
             if( $Shipping->getBaseShippingTaxAmount() > 0 ){
                 $taxCalculation = Mage::getModel('tax/calculation');
@@ -545,6 +520,24 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         }
         $round = round($quote->getGrandTotal() * 100) - round($totalValue +  $totalTax);
 
+        $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
+        $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
+
+        //if(Mage::getStoreConfig('payment/billmateinvoice/tax_class')){
+        $feeinfo = Mage::helper( 'billmateinvoice' )
+            ->getInvoiceFeeArray( $invoiceFee, $Shipping, $quote->getCustomerTaxClassId() );
+        //}
+        if ( ! empty( $invoiceFee ) && $invoiceFee > 0 )
+        {
+            // $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
+
+            $orderValues['Cart']['Handling'] = array(
+                'withouttax' => round($invoiceFee * 100),
+                'taxrate'    => $feeinfo['rate']
+            );
+            $totalValue += $invoiceFee * 100;
+            $totalTax += ( $invoiceFee * 100 ) * ( $feeinfo['rate'] / 100 );
+        }
 
         $orderValues['Cart']['Total'] = array(
             'withouttax' => round($totalValue),
@@ -557,8 +550,10 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $result = $billmate->updateCheckout($orderValues);
         if($previousTotal != $orderValues['Cart']['Total']['withtax']){
             $result['update_checkout'] = true;
+            $result['data'] = $orderValues;
         } else {
             $result['update_checkout'] = false;
+            $result['data'] = array();
 
         }
         return $result;

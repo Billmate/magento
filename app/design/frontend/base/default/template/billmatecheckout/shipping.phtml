@@ -59,12 +59,15 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
             $('postcode').addClassName('required-entry');
         }*/
         return VarienForm.prototype.submit.bind(coShippingMethodForm)();
-    }
-    <?php if(Mage::registry('update_checkout')): ?>
-    b_iframe.updateCheckout();
-    <?php endif; ?>
+    };
+    
     var billmateCheckoutShippingTimer;
-    var selectedShippingMethod = $$('[name="estimate_method"]:checked')[0].value;
+    var selectedShippingMethod = null;
+    if($$('[name="estimate_method"]:checked').length == 0){
+        jQuery('[name="estimate_method"]').last().click();
+    } else {
+        selectedShippingMethod = $$('[name="estimate_method"]:checked')[0].value;
+    }
     $$('[name="estimate_method"].radio').each(function(el){
         el.observe('click',function(e){
 
@@ -80,15 +83,14 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
     });
 
     function updateShippingMethod(method) {
-        new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod') ?>',{
+        new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod', array('_secure' => true)) ?>',{
             parameters: {estimate_method: method},
             method: 'post',
             onSuccess: function(transport){
                 var result = transport.responseText.evalJSON();
                 if(result.success){
-                    b_iframe.updateTotals(false);
                     if(result.hasOwnProperty("update_checkout") && result.update_checkout === true)
-                       b_iframe.updateCheckout();
+                        b_iframe.updateCheckout();
                 }
             }
         });

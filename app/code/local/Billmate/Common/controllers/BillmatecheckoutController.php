@@ -34,10 +34,11 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $billmate = Mage::helper('billmatecommon')->getBillmate();
 
         $hash = $this->getRequest()->getParam('hash');
+
         $checkout = $billmate->getCheckout(array('PaymentData' => array('hash' => $hash)));
+        $status = $checkout['PaymentData']['order']['status'];
 
-
-        if(in_array(strtolower($checkout['PaymentData']['order']['status']),array('paid','created'))){
+        if(in_array(strtolower($status),array('paid','created','pending'))){
             $quote = Mage::getSingleton('checkout/session')->getQuote();
             $quote->setIsActive(false)->save();
             Mage::getSingleton('checkout/session')->clear();
@@ -55,6 +56,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             exit();
         }
     }
+
+    
 
     public function termsAction()
     {
@@ -77,8 +80,11 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         if(!isset($result['code'])) {
 
             $billingAddress = $cart->getQuote()->getBillingAddress();
+            $cart->getQuote()->setCustomerEmail($result['Customer']['Billing']['email']);
+
             $billingAddress->setFirstname($result['Customer']['Billing']['firstname']);
             $billingAddress->setLastname($result['Customer']['Billing']['lastname']);
+            $billingAddress->setEmail($result['Customer']['Billing']['email']);
             $billingAddress->setStreet($result['Customer']['Billing']['street']);
             $billingAddress->setCompany(isset($result['Customer']['Billing']['company']) ? $result['Customer']['Billing']['company'] : '');
             $billingAddress->setCity($result['Customer']['Billing']['city']);
@@ -91,11 +97,13 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $shippingAddress = $cart->getQuote()->getShippingAddress();
             $shippingAddress->setFirstname($result['Customer']['Shipping']['firstname']);
             $shippingAddress->setLastname($result['Customer']['Shipping']['lastname']);
+            $shippingAddress->setEmail(isset($result['Customer']['Shipping']['email']) ? $result['Customer']['Shipping']['email'] : $result['Customer']['Billing']['email']);
+
             $shippingAddress->setStreet($result['Customer']['Shipping']['street']);
             $shippingAddress->setCompany(isset($result['Customer']['Shipping']['company']) ? $result['Customer']['Shipping']['company'] : '');
             $shippingAddress->setCity($result['Customer']['Shipping']['city']);
             $shippingAddress->setTelephone($result['Customer']['Shipping']['phone']);
-            $shippingAddress->setCountryId($result['Customer']['Shipping']['country'])
+            $shippingAddress->setCountryId(isset($result['Customer']['Shipping']['country']) ? $result['Customer']['Shipping']['country'] : $result['Customer']['Billing']['country'])
                 ->setPostcode($result['Customer']['Shipping']['zip'])
                 ->setCollectShippingrates(true);
             $billingAddress->save();
@@ -206,6 +214,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         if(!isset($result['code'])){
             $response['success'] = true;
             $response['update_checkout'] = ($result['update_checkout']) ? true : false;
+            $response['data'] = $result['data'];
+
         } else {
             $response['success'] = false;
             
@@ -236,6 +246,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         if(!isset($result['code'])){
             $response['success'] = true;
             $response['update_checkout'] = ($result['update_checkout']) ? true : false;
+            $response['data'] = $result['data'];
 
         } else {
             $response['success'] = false;
@@ -250,6 +261,9 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $quote = $this->_getQuote();
         $post = $this->getRequest()->getParams();
         $result = Mage::helper('billmatecommon')->getBillmate()->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
+        if(!isset($result['code'])){
+            Mage::register('billmate_checkout_complete',true);
+        }
         $codeToMethod = array(
             1 => 'billmateinvoice',
             4 => 'billmatepartpayment',
