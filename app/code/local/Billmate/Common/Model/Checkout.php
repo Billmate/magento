@@ -226,13 +226,18 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             }
             else
                 $rate = 0;
-            if($Shipping->getShippingAmount() > 0) {
+            if($Shipping->getShippingAmount() > 0 && $Shipping->getShippingDiscountAmount() != $Shipping->getShippingAmount()) {
                 $orderValues['Cart']['Shipping'] = array(
-                    'withouttax' => $Shipping->getShippingAmount() * 100,
+                    'withouttax' => ($Shipping->getShippingDiscountAmount() < 0) ? ($Shipping->getShippingAmount() - $Shipping->getShippingDiscountAmount()) * 100 : $Shipping->getShippingAmount() * 100,
                     'taxrate' => (int)$rate
                 );
                 $totalValue += $Shipping->getShippingAmount() * 100;
                 $totalTax += ($Shipping->getShippingAmount() * 100) * ($rate / 100);
+            } else {
+                $orderValues['Cart']['Shipping'] = array(
+                    'withouttax' => 0,
+                    'taxrate' => (int)$rate
+                );
             }
         }
         $round = round($quote->getGrandTotal() * 100) - round($totalValue +  $totalTax);
@@ -504,9 +509,10 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             }
             else
                 $rate = 0;
-            if($Shipping->getShippingAmount() > 0) {
+
+            if($Shipping->getShippingAmount() > 0 && $Shipping->getShippingDiscountAmount() != $Shipping->getShippingAmount()) {
                 $orderValues['Cart']['Shipping'] = array(
-                    'withouttax' => $Shipping->getShippingAmount() * 100,
+                    'withouttax' => ($Shipping->getShippingDiscountAmount() < 0) ? ($Shipping->getShippingAmount() - $Shipping->getShippingDiscountAmount()) * 100 : $Shipping->getShippingAmount() * 100,
                     'taxrate' => (int)$rate
                 );
                 $totalValue += $Shipping->getShippingAmount() * 100;
@@ -514,7 +520,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             } else {
                 $orderValues['Cart']['Shipping'] = array(
                     'withouttax' => 0,
-                    'taxrate' => 0
+                    'taxrate' => (int)$rate
                 );
             }
         }

@@ -18,7 +18,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $freeshipping = false;
             if($method == 'freeshipping_freeshipping')
                 $freeshipping = true;
-            $quote->getShippingAddress()->setFreeShipping($freeshipping)->setCollectShippingRates(true)->collectShippingRates()->setShippingMethod($method)->collectTotals()->save();
+            $quote->getShippingAddress()->setFreeShipping($freeshipping)->collectShippingRates()->setShippingMethod($method)->collectTotals()->save();
             $quote->save();
         }
         
@@ -206,7 +206,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $freeshipping = false;
             if($code == 'freeshipping_freeshipping')
                 $freeshipping = true;
-            $this->_getQuote()->getShippingAddress()->removeAllShippingRates()->setCollectShippingRates(true)->collectShippingRates()->setShippingMethod($code)->collectTotals()->save();
+            $this->_getQuote()->getShippingAddress()->setFreeShipping($freeshipping)->removeAllShippingRates()->setCollectShippingRates(true)->collectShippingRates()->setShippingMethod($code)->collectTotals()->save();
             $this->_getQuote()->collectTotals()->save();
         }
         
