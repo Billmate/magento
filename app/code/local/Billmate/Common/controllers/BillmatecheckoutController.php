@@ -13,12 +13,12 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
     {
         $quote = Mage::getSingleton('checkout/session')->getQuote();
         if(!$quote->isVirtual() && $quote->getShippingAddress()->getCountryId() == ''){
-            $quote->getShippingAddress()->addData(array('country_id' => Mage::getStoreConfig('general/country/default')));
-            $method = Mage::getStoreConfig('billmate/checkout/shipping_method');
+            $quote->getShippingAddress()->addData(array('postcode' => (strlen(Mage::getStoreConfig('shipping/origin/postcode')) > 0) ? Mage::getStoreConfig('shipping/origin/postcode') : '12345' ,'country_id' => Mage::getStoreConfig('general/country/default')));            $method = Mage::getStoreConfig('billmate/checkout/shipping_method');
             $freeshipping = false;
             if($method == 'freeshipping_freeshipping')
                 $freeshipping = true;
-            $quote->getShippingAddress()->setFreeShipping($freeshipping)->collectShippingRates()->setShippingMethod($method)->collectTotals()->save();
+            $quote->getShippingAddress()->setFreeShipping($freeshipping)->collectShippingRates(true)->setShippingMethod($method)->collectTotals()->save();
+            
             $quote->save();
         }
         

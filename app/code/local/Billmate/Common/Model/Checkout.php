@@ -251,8 +251,11 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         //}
         if ( ! empty( $invoiceFee ) && $invoiceFee > 0 )
         {
-            // $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
-
+            $baseCurrencyCode    = Mage::app()->getStore()->getBaseCurrencyCode();
+            $currentCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+            $_directory          = Mage::helper( 'directory' );
+            $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
+            
             $orderValues['Cart']['Handling'] = array(
                 'withouttax' => round($invoiceFee * 100),
                 'taxrate'    => $feeinfo['rate']
@@ -535,7 +538,10 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         //}
         if ( ! empty( $invoiceFee ) && $invoiceFee > 0 )
         {
-            // $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
+            $baseCurrencyCode    = Mage::app()->getStore()->getBaseCurrencyCode();
+            $currentCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+            $_directory          = Mage::helper( 'directory' );
+            $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
 
             $orderValues['Cart']['Handling'] = array(
                 'withouttax' => round($invoiceFee * 100),
