@@ -178,7 +178,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => $cp->getName().' - '.$sp->getName(),
+                    'title'    => addslashes($cp->getName().' - '.$sp->getName()),
                     // Dynamic pricing set price to zero
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
@@ -208,7 +208,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => $_item->getName(),
+                    'title'    => addslashes($_item->getName()),
                     // Dynamic pricing set price to zero
                     'aprice'    => (int)0,
                     'taxrate'      => (float)$percent,
@@ -253,7 +253,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$qty,
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => $_item->getName(),
+                    'title'    => addslashes($_item->getName()),
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
                     'discount' => $discount,

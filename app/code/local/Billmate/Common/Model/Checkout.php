@@ -102,7 +102,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => $cp->getName().' - '.$sp->getName(),
+                    'title'    => addslashes($cp->getName().' - '.$sp->getName()),
                     // Dynamic pricing set price to zero
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
@@ -133,7 +133,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => $_item->getName(),
+                    'title'    => addslashes($_item->getName()),
                     // Dynamic pricing set price to zero
                     'aprice'    => (int)0,
                     'taxrate'      => (float)$percent,
@@ -170,7 +170,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => $_item->getName(),
+                    'title'    => addslashes($_item->getName()),
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
                     'discount' => $discount,
@@ -255,7 +255,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             $currentCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
             $_directory          = Mage::helper( 'directory' );
             $invoiceFee = $_directory->currencyConvert($invoiceFee,$baseCurrencyCode,$currentCurrencyCode);
-            
+
             $orderValues['Cart']['Handling'] = array(
                 'withouttax' => round($invoiceFee * 100),
                 'taxrate'    => $feeinfo['rate']
@@ -385,7 +385,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => $cp->getName().' - '.$sp->getName(),
+                    'title'    => addslashes($cp->getName().' - '.$sp->getName()),
                     // Dynamic pricing set price to zero
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
@@ -416,7 +416,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => $_item->getName(),
+                    'title'    => addslashes($_item->getName()),
                     // Dynamic pricing set price to zero
                     'aprice'    => (int)0,
                     'taxrate'      => (float)$percent,
@@ -453,7 +453,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => $_item->getName(),
+                    'title'    => addslashes($_item->getName()),
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
                     'discount' => $discount,
