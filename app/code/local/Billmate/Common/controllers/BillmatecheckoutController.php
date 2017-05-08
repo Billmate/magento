@@ -206,8 +206,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $freeshipping = false;
             if($code == 'freeshipping_freeshipping')
                 $freeshipping = true;
-            $this->_getQuote()->getShippingAddress()->setFreeShipping($freeshipping)->removeAllShippingRates()->setCollectShippingRates(true)->collectShippingRates()->setShippingMethod($code)->collectTotals()->save();
-            $this->_getQuote()->collectTotals()->save();
+            $this->_getQuote()->getShippingAddress()->setShippingMethod($code)->save();
+            $this->_getCart()->save();
         }
         
         $result = $checkout->updateCheckout();
