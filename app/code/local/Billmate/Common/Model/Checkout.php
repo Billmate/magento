@@ -102,7 +102,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => addslashes($cp->getName().' - '.$sp->getName()),
+                    'title'    => addslashes(str_replace("'",'',$cp->getName().' - '.$sp->getName())),
                     // Dynamic pricing set price to zero
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
@@ -133,7 +133,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => addslashes($_item->getName()),
+                    'title'    => addslashes(str_replace("'",'',$_item->getName())),
                     // Dynamic pricing set price to zero
                     'aprice'    => (int)0,
                     'taxrate'      => (float)$percent,
@@ -170,7 +170,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => addslashes($_item->getName()),
+                    'title'    => addslashes(str_replace("'",'',$_item->getName())),
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
                     'discount' => $discount,
@@ -385,7 +385,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => addslashes($cp->getName().' - '.$sp->getName()),
+                    'title'    => addslashes(str_replace("'",'',$cp->getName().' - '.$sp->getName())),
                     // Dynamic pricing set price to zero
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
@@ -416,7 +416,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => addslashes($_item->getName()),
+                    'title'    => addslashes(str_replace("'",'',$_item->getName())),
                     // Dynamic pricing set price to zero
                     'aprice'    => (int)0,
                     'taxrate'      => (float)$percent,
@@ -453,7 +453,7 @@ class Billmate_Common_Model_Checkout extends Varien_Object
                 $orderValues['Articles'][] = array(
                     'quantity'   => (int)$_item->getQty(),
                     'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => addslashes($_item->getName()),
+                    'title'    => addslashes(str_replace("'",'',$_item->getName())),
                     'aprice'    => (int)round($price*100,0),
                     'taxrate'      => (float)$percent,
                     'discount' => $discount,
