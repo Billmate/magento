@@ -64,7 +64,7 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
-### 3.0.6 (2017-04-27)
+### 3.0.6 (2017-05-09)
 * Fix - Escape quotation chars. 
 * Fix - Change the behaviour with shipping discounts.
 
