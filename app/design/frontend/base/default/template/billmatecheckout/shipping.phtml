@@ -2,9 +2,10 @@
 /**
  * Created by PhpStorm.
  * User: Boxedsolutions
- * Date: 2016-12-07
- * Time: 13:12
- */ ?>
+ * Date: 2017-05-19
+ * Time: 10:04
+ */
+?>
 <div class="billmate-shipping">
 <?php
 if (($_shippingRateGroups = $this->getEstimateRates())): ?>
@@ -45,22 +46,22 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
 
     coShippingMethodForm.submit = function () {
         /*var country = $F('country');
-        var optionalZip = false;
+         var optionalZip = false;
 
-        for (i=0; i < countriesWithOptionalZip.length; i++) {
-            if (countriesWithOptionalZip[i] == country) {
-                optionalZip = true;
-            }
-        }
-        if (optionalZip) {
-            $('postcode').removeClassName('required-entry');
-        }
-        else {
-            $('postcode').addClassName('required-entry');
-        }*/
+         for (i=0; i < countriesWithOptionalZip.length; i++) {
+         if (countriesWithOptionalZip[i] == country) {
+         optionalZip = true;
+         }
+         }
+         if (optionalZip) {
+         $('postcode').removeClassName('required-entry');
+         }
+         else {
+         $('postcode').addClassName('required-entry');
+         }*/
         return VarienForm.prototype.submit.bind(coShippingMethodForm)();
     };
-    
+
     var billmateCheckoutShippingTimer;
     var selectedShippingMethod = null;
     if($$('[name="estimate_method"]:checked').length == 0){
@@ -70,10 +71,11 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
     }
     $$('[name="estimate_method"].radio').each(function(el){
         el.observe('click',function(e){
-
+            console.log('clicked radio');
             clearTimeout(billmateCheckoutShippingTimer);
             billmateCheckoutShippingTimer = setTimeout(function() {
                 if($$('[name="estimate_method"]:checked')[0].value != selectedShippingMethod) {
+                    console.log('different method');
                     selectedShippingMethod = $$('[name="estimate_method"]:checked')[0].value;
                     updateShippingMethod($$('[name="estimate_method"]:checked')[0].value);
                 }

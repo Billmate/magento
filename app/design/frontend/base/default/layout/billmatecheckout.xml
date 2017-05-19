@@ -125,7 +125,7 @@
                        template="billmatecheckout/cart/crosssell.phtml"/>
 
 
-                <block type="checkout/cart_shipping" name="checkout.cart.shipping" as="shipping"
+                <block type="billmatecommon/checkout_cart_shipping" name="checkout.cart.shipping" as="shipping"
                        template="billmatecheckout/shipping.phtml">
 
                 </block>
@@ -187,7 +187,7 @@
                        template="billmatecheckout/cart/crosssell.phtml"/>
 
 
-                <block type="checkout/cart_shipping" name="checkout.cart.shipping" as="shipping"
+                <block type="billmatecommon/checkout_cart_shipping" name="checkout.cart.shipping" as="shipping"
                        template="billmatecheckout/shipping.phtml">
 
                 </block>

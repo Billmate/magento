@@ -12,12 +12,12 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
     public function indexAction()
     {
         $quote = Mage::getSingleton('checkout/session')->getQuote();
-        if(!$quote->isVirtual() && $quote->getShippingAddress()->getCountryId() == ''){
-            $quote->getShippingAddress()->addData(array('postcode' => (strlen(Mage::getStoreConfig('shipping/origin/postcode')) > 0) ? Mage::getStoreConfig('shipping/origin/postcode') : '12345' ,'country_id' => Mage::getStoreConfig('general/country/default')));            $method = Mage::getStoreConfig('billmate/checkout/shipping_method');
-            $freeshipping = false;
-            if($method == 'freeshipping_freeshipping')
-                $freeshipping = true;
-            $quote->getShippingAddress()->setFreeShipping($freeshipping)->collectShippingRates(true)->setShippingMethod($method)->collectTotals()->save();
+        if(!$quote->isVirtual() && strlen($quote->getShippingAddress()->getCountry() < 2)){
+            $quote->getShippingAddress()->addData(array('postcode' => (strlen(Mage::getStoreConfig('shipping/origin/postcode')) > 0) ? Mage::getStoreConfig('shipping/origin/postcode') : '12345' ,'country_id' => Mage::getStoreConfig('general/country/default')));
+            $method = Mage::getStoreConfig('billmate/checkout/shipping_method');
+
+            Mage::log('assign country'.print_r($quote->getShippingAddress()->getData(),true),1,'billmate.log');
+            $quote->getShippingAddress()->setCollectShippingRates(true)->setShippingMethod($method)->collectTotals()->save();
             
             $quote->save();
         }
@@ -122,7 +122,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             }
 
 
-            $this->getResponse()->setBody($this->getLayout()->createBlock('checkout/cart_shipping', 'checkout.cart.shipping')->setTemplate('billmatecheckout/shipping.phtml')->toHtml());
+            $this->getResponse()->setBody($this->getLayout()->createBlock('billmatecommon/checkout_cart_shipping', 'checkout.cart.shipping')->setTemplate('billmatecheckout/shipping.phtml')->toHtml());
         }
     }
 
