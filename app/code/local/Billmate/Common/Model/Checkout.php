@@ -102,10 +102,9 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $rates = $quote->getShippingAddress()->getShippingRatesCollection();
         if(!empty($rates)){
             if( $Shipping->getBaseShippingTaxAmount() > 0 ){
-                $taxCalculation = Mage::getModel('tax/calculation');
-                $request = $taxCalculation->getRateRequest($Shipping,$Billing,null,$quote->getStore());
-                $taxRateId = Mage::getStoreConfig('tax/classes/shipping_tax_class',$quote->getStore());
-                $rate = $taxCalculation->getRate($request->setProductClassId($taxRateId));
+                $shippingExclTax = $Shipping->getShippingAmount();
+                $shippingIncTax = $Shipping->getShippingInclTax();
+                $rate = $shippingExclTax > 0 ? (($shippingIncTax / $shippingExclTax) - 1) * 100 : 0;
             }
             else
                 $rate = 0;
@@ -271,10 +270,11 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         unset($orderValues['Customer']);
         if(!empty($rates)){
             if( $Shipping->getBaseShippingTaxAmount() > 0 ){
-                $taxCalculation = Mage::getModel('tax/calculation');
-                $request = $taxCalculation->getRateRequest($Shipping,$Billing,null,$quote->getStore());
-                $taxRateId = Mage::getStoreConfig('tax/classes/shipping_tax_class',$quote->getStore());
-                $rate = $taxCalculation->getRate($request->setProductClassId($taxRateId));
+                
+                
+                $shippingExclTax = $Shipping->getShippingAmount();
+                $shippingIncTax = $Shipping->getShippingInclTax();
+                $rate = $shippingExclTax > 0 ? (($shippingIncTax / $shippingExclTax) - 1) * 100 : 0;
             }
             else
                 $rate = 0;
