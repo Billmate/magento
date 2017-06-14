@@ -141,136 +141,14 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object{
 
 
 		/** @var Mage_Sales_Model_Quote_Item $_item */
-	    foreach( $quote->getAllItems() as $_item){
+	    $preparedArticle = Mage::helper('billmatecommon')->prepareArticles($quote);
+	    $discounts = $preparedArticle['discounts'];
+	    $totalTax = $preparedArticle['totalTax'];
+	    $totalValue = $preparedArticle['totalValue'];
+	    $orderValues['Articles'] = $preparedArticle['articles'];
 
 
-            // Continue if bundleArr contains item parent id, no need for get price then.
-            if( in_array($_item->getParentItemId(),$bundleArr)){
-                continue;
-            }
-            $request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
-            $taxclassid = $_item->getProduct()->getData('tax_class_id');
-            // If Product type == bunde and if bundle price type == fixed
-            if($_item->getProductType() == 'bundle' && $_item->getProduct()->getPriceType() == 1){
-                // Set bundle id to $bundleArr
-                $bundleArr[] = $_item->getId();
-
-            }
-            if($_item->getProductType() == 'configurable'){
-                $configSku = $_item->getSku();
-                $cp = $_item->getProduct();
-                $sp = Mage::getModel('catalog/product')->loadByAttribute('sku',$_item->getSku());
-
-                $price = $_item->getCalculationPrice();
-                $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
-                $discount = 0.0;
-                $discountAmount = 0;
-                if($_item->getDiscountPercent() != 0){
-                    $discountAdded = true;
-                    $discount = $_item->getDiscountPercent();
-                    $marginal = ($percent/100)/ (1+($percent/100));
-
-                    $discountAmount = $_item->getBaseDiscountAmount();
-                    // $discountPerArticle without VAT
-                    $discountAmount = $discountAmount - ($discountAmount * $marginal);
-                }
-                $total = ($discountAdded) ? (int) round((($price * $_item->getQty() - $discountAmount)* 100)) : (int)round($price*100) * $_item->getQty();
-                $orderValues['Articles'][] = array(
-                    'quantity'   => (int)$_item->getQty(),
-                    'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => addslashes($cp->getName().' - '.$sp->getName()),
-                    // Dynamic pricing set price to zero
-                    'aprice'    => (int)round($price*100,0),
-                    'taxrate'      => (float)$percent,
-                    'discount' => $discount,
-                    'withouttax' => $total
-
-                );
-                $temp = $total;
-                $totalValue += $temp;
-                $totalTax += $temp * ($percent/100);
-				if(isset($discounts[$percent]))
-	                $discounts[$percent] += $temp;
-	            else
-		            $discounts[$percent] = $temp;
-
-
-            }
-            if($_item->getSku() == $configSku){
-
-                continue;
-            }
-
-            // If Product type == bunde and if bundle price type == dynamic
-            if($_item->getProductType() == 'bundle' && $_item->getProduct()->getPriceType() == 0){
-
-                $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
-                $orderValues['Articles'][] = array(
-                    'quantity'   => (int)$_item->getQty(),
-                    'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => addslashes($_item->getName()),
-                    // Dynamic pricing set price to zero
-                    'aprice'    => (int)0,
-                    'taxrate'      => (float)$percent,
-                    'discount' => 0.0,
-                    'withouttax' => (int)0
-
-                );
-
-
-                // Else the item is not bundle and dynamic priced
-            } else {
-                $temp = 0;
-                $percent = Mage::getSingleton('tax/calculation')->getRate($request->setProductClassId($taxclassid));
-
-
-                // For tierPrices to work, we need to get calculation price not the price on the product.
-                // If a customer buys many of a kind and get a discounted price, the price will bee on the quote item.
-                $price = $_item->getCalculationPrice();
-
-                //Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
-                $discount = 0.0;
-                $discountAmount = 0;
-                if($_item->getDiscountPercent() != 0){
-                    $discountAdded = true;
-                    $discount = $_item->getDiscountPercent();
-                    $marginal = ($percent/100)/ (1+($percent/100));
-
-                    $discountAmount = $_item->getBaseDiscountAmount();
-                    // $discountPerArticle without VAT
-                    $discountAmount = $discountAmount - ($discountAmount * $marginal);
-
-                }
-                $parentItem = $_item->getParentItem();
-                if($parentItem)
-                    $qty = $parentItem->getQty();
-                else
-                    $qty = $_item->getQty();
-
-
-                $total = ($discountAdded) ? (int) round((($price * $qty - $discountAmount)* 100)) : (int)round($price*100) * $qty;
-
-                $orderValues['Articles'][] = array(
-                    'quantity'   => (int)$qty,
-                    'artnr'    => $_item->getProduct()->getSKU(),
-                    'title'    => addslashes($_item->getName()),
-                    'aprice'    => (int)round($price*100,0),
-                    'taxrate'      => (float)$percent,
-                    'discount' => $discount,
-                    'withouttax' => $total
-
-                );
-                $temp = $total;
-                $totalValue += $temp;
-                $totalTax += $temp * ($percent/100);
-	            if(isset($discounts[$percent]))
-		            $discounts[$percent] += $temp;
-	            else
-		            $discounts[$percent] = $temp;
-            }
-        }
-
-		$totals = Mage::getSingleton('checkout/session')->getQuote()->getTotals();
+	    $totals = Mage::getSingleton('checkout/session')->getQuote()->getTotals();
 		
 		//print_r($quote1['subtotal']->getData());
 
