@@ -91,11 +91,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                 //$percent        = Mage::getSingleton( 'tax/calculation' )->getRate( $request->setProductClassId( $taxclassid ) );
                 $percent = $_item->getTaxPercent();
 
-                // Price is set incl Tax
-                if(Mage::getStoreConfig('tax/calculation/cross_border_trade_enabled')){
-                    $marginalTax = $percent/100 /(1+($percent/100));
-                    $price = $price * (1-$marginalTax);
-                }
+
                 $discount = 0.0;
                 $discountAmount = 0;
                 if ($_item->getDiscountPercent() != 0) {
@@ -165,11 +161,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                 // If a customer buys many of a kind and get a discounted price, the price will bee on the quote item.
 
                 $price = $_item->getCalculationPrice();
-                // Price is set incl Tax
-                if(Mage::getStoreConfig('tax/calculation/cross_border_trade_enabled')){
-                    $marginalTax = $percent/100 /(1+($percent/100));
-                    $price = $price * (1-$marginalTax);
-                }
+
                 //Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
                 $discount = 0.0;
                 $discountAmount = 0;
