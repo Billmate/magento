@@ -200,7 +200,6 @@
                             <label>How often is needed to check Status</label>
                             <frontend_type>select</frontend_type>
                             <source_model>billmatecommon/system_config_frequency</source_model>
-                            <frontend_type>text</frontend_type>
                             <show_in_default>1</show_in_default>
                             <sort_order>60</sort_order>
                             <comment>The interval for running the cronjob</comment>
