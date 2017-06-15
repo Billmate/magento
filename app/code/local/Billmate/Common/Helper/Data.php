@@ -69,11 +69,13 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
         $discountValue = 0;
         $configSku     = false;
         $discounts     = array();
+        $store         = Mage::app()->getStore();
         foreach ($quote->getAllItems() as $_item) {
             // Continue if bundleArr contains item parent id, no need for get price then.
             if (in_array($_item->getParentItemId(), $bundleArr)) {
                 continue;
             }
+
             $request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
             $taxclassid = $_item->getProduct()->getData('tax_class_id');
             // If Product type == bunde and if bundle price type == fixed
