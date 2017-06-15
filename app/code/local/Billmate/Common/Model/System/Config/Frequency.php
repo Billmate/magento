@@ -22,13 +22,23 @@ class Billmate_Common_Model_System_Config_Frequency
         if (!self::$_options) {
             self::$_options = array(
                 array(
-                    'label' => Mage::helper('cron')->__('Minutely'),
-                    'value' => self::CRON_MINUTELY,
+                    'label' => Mage::helper('cron')->__('20 Minutes'),
+                    'value' => '20/* * * * *',
                 ),
                 array(
-                    'label' => Mage::helper('cron')->__('Hourly'),
-                    'value' => self::CRON_HOURLY,
+                    'label' => Mage::helper('cron')->__('1 Hour'),
+                    'value' => '0 * * * *',
+                ),
+                array('label' => Mage::helper('cron')->__('3 Hour'),
+                    'value' => '* 3/* * * *'
+                ),
+                array('label' => Mage::helper('cron')->__('6 Hour'),
+                    'value' => '* 6/* * * *'
+                ),
+                array('label' => Mage::helper('cron')->__('12 Hour'),
+                    'value' => '* 12/* * * *'
                 )
+
             );
         }
         return self::$_options;
