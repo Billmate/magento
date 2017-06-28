@@ -196,34 +196,15 @@
                             <sort_order>55</sort_order>
                             <show_in_default>1</show_in_default>
                         </order_status_check>
-                        <!--<check_cron translate="label comment">
+                        <check_cron translate="label comment">
                             <label>How often is needed to check Status</label>
-                            <frontend_type>text</frontend_type>
-                            <show_in_default>1</show_in_default>
-                            <sort_order>60</sort_order>
-                            <comment>Use Crontab format (Eg. 0 * * * * for every hour)</comment>
-                        </check_cron>-->
-                        <time translate="label comment" module="billmatecommon">
-                            <label>Interval</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>60</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
-                            <show_in_store>0</show_in_store>
-                            <comment><![CDATA[
-                                Example: If you set the above setting to 5 and the setting underneath to “hourly”, Magento will fetch order updates on pending orders every 5 hours.
-                            ]]></comment>
-                        </time>
-                        <frequency translate="label" module="billmatecommon">
-                            <label>Frequency</label>
                             <frontend_type>select</frontend_type>
                             <source_model>billmatecommon/system_config_frequency</source_model>
-                            <backend_model>billmatecommon/system_config_cron</backend_model>
-                            <sort_order>65</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </frequency>
+                            <sort_order>60</sort_order>
+                            <comment>The interval for running the cronjob</comment>
+                        </check_cron>
+
                         <checkstatus translate="label" module="billmatecommon">
                             <label>Which status should we use to filter orders for check Billmate status</label>
                             <frontend_type>multiselect</frontend_type>
@@ -234,13 +215,6 @@
                                 Add any custom statuses you are using. payment_review and pending_payment are automatically checked against.
                             ]]></comment>
                         </checkstatus>
-                        <pendingstatus translate="label" module="billmatecommon">
-                            <label>What order status should be set if order is Pending from Billmate API?</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>billmateinvoice/adminhtml_system_config_source_status</source_model>
-                            <sort_order>70</sort_order>
-                            <show_in_default>1</show_in_default>
-                        </pendingstatus>
                         <deniedstatus translate="label" module="billmatecommon">
                             <label>What order status should be set if a Pending order gets denied from Billmate API?</label>
                             <frontend_type>select</frontend_type>

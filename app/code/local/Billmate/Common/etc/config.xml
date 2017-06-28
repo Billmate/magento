@@ -155,6 +155,9 @@
     <crontab>
         <jobs>
             <check_billmate_status>
+                <schedule>
+                    <config_path>billmate/fraud_check/check_cron</config_path>
+                 </schedule>
                 <run>
                     <model>billmatecommon/OrderstatusSync::checkOrders</model>
                 </run>

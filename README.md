@@ -63,6 +63,12 @@ Copy the code below for the size that fits your needs.
 `<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_s.png" alt="Billmate Payment Gateway" /></a>`
 
 ## Changelog
+
+### 3.0.6 (2017-06-28)
+* Fix - Escape quotation chars. 
+* Fix - Change the behaviour with shipping discounts.
+* Fix - Tax calculation when prices are set including tax.
+
 ### 3.0.5 (2017-04-18)
 * Enhancement - Tweaked the amounts of updating checkout.
 * Enhancement - Common callback.

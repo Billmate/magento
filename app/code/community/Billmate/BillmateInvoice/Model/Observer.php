@@ -22,6 +22,7 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
             $payment = $order->getPayment();
             $info = $payment->getMethodInstance()->getInfoInstance();
             $info->setAdditionalInformation('invoiceid',$liveid);
+            $order->addStatusHistoryComment('', (strtolower($session->getData('billmate_status')) == 'created' )? Mage::getStoreConfig('payment/'.$method.'/order_status') : Mage::getStoreConfig('payment/'.$method.'/pending_status'));
             $order->save();
         }
 	}
