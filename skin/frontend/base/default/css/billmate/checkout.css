@@ -92,7 +92,7 @@
 }
 .buttons-set button.button{
     float: left !important;
-    margin-left: 0 !important;
+    /*margin-left: 0 !important;*/
 }
 .sp-methods dt{
     font-size: 14px !important;
@@ -142,15 +142,24 @@
 }
 .input-box {
     padding-top: 2px;
-    width: 200px;
+    width: 40%;
     float: left;
 }
 .buttons-set{
     float: left;
-    width: 150px;
+    width: 60%;
     clear: none !important;
-    margin-top: 4px !important
+    margin-top: 4px !important;
+    display: inline-flex;
 }
+.buttons-set .discount-cancel-button .button{
+    float:right;
+    margin-left: 2px;
+}
+.button.cancel-discount{
+    margin-top: -1.6em;
+}
+
 
 /* Loader */
 .billmateoverlay {
