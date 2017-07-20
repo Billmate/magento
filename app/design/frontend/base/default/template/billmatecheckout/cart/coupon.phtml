@@ -32,11 +32,12 @@
             <input type="hidden" name="remove" id="remove-coupone" value="0" />
             <div class="input-box">
                 <input class="input-text" id="coupon_code" name="coupon_code" value="<?php echo $this->escapeHtml($this->getCouponCode()) ?>" />
+                <div class="coupon-message"></div>
             </div>
             <div class="buttons-set">
                 <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Apply Coupon')) ?>" class="button" onclick="discountForm.submit(false)" value="<?php echo Mage::helper('core')->quoteEscape($this->__('Apply Coupon')) ?>"><span><span><?php echo $this->__('Apply Coupon') ?></span></span></button>
                 <div id="discount-cancel-button" style="display:none;">
-                    &nbsp; <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Cancel Coupon')) ?>" class="button" onclick="discountForm.submit(true)" value="<?php echo Mage::helper('core')->quoteEscape($this->__('Cancel Coupon')) ?>"><span><span><?php echo $this->__('Cancel Coupon') ?></span></span></button>
+                    &nbsp; <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Cancel Coupon')) ?>" class="button cancel-discount" onclick="discountForm.submit(true)" value="<?php echo Mage::helper('core')->quoteEscape($this->__('Cancel Coupon')) ?>"><span><span><?php echo $this->__('Cancel Coupon') ?></span></span></button>
                 </div>
             </div>
         </div>
@@ -54,6 +55,7 @@ discountForm.submit = function (isRemove) {
         $('remove-coupone').value = "0";
     }
     if(discountForm.validator.validate()){
+        jQuery('.coupon-message').html('');
         jQuery.ajax({
             url:UPDATE_DISCOUNT_URL,
             type:'POST',
@@ -62,6 +64,7 @@ discountForm.submit = function (isRemove) {
             {
                 var result = data.evalJSON();
                 if(result.success){
+                    jQuery('.coupon-message').html('<span class="success">'+result.message+'</span>');
                     if($('remove-coupone').value == '0')
                         jQuery('#discount-cancel-button').show();
                     else
@@ -69,6 +72,10 @@ discountForm.submit = function (isRemove) {
 
                     b_iframe.updateTotals(true);
                     
+                } else {
+                    jQuery('.coupon-message').html('<span class="error">'+result.message+'</span>');
+
+                    jQuery('#checkoutdiv').removeClass('loading');
                 }
             }
         });

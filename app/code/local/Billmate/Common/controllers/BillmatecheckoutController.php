@@ -179,21 +179,29 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             if ($codeLength) {
                 if ($isCodeLengthValid && $couponCode == $this->_getQuote()->getCouponCode()) {
                     $response['success'] = true;
+                    $response['message'] = $this->__('Coupon code "%s" was applied.', Mage::helper('core')->escapeHtml($couponCode));
                 } else {
                     $response['success'] = false;
+                    $response['message'] = $this->__('Coupon code "%s" is not valid.', Mage::helper('core')->escapeHtml($couponCode));
                 }
             } else {
                 $response['success'] = true;
+                $response['message'] = $this->_getSession()->addSuccess($this->__('Coupon code was canceled.'));
             }
 
         } catch (Mage_Core_Exception $e) {
             $response['success'] = false;
+            $response['message'] = $e->getMessage();
         } catch (Exception $e) {
             $response['success'] = false;
+            $response['message'] = $this->__('Cannot apply the coupon code.');
+
+
             Mage::logException($e);
         }
 
         $this->getResponse()->setBody(json_encode($response));
+
     }
     
     public function updateshippingmethodAction()
