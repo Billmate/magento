@@ -68,6 +68,7 @@ Copy the code below for the size that fits your needs.
 * Fix - Escape quotation chars. 
 * Fix - Change the behaviour with shipping discounts.
 * Fix - Tax calculation when prices are set including tax.
+* Fix - Coupon Code validation messages.
 
 ### 3.0.5 (2017-04-18)
 * Enhancement - Tweaked the amounts of updating checkout.
