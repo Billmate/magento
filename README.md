@@ -64,7 +64,7 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
-### 3.0.6 (2017-06-28)
+### 3.0.6 (2017-07-20)
 * Fix - Escape quotation chars. 
 * Fix - Change the behaviour with shipping discounts.
 * Fix - Tax calculation when prices are set including tax.
