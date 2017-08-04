@@ -211,6 +211,8 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
             $session = Mage::getSingleton('core/session', array('name' => 'frontend'));
             $session->setData('billmateinvoice_id', $result['number']);
             $session->setData('billmateorder_id', $result['orderid']);
+	        $session->setData('billmate_status',$result['status']);
+
 	        return $result['number'];
         }
     }
