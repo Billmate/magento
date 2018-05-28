@@ -28,9 +28,22 @@ class Billmate_Common_Model_Checkout extends Varien_Object
 
         $orderValues['CheckoutData'] = array(
             'windowmode' => 'iframe',
-            'sendreciept' => 'yes',
-            'terms' => Mage::getUrl('billmatecommon/billmatecheckout/terms')
+            'sendreciept' => 'yes'
         );
+
+        // Terms page
+        $termsPageId = Mage::getStoreConfig('billmate/checkout/terms_page');
+        $termsPagePermalink = Mage::helper('cms/page')->getPageUrl($termsPageId);
+        if ($termsPagePermalink != "") {
+            $orderValues['CheckoutData']['terms'] = $termsPagePermalink;
+        }
+
+        // Privacy Policy page
+        $privacyPolicyPageId = Mage::getStoreConfig('billmate/checkout/privacy_policy_page');
+        $privacyPolicyPermaLink = Mage::helper('cms/page')->getPageUrl($privacyPolicyPageId);
+        if ($privacyPolicyPermaLink != '') {
+            $orderValues['CheckoutData']['privacyPolicy'] = $privacyPolicyPermaLink;
+        }
 
         if(!$quote->getReservedOrderId())
             $quote->reserveOrderId();

@@ -163,9 +163,27 @@
                             <frontend_type>select</frontend_type>
                             <source_model>billmatecommon/system_config_shipping</source_model>
                         </shipping_method>
+                        <terms_page translate="label" module="billmatecommon">
+                            <label>Terms page</label>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>select</frontend_type>
+                            <source_model>billmatecommon/system_config_pages</source_model>
+                        </terms_page>
+                        <privacy_policy_page translate="label" module="billmatecommon">
+                            <label>Privacy Policy page</label>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>select</frontend_type>
+                            <source_model>billmatecommon/system_config_pages</source_model>
+                        </privacy_policy_page>
                         <cart_left translate="label" module="billmatecommon">
                             <label>Show cart to the left of checkout</label>
-                            <sort_order>4</sort_order>
+                            <sort_order>6</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -174,7 +192,7 @@
                         </cart_left>
                         <cart_right translate="label" module="billmatecommon">
                             <label>Show cart to the right of checkout</label>
-                            <sort_order>4</sort_order>
+                            <sort_order>7</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
