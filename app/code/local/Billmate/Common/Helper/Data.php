@@ -16,7 +16,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
     protected $discounts = array(); 
     public function getBillmate()
     {
-        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.0.8');
+        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.1.0');
         if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.7');
 
         $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
