@@ -64,6 +64,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.1.0 (2018-05-28)
+* Feature - Settings for Terms and Privacy Policy pages
+
 ### 3.0.8 (2017-07-24)
 * Fix - Sometimes orderstatus gets blank.
 
