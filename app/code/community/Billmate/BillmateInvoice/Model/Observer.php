@@ -2,6 +2,9 @@
 
 class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
 {
+    /**
+     * @param Varien_Event_Observer $observer
+     */
 	public function activate(Varien_Event_Observer $observer)
 	{	/** @var $order Mage_Sales_Model_Order */
 		$order = $observer->getEvent()->getOrder();
@@ -27,6 +30,9 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
         }
 	}
 
+	/*
+	 *
+	 */
     public function salesOrderPaymentPlaceEnd(Varien_Event_Observer $observer)
     {
 
@@ -47,6 +53,11 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
         $info->save();
     }
 
+    /**
+     * @param Varien_Event_Observer $observer
+     *
+     * @return $this
+     */
     public function invoiceSaveInvoiceFee(Varien_Event_Observer $observer)
     {
         $invoice = $observer->getEvent()->getInvoice();
@@ -61,6 +72,11 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
         return $this;
     }
 
+    /**
+     * @param Varien_Event_Observer $observer
+     *
+     * @return $this
+     */
     public function creditmemoSaveAfter(Varien_Event_Observer $observer)
     {
         /* @var $creditmemo Mage_Sales_Model_Order_Creditmemo */

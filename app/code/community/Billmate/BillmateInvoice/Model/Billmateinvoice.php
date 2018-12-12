@@ -1,6 +1,7 @@
 <?php
 
-class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_Method_Abstract{
+class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_Method_Abstract
+{
     protected $_code = 'billmateinvoice';
     protected $_formBlockType = 'billmateinvoice/form';
 //    protected $_infoBlockType = 'billmateinvoice/form';
@@ -136,6 +137,7 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
             return true;
         return false;
     }
+
     public function capture(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {
@@ -195,7 +197,6 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
 
     public function validate()
     {
-		
         parent::validate();
         if(isset($_POST['payment'])) {
             $payment = $_POST['payment'];

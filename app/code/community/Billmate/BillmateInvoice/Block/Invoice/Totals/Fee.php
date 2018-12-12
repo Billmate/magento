@@ -2,7 +2,9 @@
 
 class Billmate_BillmateInvoice_Block_Invoice_Totals_Fee extends Mage_Sales_Block_Order_Invoice_Totals
 {
-
+    /**
+     * @return $this
+     */
     public function _initTotals()
     {
         parent::_initTotals();

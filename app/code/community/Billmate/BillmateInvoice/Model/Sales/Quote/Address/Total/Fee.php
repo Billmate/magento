@@ -1,8 +1,14 @@
 <?php
-class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_Sales_Model_Quote_Address_Total_Abstract{
+class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_Sales_Model_Quote_Address_Total_Abstract
+{
     protected $_code = 'billmateinvoice_fee';
 	protected $_calculator = null;
-	
+
+    /**
+     * @param Mage_Sales_Model_Quote_Address $address
+     *
+     * @return $this
+     */
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
         parent::collect($address);
@@ -88,7 +94,12 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
         $address->setGrandTotal($address->getGrandTotal() + $address->getFeeAmount() );
         $address->setBaseGrandTotal($address->getBaseGrandTotal() + $address->getBaseFeeAmount() );
     }
- 
+
+    /**
+     * @param Mage_Sales_Model_Quote_Address $address
+     *
+     * @return $this
+     */
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {
         $quote = $address->getQuote();

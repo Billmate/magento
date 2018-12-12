@@ -1,9 +1,10 @@
 <?php
 
 
-class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Front_Action{
-
-    function IndexAction(){
+class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Front_Action
+{
+    public function IndexAction()
+    {
         $quote =  Mage::getSingleton('checkout/session')->getQuote();
                 
         if ($this->getRequest()->isPost()){
@@ -57,12 +58,16 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
         }
     
     }
-	function getInfoAction(){
+
+	public function getInfoAction()
+    {
 		$this->loadLayout();
 		$this->_initLayoutMessages('customer/session');
 		$this->renderLayout();
 	}
-    function updateAddressAction(){
+
+    public function updateAddressAction()
+    {
         if ($this->getRequest()->isPost()){
             $gateway = Mage::getSingleton('billmateinvoice/gateway');
             $gateway->init(true);
