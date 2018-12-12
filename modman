@@ -10,6 +10,7 @@ app/design/adminhtml/default/default/template/billmate			app/design/adminhtml/de
 app/design/frontend/base/default/template/billmate/*			app/design/frontend/base/default/template/billmate/
 app/design/frontend/base/default/template/billmatecheckout/*	app/design/frontend/base/default/template/billmatecheckout/
 app/design/frontend/base/default/template/page/*				app/design/frontend/base/default/template/page/
+app/design/frontend/base/default/layout/*						app/design/frontend/base/default/layout/
 app/locale/sv_SE												app/locale/sv_SE/
 app/etc/modules/*												app/etc/modules/
 
