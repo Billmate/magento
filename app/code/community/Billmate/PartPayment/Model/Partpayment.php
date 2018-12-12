@@ -17,9 +17,6 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     
     public function isAvailable($quote = null)
     {
-
-
-
         if($quote == null ) return false;
 
         if(Mage::getSingleton('checkout/session')->getBillmateHash()) return true;
@@ -73,6 +70,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 		}
 		return $avail;
     }
+
     public function canUseForCurrency($currencyCode)
     {
         $currencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
@@ -124,7 +122,6 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 
     public function getTitle()
     {
-	        
         $quote = Mage::getSingleTon('checkout/session')->getQuote();
 	 	$address = $quote->getShippingAddress();
 	 	$title = '';
@@ -137,6 +134,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
         return $preTitle.$title;
         //return $this->getConfigData('title').$title;
     }
+
     public function capture(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {
@@ -193,6 +191,10 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
         return $this;
     }
 
+    /**
+     * @param Varien_Object $payment
+     * @param float         $amount
+     */
     public function authorize(Varien_Object $payment, $amount)
     {
 
@@ -209,6 +211,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
             $payment->setIsTransactionClosed(0);
         }
     }
+
     public function validate()
     {
         parent::validate();

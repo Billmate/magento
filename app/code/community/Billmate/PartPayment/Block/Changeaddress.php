@@ -28,8 +28,12 @@ class Billmate_PartPayment_Block_Changeaddress extends Mage_Payment_Block_Form
         $this->matched = $gateway->isMatched;
         $this->setTemplate('billmate/partpayment/changeaddress.phtml');
     }
-    
-    public function isMatched(){
+
+    /**
+     * @return bool
+     */
+    public function isMatched()
+    {
         return $this->matched;
     }
 }

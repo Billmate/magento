@@ -62,17 +62,6 @@
                 </connection>
             </partpayment_write>
         </resources>
-        <!--<events>
-            <admin_system_config_changed_section_payment>
-                <observers>
-                    <PartPayment>
-                        <type>singleton</type>
-                        <class>partpayment/observer</class>
-                        <method>adminSystemConfigChangedSectionPartpayment</method>
-                    </PartPayment>
-                </observers>
-            </admin_system_config_changed_section_payment>
-        </events> -->
     </global>
     <default>
         <payment>

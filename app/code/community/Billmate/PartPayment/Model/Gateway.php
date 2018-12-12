@@ -1,7 +1,10 @@
 <?php
-class Billmate_Partpayment_Model_Gateway extends Varien_Object{
+class Billmate_Partpayment_Model_Gateway extends Varien_Object
+{
     public $isMatched = true;
-    function makePayment(){
+
+    public function makePayment()
+    {
         // Init $orderValues Array
         $orderValues = array();
         $quote = Mage::getSingleton('checkout/session')->getQuote();
@@ -217,7 +220,11 @@ class Billmate_Partpayment_Model_Gateway extends Varien_Object{
         }
     }
 
-    function init($update = false){
+    /**
+     * @param bool $update
+     */
+    public function init($update = false)
+    {
 
         $payment = Mage::app()->getRequest()->getPost('payment');
         $_customer  = Mage::getSingleton('customer/session')->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomer()->getData() : null;
