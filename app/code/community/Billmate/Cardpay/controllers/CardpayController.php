@@ -1,12 +1,13 @@
 <?php
 
-class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Action{
+class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Action
+{
     /**
      * When a customer chooses Billmate on Checkout/Payment page
      *
      */
-
-    public function notifyAction(){
+    public function notifyAction()
+    {
         $_POST = file_get_contents('php://input');
         $_POST = empty($_POST) ? $_GET : $_POST;
         $k = Mage::helper('billmatecardpay')->getBillmate(true,false);
@@ -120,7 +121,8 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         }
     }
 
-    function clearAllCache(){
+    public function clearAllCache()
+    {
         try {
             $cacheTypes = Mage::app()->useCache();
             foreach ($cacheTypes as $type => $option) {
@@ -152,6 +154,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         $session->unsQuoteId();
         $session->unsRedirectUrl();
     }
+
     /**
      * When a customer cancel payment from paypal.
      */

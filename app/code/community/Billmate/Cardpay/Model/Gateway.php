@@ -1,7 +1,10 @@
 <?php
-class Billmate_Cardpay_Model_Gateway extends Varien_Object{
+class Billmate_Cardpay_Model_Gateway extends Varien_Object
+{
     public $isMatched = true;
-    function makePayment(){
+
+    public function makePayment()
+    {
         $quote = Mage::getSingleton('checkout/session')->getQuote();
 
         $_customer  = Mage::getSingleton('customer/session')->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomer()->getData() : null;
