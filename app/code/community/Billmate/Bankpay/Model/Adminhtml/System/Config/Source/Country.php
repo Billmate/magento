@@ -8,6 +8,11 @@
 
 class Billmate_Bankpay_Model_Adminhtml_System_Config_Source_Country extends Mage_Adminhtml_Model_System_Config_Source_Country
 {
+    /**
+     * @param bool $isMultiselect
+     *
+     * @return array
+     */
 	public function toOptionArray($isMultiselect=false)
 	{
 		$countries = array('SE');

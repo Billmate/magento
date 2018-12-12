@@ -1,7 +1,14 @@
 <?php
 class Billmate_Bankpay_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    function getBillmate($ssl = true, $debug = false ){
+    /**
+     * @param bool $ssl
+     * @param bool $debug
+     *
+     * @return Billmate
+     */
+    public function getBillmate($ssl = true, $debug = false )
+    {
         if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.1.0');
         if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.9');
 

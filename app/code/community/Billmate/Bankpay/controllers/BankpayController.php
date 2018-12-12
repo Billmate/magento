@@ -1,6 +1,6 @@
 <?php
-
-class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Action{
+class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Action
+{
     /**
      * When a customer chooses Billmate on Checkout/Payment page
      *
@@ -121,7 +121,9 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             Mage::log($ex->getMessage());
         }
     }
-    function clearAllCache(){
+
+    public function clearAllCache()
+    {
         try {
             $cacheTypes = Mage::app()->useCache();
             foreach ($cacheTypes as $type => $option) {
@@ -280,8 +282,6 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
     
     public function acceptAction()
     {
-        $quoteId = Mage::getSingleton('checkout/session')->getBillmateQuoteId();
-
         /** @var  $quote Mage_Sales_Model_Quote */
         $quote = Mage::getSingleton('checkout/session')->getQuote();
 
@@ -503,6 +503,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
         }
     }
+
     /**
      * @param $order
      * @param $data

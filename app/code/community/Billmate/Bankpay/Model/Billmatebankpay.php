@@ -25,7 +25,6 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
 
 	public function cancel( Varien_Object $payment )
 	{
-
 		$this->void($payment);
 		return $this;
 	}
