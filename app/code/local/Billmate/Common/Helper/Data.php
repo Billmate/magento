@@ -13,7 +13,8 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
     protected $bundleArr = array();
     protected $totalValue = 0;
     protected $totalTax = 0;
-    protected $discounts = array(); 
+    protected $discounts = array();
+
     public function getBillmate()
     {
         if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.1.0');

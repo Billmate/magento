@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jesper
- * Date: 2015-01-19
- * Time: 16:45
- */ 
+
 class Billmate_Common_Model_Observer extends Mage_Core_Model_Abstract
 {
 
@@ -34,12 +29,8 @@ class Billmate_Common_Model_Observer extends Mage_Core_Model_Abstract
                 $order->cancel();
                 $order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, $message);
                 $order->save();
-
-                // Rollback stock
-                // Mage::helper('billmatecardpay')->rollbackStockItems($order);
             }
 
-            //$session->setQuoteId($session->getBillmateQuoteId(true));
             if ($quoteId = $session->getLastQuoteId()) {
                 $quote = Mage::getModel('sales/quote')->load($quoteId);
                 if ($quote->getId()) {

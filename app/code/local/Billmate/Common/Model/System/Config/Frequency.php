@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Boxedsolutions
- * Date: 2016-12-06
- * Time: 10:21
- */
 class Billmate_Common_Model_System_Config_Frequency 
 {
 

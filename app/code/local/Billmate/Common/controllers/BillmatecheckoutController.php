@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Boxedsolutions
- * Date: 2016-09-26
- * Time: 11:52
- */
 class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Front_Action
 {
 
@@ -24,8 +18,6 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         
         $this->loadLayout();
         $this->renderLayout();
-        
-        
     }
 
     public function confirmationAction()
@@ -56,8 +48,6 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             exit();
         }
     }
-
-    
 
     public function termsAction()
     {
@@ -352,6 +342,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $this->getResponse()->setBody(json_encode($response));
 
     }
+
     public function place($quote)
     {
         /** @var  $quote Mage_Sales_Model_Quote */

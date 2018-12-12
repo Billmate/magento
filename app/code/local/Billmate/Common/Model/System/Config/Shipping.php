@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Boxedsolutions
- * Date: 2017-02-07
- * Time: 20:41
- */
 class Billmate_Common_Model_System_Config_Shipping
 {
     protected static $_carriers;

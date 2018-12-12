@@ -7,7 +7,6 @@
             </all>
             <admin>
                 <children>
-
                     <system>
                         <children>
                             <config>

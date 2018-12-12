@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Boxedsolutions
- * Date: 2016-10-19
- * Time: 12:37
- */
 class Billmate_Common_Model_Checkout extends Varien_Object
 {
 

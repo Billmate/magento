@@ -1,11 +1,4 @@
 <?php
-
-/**
- * Created by PhpStorm.
- * User: Boxedsolutions
- * Date: 2017-04-10
- * Time: 10:40
- */
 class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Action
 {
 
@@ -132,8 +125,6 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
 
 
     }
-
-
 
     public function acceptAction()
     {

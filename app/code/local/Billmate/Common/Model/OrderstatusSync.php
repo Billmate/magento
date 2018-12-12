@@ -1,15 +1,10 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Boxedsolutions
- * Date: 2016-12-01
- * Time: 14:49
- */
 class Billmate_Common_Model_OrderstatusSync
 {
-    public function checkOrders(){
-        if(Mage::getStoreConfig('billmate/fraud_check/order_status_check')) {
+    public function checkOrders()
+    {
+        if (Mage::getStoreConfig('billmate/fraud_check/order_status_check')) {
 
             $statusesToCheck = array();
 

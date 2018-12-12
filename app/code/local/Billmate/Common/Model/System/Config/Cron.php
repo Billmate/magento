@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Boxedsolutions
- * Date: 2016-12-06
- * Time: 10:14
- */
 class Billmate_Common_Model_System_Config_Cron extends Mage_Core_Model_Config_Data
 {
     const CRON_STRING_PATH = 'crontab/jobs/check_billmate_status/schedule/cron_expr';
