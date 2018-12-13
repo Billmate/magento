@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Billmate_PaymentCore>
+            <version>1.0</version>
+        </Billmate_PaymentCore>
+    </modules>
+    <global>
+        <models>
+            <bmpaymentcore>
+                <class>Billmate_PaymentCore_Model</class>
+            </bmpaymentcore>
+        </models>
+        <helpers>
+            <bmpaymentcore>
+                <class>Billmate_PaymentCore_Helper</class>
+            </bmpaymentcore>
+        </helpers>
+    </global>
+</config>
