@@ -1,147 +1,32 @@
 <?php
-class Billmate_Bankpay_Model_Gateway extends Varien_Object
+class Billmate_Bankpay_Model_Gateway extends Billmate_PaymentCore_Model_GatewayCore
 {
+    const METHOD_CODE = 16;
+
+    /**
+     * @var bool
+     */
     public $isMatched = true;
 
     public function makePayment()
     {
-        $quote = Mage::getSingleton('checkout/session')->getQuote();
-        
-        $_customer  = Mage::getSingleton('customer/session')->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomer()->getData() : null;
-        $Customer = (object)$_customer;
-        
+        $quote = $this->getQuote();
+
 		if(empty($_POST)) $_POST = $_GET;		
-		$country_to_currency = array(
-			'NO' => 'NOK',
-			'SE' => 'SEK',
-			'FI' => 'EUR',
-			'DK' => 'DKK',
-			'DE' => 'EUR',
-			'NL' => 'EUR',
-		);
-        $k = Mage::helper('billmatebankpay')->getBillmate(true, false);
 
-        $customerId = (!Mage::getSingleton('customer/session')->getCustomer()->getId()) ? $quote->getCustomerId() : Mage::getSingleton('customer/session')->getCustomer()->getId();
-        
-
-      //  $quote = Mage::getSingleton('checkout/session')->getQuote();        
-        $Billing= $quote->getBillingAddress();
+        $k = $this->getBMConnection();
         $Shipping= $quote->getShippingAddress();
-		
-        $billingiso3 = Mage::getModel('directory/country')->load($Billing->getCountryId())->getIso3Code();
-		$billing_country = Mage::getModel('directory/country')->load($Billing->getCountryId())->getName() ;
-
-        $shippingiso3 = Mage::getModel('directory/country')->load($Shipping->getCountryId())->getIso3Code();
-		$shipping_country = Mage::getModel('directory/country')->load($Shipping->getCountryId())->getName() ;
-		$shipping_country = $shipping_country == 'SWE' ? 209 : $shipping_country;
-
-        // Get Store Country
-        $countryCode = Mage::getStoreConfig('general/country/default',Mage::app()->getStore());
-        $storeCountryIso2 = Mage::getModel('directory/country')->loadByCode($countryCode)->getIso2Code();
-
-        // Get Store language
-        $storeLanguage = Mage::app()->getLocale()->getLocaleCode();
-
-		$language = 138;
-		$encoding = 2;
-		$currency = 0;
-        
-		switch ($billingiso3) {
-			// Sweden
-			case 'SWE':
-				$country = 209;
-				$language = 138;
-				$encoding = 2;
-				$currency = 0;
-				$billing_country = 209;
-				break;
-		}
-        $baseCurrencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
-        $currentCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
-
-		$ship_address = $bill_address = array();
-	    $shipp = $Shipping->getStreet();
-        $bill = $Billing->getStreet();
 
         $quote->reserveOrderId();
-        $orderValues['PaymentData'] = array(
-            'method' => 16,
-            'currency' => $currentCurrencyCode,
-            'country' => $storeCountryIso2,
-            'orderid' => ($quote->getReservedOrderId()) ? $quote->getReservedOrderId() : (string)time(),
-            'autoactivate' => 0,
-            'language' => BillmateCountry::fromLocale($storeLanguage),
-            'logo' => (strlen(Mage::getStoreConfig('billmate/settings/logo')) > 0) ? Mage::getStoreConfig('billmate/settings/logo') : ''
+        $orderValues['PaymentData'] = $this->getPaymentData();
+        $orderValues['PaymentInfo'] = $this->getPaymentInfo();
+        $orderValues['Card'] = $this->getCardUrls();
 
+        $orderValues['Customer']['nr'] = $this->getCustomerId();
+        $orderValues['Customer']['Billing'] = $this->getBillingData();
+        $orderValues['Customer']['Shipping'] = $this->getShippingData();
 
-        );
-        $orderValues['PaymentInfo'] = array(
-            'paymentdate' => (string)date('Y-m-d'),
-            'yourreference' => $Billing->getFirstname(). ' ' . $Billing->getLastname(),
-            'delivery' => $Shipping->getShippingDescription(),
-
-        );
-
-        $orderValues['Card'] = array(
-            'accepturl' => Mage::getUrl('bankpay/bankpay/accept',array('billmate_quote_id' => $quote->getId(),'_secure' => true)),
-            'cancelurl' => Mage::getUrl('bankpay/bankpay/cancel',array('_secure' => true)),
-            'callbackurl' => Mage::getUrl('bankpay/bankpay/callback',array('billmate_quote_id' => $quote->getId(),'_secure' => true)),
-            'returnmethod' => (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET'
-        );
-
-        $orderValues['Customer'] = array(
-            'nr' => $customerId,
-        );
-        $orderValues['Customer']['Billing'] = array(
-            'firstname' => $Billing->getFirstname(),
-            'lastname' => $Billing->getLastname(),
-            'company' => $Billing->getCompany(),
-            'street' => $bill[0],
-            'street2' => isset($bill[1]) ? $bill[1] : '',
-            'zip' => $Billing->getPostcode(),
-            'city' => $Billing->getCity(),
-            'country' => $Billing->getCountryId(),
-            'phone' => $Billing->getTelephone(),
-            'email' => $Billing->email
-        );
-
-        $orderValues['Customer']['Shipping'] = array(
-            'firstname' => $Shipping->getFirstname(),
-            'lastname' => $Shipping->getLastname(),
-            'company' => $Shipping->getCompany(),
-            'street' => $shipp[0],
-            'street2' => isset($shipp[1]) ? $shipp[1] : '',
-            'zip' => $Shipping->getPostcode(),
-            'city' => $Shipping->getCity(),
-            'country' => $Shipping->getCountryId(),
-            'phone' => $Shipping->getTelephone()
-        );
-	    foreach($bill_address as $key => $col ){
-	        $bill_address[$key] = utf8_decode($col);
-	    }
-	    foreach($ship_address as $key => $col ){
-	        $ship_address[$key] = utf8_decode($col);
-	    }
-	    $goods_list = array();
-
-        $_directory = Mage::helper('directory');
-		$_taxHelper  = Mage::helper('tax');
-        $_weeeHelper = Mage::helper('weee');
-		$percent = 0;
-        $store = Mage::app()->getStore();
-		$discountAmount = 0;
-		$_simplePricesTax = ($_taxHelper->displayPriceIncludingTax() || $_taxHelper->displayBothPrices());
-        // Create Array to save ParentId when bundle is fixed prised
-        $bundleArr = array();
-        $totalValue = 0;
-        $totalTax = 0;
-        $discountValue = 0;
         $discountAdded = false;
-        $configSku = false;
-        $discounts = array();
-
-
-
 
 		/** @var Mage_Sales_Model_Quote_Item $_item */
 	    $preparedArticle = Mage::helper('billmatecommon')->prepareArticles($quote);
@@ -151,9 +36,7 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object
 	    $orderValues['Articles'] = $preparedArticle['articles'];
 
 
-	    $totals = Mage::getSingleton('checkout/session')->getQuote()->getTotals();
-		
-		//print_r($quote1['subtotal']->getData());
+	    $totals = $this->getQuote()->getTotals();
 
         if(isset($totals['discount']) && !$discountAdded) {
 	        $totalDiscountInclTax = $totals['discount']->getValue();
@@ -218,5 +101,16 @@ class Billmate_Bankpay_Model_Gateway extends Varien_Object
             $session->setData('billmateorder_id', $result['orderid']);
 		}
         return $result;
+    }
+
+    protected function getCardUrls()
+    {
+        $quote = $this->getQuote();
+        return [
+            'accepturl' => Mage::getUrl('bankpay/bankpay/accept',array('billmate_quote_id' => $quote->getId(),'_secure' => true)),
+            'cancelurl' => Mage::getUrl('bankpay/bankpay/cancel',array('_secure' => true)),
+            'callbackurl' => Mage::getUrl('bankpay/bankpay/callback',array('billmate_quote_id' => $quote->getId(),'_secure' => true)),
+            'returnmethod' => (Mage::app()->getStore()->isCurrentlySecure()) ? 'POST' : 'GET'
+        ];
     }
 }

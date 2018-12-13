@@ -190,9 +190,4 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
         }
         return $this;
     }
-    /*public function authorize(Varien_Object $payment, $amount){
-    }
-    public function validate(){
-    }*/
 }
-?>

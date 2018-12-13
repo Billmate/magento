@@ -77,13 +77,6 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 $session->setOrderId($data['orderid']);
                 $session->setQuoteId($session->getBillmateQuoteId(true));
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-                /*
-                $magentoVersion = Mage::getVersion();
-                if(version_compare($magentoVersion,'1.9.1','>='))
-                    $order->queueNewOrderEmail();
-                else
-                    $order->sendNewOrderEmail();
-                */
                 $session->unsRebuildCart();
 
                 die('OK');
@@ -117,7 +110,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
             $this->clearAllCache();
 
-        }catch(Exception $ex){
+        } catch(Exception $ex){
             Mage::log($ex->getMessage());
         }
     }
