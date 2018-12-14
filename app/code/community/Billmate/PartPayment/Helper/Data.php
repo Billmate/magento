@@ -1,20 +1,9 @@
 <?php
 class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract
 {
-    public function getBillmate($ssl = true, $debug = false, $store,$eid = false, $secret = false,$testmode = false)
+    public function getBillmate($ssl = true, $debug = false, $store=null, $eid = false, $secret = false,$testmode = false)
     {
-        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.1.0');
-        if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.9');
-		$store = $store ? $store : Mage::app()->getStore()->getId();
-        $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
-        require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
-        require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
-
-
-        $eid = $eid ? $eid : Mage::getStoreConfig('billmate/credentials/eid',$store);
-        $secret= $secret ? $secret : Mage::getStoreConfig('billmate/credentials/secret',$store);
-        $testmode= $testmode ? $testmode : (boolean)Mage::getStoreConfig('payment/billmatepartpayment/test_mode',$store);
-        return new Billmate($eid, $secret, $ssl, $testmode,$debug);
+        return Mage::helper('bmpaymentcore')->getBillmate($ssl, $debug);
     }
 
     private function getLowestPaymentAccount($country)
