@@ -10,7 +10,7 @@ class Billmate_PaymentCore_Model_GatewayCore extends Varien_Object
 
     public function __construct()
     {
-        $this->helper = Mage::helper( 'bmpaymentcore' );
+        $this->helper = Mage::helper('bmpaymentcore');
     }
 
     /**
