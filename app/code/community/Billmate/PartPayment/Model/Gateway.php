@@ -13,7 +13,7 @@ class Billmate_Partpayment_Model_Gateway extends Billmate_PaymentCore_Model_Gate
         $payment = Mage::app()->getRequest()->getPost('payment');
 
         $methodname = $payment['method'] == 'billmateinvoice'? 'billmateinvoice': 'billmatepartpayment';
-        $k = Mage::helper('partpayment')->getBillmate(true, false);
+        $k = Mage::helper('partpayment')->getBillmate();
 
         $orderValues['PaymentData'] = $this->getPaymentData();
         $orderValues['PaymentInfo'] = $this->getPaymentInfo();
@@ -80,7 +80,7 @@ class Billmate_Partpayment_Model_Gateway extends Billmate_PaymentCore_Model_Gate
         $payment = Mage::app()->getRequest()->getPost('payment');
 
         $methodname = $payment['method'];
-        $k = Mage::helper('partpayment')->getBillmate(true, false);
+        $k = Mage::helper('partpayment')->getBillmate();
         $quote = Mage::getSingleton('checkout/session')->getQuote();
         $Billing= $quote->getBillingAddress();
         $Shipping= $quote->getShippingAddress();

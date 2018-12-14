@@ -5,16 +5,11 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
     public function callbackAction()
     {
         $_POST = file_get_contents('php://input');
-        //$quoteId = Mage::getSingleton('checkout/session')->getBillmateQuoteId();
+
         $quoteId = $this->getRequest()->getParam('billmate_quote_id');
 
         /** @var  $quote Mage_Sales_Model_Quote */
         $quote = Mage::getModel('sales/quote')->load($quoteId);
-
-
-
-
-
         $k = Mage::helper('billmatecommon')->getBillmate();
 
         if(empty($_POST)) $_POST = $_GET;
@@ -56,11 +51,6 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', 'pending_payment', '', false);
                         $order->save();
-                        /*if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] ==1){
-                            $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $quote->getBillmateHash()),'_secure' => true));
-                            return;
-
-                        }*/
                         $this->_redirect('checkout/onepage/success',array('_secure' => true));
                         return;
                     }
@@ -88,11 +78,6 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
                         $order->setState('new',Mage::getStoreConfig('payment/'.$method.'/order_status'), '', false);
                         $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
                         $order->save();
-                        /*if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] == 1){
-                            $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $quote->getBillmateHash()),'_secure' => true));
-                            return;
-
-                        }*/
                         $this->_redirect('checkout/onepage/success',array('_secure' => true));
                         return;
                     }
@@ -115,11 +100,6 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
                 break;
 
         }
-        /*if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] === true){
-            $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $quote->getBillmateHash()),'_secure' => true));
-            return;
-
-        }*/
         $this->_redirect('checkout/onepage/success',array('_secure' => true));
         return;
 
@@ -128,16 +108,10 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
 
     public function acceptAction()
     {
-        //$quoteId = Mage::getSingleton('checkout/session')->getBillmateQuoteId();
         $quoteId = $this->getRequest()->getParam('billmate_quote_id');
 
         /** @var  $quote Mage_Sales_Model_Quote */
         $quote = Mage::getModel('sales/quote')->load($quoteId);
-
-
-
-
-
         $k = Mage::helper('billmatecommon')->getBillmate();
 
         Mage::log(print_r($_GET,true));
@@ -168,11 +142,6 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
                 $order = $this->place($quote);
                 if($order && $order->getStatus()) {
                     if($order->getStatus() == Mage::getStoreConfig('payment/'.$method.'/order_status')) {
-                        /*if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] ==1){
-                            $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $quote->getBillmateHash(),'status' => $data['status']),'_secure' => true));
-                            return;
-
-                        }*/
                         $this->_redirect('checkout/onepage/success',array('_secure' => true));
 
                         break;
@@ -181,11 +150,6 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $data['status'] . '<br/>' . 'Transaction ID: ' . $data['number']));
                         $order->setState('new', 'pending_payment', '', false);
                         $order->save();
-                        /*if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] ==1){
-                            $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $quote->getBillmateHash(),'status' => $data['status']),'_secure' => true));
-                            return;
-
-                        }*/
                         $this->_redirect('checkout/onepage/success',array('_secure' => true));
                         return;
                     }
@@ -213,17 +177,11 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
                         $order->setState('new',Mage::getStoreConfig('payment/'.$method.'/order_status'), '', false);
                         $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
                         $order->save();
-                        /*if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] == 1){
-                            $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $quote->getBillmateHash(),'status' => $data['status']),'_secure' => true));
-                            return;
-
-                        }*/
                         $this->_redirect('checkout/onepage/success',array('_secure' => true));
                         return;
                     }
 
-                }
-                else {
+                } else {
                     Mage::getSingleton('core/session')->addError(Mage::helper($method)->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
                     $this->_redirect(Mage::helper('billmatecommon/url')->getCheckoutUrl());
                     return;                }
@@ -240,15 +198,8 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
                 break;
 
         }
-        /*if(isset($_GET['billmate_checkout']) && $_GET['billmate_checkout'] == 1){
-            $this->_redirect('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $quote->getBillmateHash(),'status' => $data['status']),'_secure' => true));
-            return;
-
-        }*/
         $this->_redirect('checkout/onepage/success',array('_secure' => true));
         return;
-
-
     }
 
     public function cancelAction()

@@ -10,7 +10,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
     {
         $_POST = file_get_contents('php://input');
         $_POST = empty($_POST) ? $_GET : $_POST;
-        $k = Mage::helper('billmatecardpay')->getBillmate(true,false);
+        $k = Mage::helper('billmatecardpay')->getBillmate();
         $session = Mage::getSingleton('checkout/session');
         $data = $k->verify_hash($_POST);
         $session->setData('last_real_order_id', $data['orderid']);
@@ -138,7 +138,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
      */
     public function cancelAction()
     {
-        $k = Mage::helper('billmatebankpay')->getBillmate(true, false);
+        $k = Mage::helper('billmatebankpay')->getBillmate();
 
         if(empty($_POST)) $_POST = $_GET;
 
@@ -174,7 +174,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
         $quoteId = $this->getRequest()->getParam('billmate_quote_id');
 
         $_POST = empty($_POST) ? $_GET : $_POST;
-        $k = Mage::helper('billmatecardpay')->getBillmate(true,false);
+        $k = Mage::helper('billmatecardpay')->getBillmate();
         $data = $k->verify_hash($_POST);
 
         if (isset($data['code'])) {
@@ -246,7 +246,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
     {
         /** @var  $quote Mage_Sales_Model_Quote */
         $quote = Mage::getSingleton('checkout/session')->getQuote();
-        $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
+        $k = Mage::helper('billmatecardpay')->getBillmate();
 
         if(empty($_POST)) $_POST = $_GET;
         $data = $k->verify_hash($_POST);
@@ -374,7 +374,7 @@ class Billmate_Cardpay_CardpayController extends Mage_Core_Controller_Front_Acti
      */
     public function successAction()
     {
-        $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
+        $k = Mage::helper('billmatecardpay')->getBillmate();
         $session = Mage::getSingleton('checkout/session');
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());
 

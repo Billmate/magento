@@ -57,7 +57,7 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
 	public function void( Varien_Object $payment )
 	{
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('billmateinvoice')->getBillmate(true, false);
+            $k = Mage::helper('billmateinvoice')->getBillmate();
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
                 'number' => $invoiceId
@@ -151,7 +151,7 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
     public function capture(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('billmateinvoice')->getBillmate(true, false);
+            $k = Mage::helper('billmateinvoice')->getBillmate();
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
 
             $values = array(
@@ -182,7 +182,7 @@ class Billmate_BillmateInvoice_Model_Billmateinvoice extends Mage_Payment_Model_
     public function refund(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('billmateinvoice')->getBillmate(true, false);
+            $k = Mage::helper('billmateinvoice')->getBillmate();
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
 
             $values = array(

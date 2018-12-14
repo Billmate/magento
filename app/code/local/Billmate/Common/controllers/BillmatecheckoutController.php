@@ -255,7 +255,6 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function createorderAction()
     {
-        $checkout = Mage::getModel('billmatecommon/checkout');
         $quote = $this->_getQuote();
         $post = $this->getRequest()->getParams();
         $result = Mage::helper('billmatecommon')->getBillmate()->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
@@ -317,7 +316,6 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                         $order->save();
 
                         $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $post['hash']),'_secure' => true));
-
                     }
 
                 }

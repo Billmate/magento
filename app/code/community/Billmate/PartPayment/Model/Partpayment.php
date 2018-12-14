@@ -89,7 +89,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 	public function void( Varien_Object $payment )
 	{
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('partpayment')->getBillmate(true, false,null);
+            $k = Mage::helper('partpayment')->getBillmate();
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
                 'number' => $invoiceId
@@ -138,7 +138,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     public function capture(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('partpayment')->getBillmate(true, false,null);
+            $k = Mage::helper('partpayment')->getBillmate();
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
 
             $values = array(
@@ -169,7 +169,7 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
     public function refund(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('partpayment')->getBillmate(true, false,null);
+            $k = Mage::helper('partpayment')->getBillmate();
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
                 'number' => $invoiceId

@@ -21,15 +21,11 @@ class Billmate_PartPayment_Adminhtml_BillmatepartpaymentController extends Mage_
         $countries = explode(',',Mage::getStoreConfig('payment/billmatepartpayment/countries'));
         $lang = explode('_',Mage::getStoreConfig('general/locale/code',$store));
 
-        $eid = Mage::getStoreConfig('billmate/credentials/eid');
-        $secret = Mage::getStoreConfig('billmate/credentials/secret');
-        $testmode = Mage::getStoreConfig('payment/billmatepartpayment/test_mode');
-
-
         $gateway = Mage::helper("partpayment");
 
-        foreach($countries as $country)
-            $gateway->savePclasses($eid, $secret, $country, $testmode, $lang[0],$store);
+        foreach($countries as $country) {
+            $gateway->savePclasses($country, $lang[0], $store);
+        }
 
         $pclass = Mage::getModel('partpayment/pclass')->getCollection();
         $pclass->addFieldToFilter('store_id',Mage::helper('partpayment')->getStoreIdForConfig());
