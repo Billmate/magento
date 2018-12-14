@@ -1,6 +1,11 @@
 <?php
 class Billmate_Cardpay_Model_Gateway extends Billmate_PaymentCore_Model_GatewayCore
 {
+    const METHOD_CODE = 8;
+
+    /**
+     * @var bool
+     */
     public $isMatched = true;
 
     /**
