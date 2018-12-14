@@ -56,8 +56,6 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
         );
 
         return $billmate->getAddress($values);
-
-
     }
 
 
@@ -207,6 +205,29 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                 } else {
                     $discounts[$percent] = $temp;
                 }
+            }
+        }
+        $totals = $quote->getTotals();
+
+        if (isset($totals['discount'])) {
+            foreach ($discounts as $percent => $amount)
+            {
+                $discountPercent           = $amount / $totalValue;
+                $floor                     = 1 + ($percent / 100);
+                $marginal                  = 1 / $floor;
+                $discountAmount            = $discountPercent * $totals['discount']->getValue();
+                $article[] = array(
+                    'quantity'   => (int) 1,
+                    'artnr'      => 'discount',
+                    'title'      => Mage::helper('payment')->__('Discount') . ' ' . Mage::helper('billmatebankpay')->__('%s Vat', $percent),
+                    'aprice'     => round(($discountAmount * $marginal) * 100),
+                    'taxrate'    => (float) $percent,
+                    'discount'   => 0.0,
+                    'withouttax' => round(($discountAmount * $marginal) * 100),
+
+                );
+                $totalValue                += (1 * round($discountAmount * $marginal * 100));
+                $totalTax                  += (1 * round(($discountAmount * $marginal) * 100) * ($percent / 100));
             }
         }
         return array(

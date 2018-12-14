@@ -4,6 +4,16 @@ class Billmate_PaymentCore_Model_GatewayCore extends Varien_Object
     const METHOD_CODE = 1;
 
     /**
+     * @var Billmate_PaymentCore_Helper_Data
+     */
+    protected $helper;
+
+    public function __construct()
+    {
+        $this->helper = Mage::helper( 'bmpaymentcore' );
+    }
+
+    /**
      * @return array
      */
     protected function getBillingData()
@@ -63,8 +73,6 @@ class Billmate_PaymentCore_Model_GatewayCore extends Varien_Object
      */
     protected function getPaymentData()
     {
-
-
         $countryCode      = Mage::getStoreConfig( 'general/country/default', Mage::app()->getStore() );
         $storeCountryIso2 = Mage::getModel( 'directory/country' )->loadByCode( $countryCode )->getIso2Code();
         $storeLanguage    = Mage::app()->getLocale()->getLocaleCode();
@@ -82,13 +90,51 @@ class Billmate_PaymentCore_Model_GatewayCore extends Varien_Object
         ];
     }
 
-
+    /**
+     * @return int
+     */
     public function getCustomerId()
     {
         $sessionCustomerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
         $customerId =
             ($sessionCustomerId) ? $sessionCustomerId : $this->getQuote()->getCustomerId();
         return $customerId;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getShippingCostData()
+    {
+        $shippingCostData = [];
+        $shippingAddress = $this->getShippingAddress();
+        $rates = $shippingAddress->getShippingRatesCollection();
+        if (!empty($rates)) {
+            if ( $shippingAddress->getBaseShippingTaxAmount() > 0 ) {
+                $shippingExclTax = $shippingAddress->getShippingAmount();
+                $shippingIncTax = $shippingAddress->getShippingInclTax();
+                $rate = $shippingExclTax > 0 ? (($shippingIncTax / $shippingExclTax) - 1) * 100 : 0;
+            } else {
+                $rate = 0;
+            }
+
+            if ($shippingAddress->getShippingAmount() > 0) {
+                $shippingCostData = [
+                    'withouttax' => $shippingAddress->getShippingAmount() * 100,
+                    'taxrate' => (int)$rate
+                ];
+            }
+        }
+        return $shippingCostData;
+    }
+
+    /**
+     * @return array
+     */
+    protected function calculateArticlesToQuote()
+    {
+        $quote = $this->getQuote();
+        return Mage::helper('billmatecommon')->prepareArticles($quote);
     }
 
     /**
@@ -123,6 +169,6 @@ class Billmate_PaymentCore_Model_GatewayCore extends Varien_Object
      */
     public function getBMConnection()
     {
-        return Mage::helper( 'billmateinvoice' )->getBillmate( true, false );
+        return $this->helper->getBillmate();
     }
 }

@@ -4,6 +4,8 @@ class Billmate_BillmateInvoice_Model_Gateway extends Billmate_PaymentCore_Model_
 {
     const METHOD_CODE = 1;
 
+    const METHOD_NAME = 'billmateinvoice';
+
     /**
      * @var bool
      */
@@ -14,98 +16,46 @@ class Billmate_BillmateInvoice_Model_Gateway extends Billmate_PaymentCore_Model_
      */
     protected $quote = null;
 
+    /**
+     * @return string
+     */
     public function makePayment()
     {
         $orderValues = array();
-        $quote       = $this->getQuote();
-        $shippingAddress = $this->getShippingAddress();
-
+        $quote = $this->getQuote();
         $payment = Mage::app()->getRequest()->getPost( 'payment' );
 
-        $methodname = $payment['method'] == 'billmateinvoice' ? 'billmateinvoice' : 'billmatepartpayment';
-
-        $billmateConnection = $this->getBMConnection();
+        $methodName = $payment['method'] == 'billmateinvoice' ? 'billmateinvoice' : 'billmatepartpayment';
 
         $orderValues['PaymentData'] = $this->getPaymentData();
         $orderValues['PaymentInfo'] = $this->getPaymentInfo();
 
         $orderValues['Customer']['nr'] = $this->getCustomerId();
         $orderValues['Customer']['pno'] =
-            ( empty( $payment[ $methodname . '_pno' ] ) ) ? $payment['person_number'] : $payment[ $methodname . '_pno' ];
+            ( empty( $payment[ $methodName . '_pno' ] ) ) ? $payment['person_number'] : $payment[ $methodName . '_pno' ];
 
         $orderValues['Customer']['Billing'] = $this->getBillingData();
         $orderValues['Customer']['Shipping'] = $this->getShippingData();
 
 
-        $preparedArticle = Mage::helper('billmatecommon')->prepareArticles($quote);
-        $discounts = $preparedArticle['discounts'];
+        $preparedArticle = $this->calculateArticlesToQuote();
         $totalTax = $preparedArticle['totalTax'];
         $totalValue = $preparedArticle['totalValue'];
         $orderValues['Articles'] = $preparedArticle['articles'];
 
-        $totals = $this->getQuote()->getTotals();
-
-        if (isset( $totals['discount'] )) {
-            $totalDiscountInclTax = $totals['discount']->getValue();
-            $subtotal             = $totalValue;
-            foreach ( $discounts as $percent => $amount )
-            {
-                $discountPercent           = $amount / $subtotal;
-                $floor                     = 1 + ( $percent / 100 );
-                $marginal                  = 1 / $floor;
-                $discountAmount            = $discountPercent * $totalDiscountInclTax;
-                $orderValues['Articles'][] = array(
-                    'quantity'   => (int) 1,
-                    'artnr'      => 'discount',
-                    'title'      => Mage::helper( 'payment' )
-                                        ->__( 'Discount' ) . ' ' . Mage::helper( 'billmateinvoice' )
-                                                                       ->__( '%s Vat', $percent ),
-                    'aprice'     => round( ( $discountAmount * $marginal ) * 100 ),
-                    'taxrate'    => (float) $percent,
-                    'discount'   => 0.0,
-                    'withouttax' => round( ( $discountAmount * $marginal ) * 100 ),
-
-                );
-                $totalValue += ( 1 * round( $discountAmount * $marginal * 100 ) );
-                $totalTax += ( 1 * round( ( $discountAmount * $marginal ) * 100 ) * ( $percent / 100 ) );
-            }
+        $shippingCostData = $this->getShippingCostData();
+        if ($shippingCostData) {
+            $orderValues['Cart']['Shipping'] = $shippingCostData;
+            $totalValue += $shippingCostData['withouttax'];
+            $totalTax += ($shippingCostData['withouttax']) * ($shippingCostData['taxrate'] / 100);
         }
 
-
-        $rates = $quote->getShippingAddress()->getShippingRatesCollection();
-        if (!empty( $rates )) {
-            if ($shippingAddress->getBaseShippingTaxAmount() > 0) {
-
-                $shippingExclTax = $shippingAddress->getShippingAmount();
-                $shippingIncTax = $shippingAddress->getShippingInclTax();
-                $rate = $shippingExclTax > 0 ? (($shippingIncTax / $shippingExclTax) - 1) * 100 : 0;
-            } else {
-                $rate = 0;
-            }
-            if ($shippingAddress->getShippingAmount() > 0) {
-                $orderValues['Cart']['Shipping'] = array(
-                    'withouttax' => $shippingAddress->getShippingAmount() * 100,
-                    'taxrate' => (int)$rate
-                );
-                $totalValue += $shippingAddress->getShippingAmount() * 100;
-                $totalTax += ($shippingAddress->getShippingAmount() * 100) * ($rate / 100);
-            }
-        }
-
-
-        if ($methodname == 'billmateinvoice') {
-            $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
-            $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
-
-            $feeinfo = Mage::helper( 'billmateinvoice' )
-                           ->getInvoiceFeeArray( $invoiceFee, $shippingAddress, $quote->getCustomerTaxClassId() );
-            if ( ! empty( $invoiceFee ) && $invoiceFee > 0 ) {
-                $orderValues['Cart']['Handling'] = array(
-                    'withouttax' => round($shippingAddress->getFeeAmount() * 100),
-                    'taxrate'    => $feeinfo['rate']
-                );
-                $totalValue += $shippingAddress->getFeeAmount() * 100;
-                $totalTax += ( $shippingAddress->getFeeAmount() * 100 ) * ( $feeinfo['rate'] / 100 );
+        if ($methodName == self::METHOD_NAME) {
+            $shippingHandData = $this->getShippingHandData();
+            if ($shippingHandData) {
+                $orderValues['Cart']['Handling'] = $shippingHandData;
+                $totalValue += $shippingHandData['withouttax'];
+                $totalTax += ($shippingHandData['withouttax']) * ($shippingHandData['taxrate'] / 100);
             }
         }
 
@@ -117,6 +67,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Billmate_PaymentCore_Model_
             'withtax'    => round($totalValue +  $totalTax +  $round)
         );
 
+        $billmateConnection = $this->getBMConnection();
         $result = $billmateConnection->addPayment($orderValues);
 
         if (isset( $result['code'] )) {
@@ -146,16 +97,15 @@ class Billmate_BillmateInvoice_Model_Gateway extends Billmate_PaymentCore_Model_
     {
         $payment = Mage::app()->getRequest()->getPost( 'payment' );
 
-        $methodname = $payment['method'];
-        $billmateConnection = Mage::helper('billmateinvoice')->getBillmate( true, false );
+        $methodName = $payment['method'];
+        $billmateConnection = $this->getBMConnection();
         $billingAddress    = $this->getBillingAddress();
         $shippingAddress   = $this->getShippingAddress();
 
-        $pno = ( empty( $payment[ $methodname . '_pno' ] ) ) ? $payment['person_number'] : $payment[ $methodname . '_pno' ];
+        $pno = ( empty( $payment[ $methodName . '_pno' ] ) ) ? $payment['person_number'] : $payment[ $methodName . '_pno' ];
 
         try {
             $addr = $billmateConnection->getAddress( array( 'pno' => $pno ) );
-
             if (!is_array( $addr ) ) {
                 Mage::throwException( Mage::helper( 'payment' )->__( utf8_encode( $addr ) ) );
             }
@@ -242,5 +192,26 @@ class Billmate_BillmateInvoice_Model_Gateway extends Billmate_PaymentCore_Model_
             Mage::getModel( 'checkout/session' )->loadCustomerQuote();
         }
 
+    }
+
+    /**
+     * @return array
+     */
+    protected function getShippingHandData()
+    {
+        $shippingCostData = [];
+        $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
+        $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
+        $shippingAddress = $this->getShippingAddress();
+
+        $feeinfo = Mage::helper( 'billmateinvoice' )
+            ->getInvoiceFeeArray( $invoiceFee, $shippingAddress, $this->getQuote()->getCustomerTaxClassId() );
+        if ((!empty( $invoiceFee ) && $invoiceFee > 0)) {
+            $shippingCostData = array(
+                'withouttax' => round($shippingAddress->getFeeAmount() * 100),
+                'taxrate'    => $feeinfo['rate']
+            );
+        }
+        return $shippingCostData;
     }
 }

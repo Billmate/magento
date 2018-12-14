@@ -77,9 +77,8 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
         if( Mage::getStoreConfig('payment/billmatecardpay/active') != 1 ) return false;
         $countries = explode(',', Mage::getStoreConfig('payment/billmatecardpay/countries'));	
         if( in_array($quote->getShippingAddress()->getCountry(), $countries ) ){
-			//$data = $quote->getTotals();
+
             $total = $quote->getSubtotal();
-            $status = false;
 			$min_total = Mage::getStoreConfig('payment/billmatecardpay/min_amount');
 			$max_total = Mage::getStoreConfig('payment/billmatecardpay/max_amount');
             
