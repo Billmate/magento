@@ -11,7 +11,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $_POST = file_get_contents('php://input');
 
         $_POST = empty($_POST) ? $_GET : $_POST;
-        $k = Mage::helper('billmatebankpay')->getBillmate(true,false);
+        $k = Mage::helper('billmatebankpay')->getBillmate();
         $session = Mage::getSingleton('checkout/session');
         $data = $k->verify_hash($_POST);
         //$quote = Mage::getModel('sales/quote')->load($data['orderid']);
@@ -152,7 +152,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
      */
     public function cancelAction()
     {
-        $k = Mage::helper('billmatebankpay')->getBillmate(true, false);
+        $k = Mage::helper('billmatebankpay')->getBillmate();
 
         if(empty($_POST)) $_POST = $_GET;
         $data = $k->verify_hash($_POST);
@@ -187,7 +187,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         $quoteId = $this->getRequest()->getParam('billmate_quote_id');
 
         $_POST = empty($_POST) ? $_GET : $_POST;
-        $k = Mage::helper('billmatebankpay')->getBillmate(true,false);
+        $k = Mage::helper('billmatebankpay')->getBillmate();
         $session = Mage::getSingleton('checkout/session');
         $data = $k->verify_hash($_POST);
 
@@ -278,7 +278,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
         /** @var  $quote Mage_Sales_Model_Quote */
         $quote = Mage::getSingleton('checkout/session')->getQuote();
 
-        $k = Mage::helper('billmatebankpay')->getBillmate(true, false);
+        $k = Mage::helper('billmatebankpay')->getBillmate();
 
         if(empty($_POST)) $_POST = $_GET;
         $data = $k->verify_hash($_POST);
@@ -407,7 +407,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
      */
     public function successAction()
     {
-        $k = Mage::helper('billmatebankpay')->getBillmate(true, false);
+        $k = Mage::helper('billmatebankpay')->getBillmate();
         $session = Mage::getSingleton('checkout/session');
         $orderIncrementId = $session->getBillmateStandardQuoteId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());
