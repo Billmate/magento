@@ -4,10 +4,8 @@
 class Billmate_Partpayment_IndexController extends Mage_Core_Controller_Front_Action
 {
 
-    public function IndexAction()
+    public function indexAction()
     {
-        $quote =  Mage::getSingleton('checkout/session')->getQuote();
-                
         if ($this->getRequest()->isPost()) {
             $gateway = Mage::getSingleton('partpayment/gateway');
             $gateway->init();

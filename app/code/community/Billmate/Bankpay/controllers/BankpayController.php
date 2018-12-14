@@ -5,16 +5,14 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
      * When a customer chooses Billmate on Checkout/Payment page
      *
      */
-    public function notifyAction(){
-        //global $_POST, $_GET;
-
+    public function notifyAction()
+    {
         $_POST = file_get_contents('php://input');
 
         $_POST = empty($_POST) ? $_GET : $_POST;
         $k = Mage::helper('billmatebankpay')->getBillmate();
         $session = Mage::getSingleton('checkout/session');
         $data = $k->verify_hash($_POST);
-        //$quote = Mage::getModel('sales/quote')->load($data['orderid']);
 
         $session->setData('last_real_order_id', $data['orderid']);
 
@@ -30,12 +28,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                 $order->cancel();
                 $order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, $message);
                 $order->save();
-
-                // Rollback stock
-                // Mage::helper('billmatebankpay')->rollbackStockItems($order);
             }
 
-            //$session->setQuoteId($session->getBillmateQuoteId(true));
             if ($data['orderid']) {
                 $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
                 if ($quote->getId()) {
@@ -54,7 +48,6 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
                         }
                     }else{
                         $quote->setIsActive(false)->save();
-
                     }
                     $quote->setReservedOrderId(null);
                     $quote->collectTotals()->save();
@@ -64,16 +57,18 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             }
             die('OK');
         }
-        if($order->isCanceled()){
+        if ($order->isCanceled()) {
             die('OK');
         }
         try{
 
 	        $payment = $order->getPayment();
             $status = Mage::getStoreConfig('payment/billmatebankpay/order_status');
-            if($data['status'] == 'Pending' && $order->getStatus() != $status)
+            if ($data['status'] == 'Pending' && $order->getStatus() != $status) {
                 $status = 'pending_payment';
-            if( $order->getStatus() == $status ){
+            }
+
+            if( $order->getStatus() == $status ) {
                 $session->setOrderId($data['orderid']);
                 $session->setQuoteId($session->getBillmateQuoteId(true));
                 Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
@@ -101,13 +96,7 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $order->save();
             $session->unsRebuildCart();
 
-            $magentoVersion = Mage::getVersion();
-            $isEE = Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise');
-            if(version_compare($magentoVersion,'1.9.1','>=') && !$isEE)
-                $order->queueNewOrderEmail();
-            else
-                $order->sendNewOrderEmail();
-
+            $this->sendNewOrderMail($order);
             $this->clearAllCache();
 
         } catch(Exception $ex){
@@ -426,11 +415,6 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
             $session->setOrderId($data['orderid']);
             $session->setQuoteId($session->getBillmateQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-            /*$magentoVersion = Mage::getVersion();
-            if(version_compare($magentoVersion,'1.9.1','>='))
-                $order->queueNewOrderEmail();
-            else
-                $order->sendNewOrderEmail();*/
             $session->unsRebuildCart();
 
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
@@ -487,12 +471,8 @@ class Billmate_Bankpay_BankpayController extends Mage_Core_Controller_Front_Acti
 
             $session->setQuoteId($session->getBillmateStandardQuoteId(true));
             Mage::getSingleton('checkout/session')->getQuote()->setIsActive(false)->save();
-            $magentoVersion = Mage::getVersion();
-            $isEE = Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise');
-            if(version_compare($magentoVersion,'1.9.1','>=') && !$isEE)
-			    $order->queueNewOrderEmail();
-            else
-                $order->sendNewOrderEmail();
+            $this->sendNewOrderMail($order);
+
             $this->_redirect('checkout/onepage/success', array('_secure'=>true));
         }
     }

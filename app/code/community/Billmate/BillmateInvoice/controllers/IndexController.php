@@ -3,11 +3,9 @@
 
 class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Front_Action
 {
-    public function IndexAction()
+    public function indexAction()
     {
-        $quote =  Mage::getSingleton('checkout/session')->getQuote();
-                
-        if ($this->getRequest()->isPost()){
+        if ($this->getRequest()->isPost()) {
 
 			$payment = $_POST['payment'];
             $pophide = $this->getRequest()->getPost('pophide',false);
@@ -33,7 +31,6 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
                             $stream."\r".
                             '}';
                         die($js);
-                        //die('alert("' . Mage::helper('payment')->__('Missing Social Security Number / Corporate Registration Number') . '")');
                     }
                 }
                 else {
@@ -43,7 +40,6 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
                             '$("'.$payment['method'].'_pno").insert({after: "<div class=\"validation-advice\" id=\"getaddress_failure\">'.Mage::helper('billmatecommon')->__('Missing Social Security Number / Corporate Registration Number').'</div>"})'."\r".
                             '}';
                         die($js);
-                        //die('alert("' . Mage::helper('payment')->__('Missing Social Security Number / Corporate Registration Number') . '")');
                     }
                 }
                 if (empty($payment[$payment['method'] . '_phone'])) {
