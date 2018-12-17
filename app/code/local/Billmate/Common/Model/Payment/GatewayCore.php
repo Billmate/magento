@@ -131,6 +131,27 @@ class Billmate_Common_Model_Payment_GatewayCore extends Varien_Object
     /**
      * @return array
      */
+    protected function getShippingHandData()
+    {
+        $shippingCostData = [];
+        $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
+        $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );
+        $shippingAddress = $this->getShippingAddress();
+
+        $feeinfo = Mage::helper( 'billmateinvoice' )
+            ->getInvoiceFeeArray( $invoiceFee, $shippingAddress, $this->getQuote()->getCustomerTaxClassId() );
+        if ((!empty( $invoiceFee ) && $invoiceFee > 0)) {
+            $shippingCostData = array(
+                'withouttax' => round($shippingAddress->getFeeAmount() * 100),
+                'taxrate'    => $feeinfo['rate']
+            );
+        }
+        return $shippingCostData;
+    }
+
+    /**
+     * @return array
+     */
     protected function calculateArticlesToQuote()
     {
         $quote = $this->getQuote();
