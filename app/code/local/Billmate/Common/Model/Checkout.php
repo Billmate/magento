@@ -191,10 +191,6 @@ class Billmate_Common_Model_Checkout extends Varien_Object
         $storeCountryIso2 = Mage::getModel('directory/country')->loadByCode($countryCode)->getIso2Code();
         $orderValues = $billmate->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
 
-        /*$orderValues['CheckoutData'] = array(
-            'windowmode' => 'iframe',
-            'sendreciept' => 'yes',
-        );*/
         $previousTotal = $orderValues['Cart']['Total']['withtax'];
         if(!$quote->getReservedOrderId())
             $quote->reserveOrderId();
@@ -331,7 +327,6 @@ class Billmate_Common_Model_Checkout extends Varien_Object
             'withtax' =>round($totalValue + $totalTax +  $round)
         );
 
-        $result = array();
         $result = $billmate->updateCheckout($orderValues);
         if($previousTotal != $orderValues['Cart']['Total']['withtax']){
             $result['update_checkout'] = true;

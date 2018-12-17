@@ -7,7 +7,7 @@ class Billmate_Common_Block_Checkout_Link extends Mage_Core_Block_Template
      */
     public function getCheckoutUrl()
     {
-        return $this->getUrl('billmatecommon/billmatecheckout', array('_secure'=>true));
+        return Mage::helper('billmatecommon/url')->getBMCheckoutUrl();
     }
 
 }
