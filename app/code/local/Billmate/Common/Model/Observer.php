@@ -15,7 +15,6 @@ class Billmate_Common_Model_Observer extends Mage_Core_Model_Abstract
 
     public function redirectToCancelUrl(Varien_Event_Observer $observer)
     {
-        $controllerAction = $observer->getEvent()->getControllerAction();
         $session = Mage::getSingleton('checkout/session');
         Mage::log('time observer'.date('Y-m-d H:i:s'));
         if($session->getRebuildCart()){

@@ -2,6 +2,9 @@
 
 class Billmate_Common_Model_OrderstatusSync
 {
+    /**
+     * @return $this
+     */
     public function checkOrders()
     {
         if (Mage::getStoreConfig('billmate/fraud_check/order_status_check')) {

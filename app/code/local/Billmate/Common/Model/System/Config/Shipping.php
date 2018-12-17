@@ -16,7 +16,6 @@ class Billmate_Common_Model_System_Config_Shipping
     public function toOptionArray(/*$isActiveOnlyFlag=false*/)
     {
         if (null === self::$_methods) {
-            //TM fix to work with multiselect
             $isActiveOnlyFlag = false;
 
             $methods = array(array('value'=>'', 'label'=>''));
@@ -29,7 +28,7 @@ class Billmate_Common_Model_System_Config_Shipping
                 }
                 try {
                     $carrierMethods = $carrierModel->getAllowedMethods();
-                } catch (Exception $e) { // Magento 1.7 dhl bugfix http://www.magentocommerce.com/bug-tracking/issue/?issue=13411
+                } catch (Exception $e) {
                     continue;
                 }
                 if (!$carrierMethods) {
@@ -77,10 +76,6 @@ class Billmate_Common_Model_System_Config_Shipping
         }
         $modelName = $config['model'];
 
-        /**
-         * Added protection from not existing models usage.
-         * Related with module uninstall process
-         */
         try {
             $carrier = Mage::getModel($modelName);
         } catch (Exception $e) {

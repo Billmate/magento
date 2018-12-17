@@ -2,6 +2,15 @@
 
 class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Front_Action
 {
+    /**
+     * @var array
+     */
+    protected $paymentMethodMap = [
+        1 => 'billmateinvoice',
+        4 => 'billmatepartpayment',
+        8 => 'billmatecardpay',
+        16 => 'billmatebankpay'
+    ];
 
     public function indexAction()
     {
@@ -62,7 +71,6 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function updateaddressAction()
     {
-        $post = $this->getRequest()->getParams();
         $cart = Mage::getSingleton('checkout/cart');
 
         $connection = Mage::helper('billmatecommon')->getBillmate();
@@ -106,11 +114,9 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $shippingRates = array();
             foreach ($rates as $carrier) {
                 foreach ($carrier as $rate) {
-                    //print_r($rate->getData());
                     $shippingRates[$carrier][] = $rate->getData();
                 }
             }
-
 
             $this->getResponse()->setBody($this->getLayout()->createBlock('billmatecommon/checkout_cart_shipping', 'checkout.cart.shipping')->setTemplate('billmatecheckout/shipping.phtml')->toHtml());
         }
@@ -200,10 +206,6 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
         $code = (string) $this->getRequest()->getParam('estimate_method');
         if (!empty($code)) {
-
-            $freeshipping = false;
-            if($code == 'freeshipping_freeshipping')
-                $freeshipping = true;
             $this->_getQuote()->getShippingAddress()->setShippingMethod($code)->save();
             $this->_getCart()->save();
         }
@@ -227,20 +229,13 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $checkout = Mage::getModel('billmatecommon/checkout');
         $post = $this->getRequest()->getParams();
 
-        $methodtoModuleMap = array(
-            1 => 'billmateinvoice',
-            4 => 'billmatepartpayment',
-            8 => 'billmatecardpay',
-            16 => 'billmatebankpay'
-        );
-        $method = $methodtoModuleMap[$post['method']];
+        $method = $this->paymentMethodMap[$post['method']];
         /** @var $quote Mage_Sales_Model_Quote */
         $quote = $this->_getQuote();
         $quote->getPayment()->importData(array('method' => $method));
         $quote->save();
         $result =  $checkout->updateCheckout();
 
-        //$result = $this->updatePayment();
         if(!isset($result['code'])){
             $response['success'] = true;
             $response['update_checkout'] = ($result['update_checkout']) ? true : false;
@@ -250,24 +245,19 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $response['success'] = false;
         }
         $this->getResponse()->setBody(json_encode($response));
-
     }
 
     public function createorderAction()
     {
         $quote = $this->_getQuote();
         $post = $this->getRequest()->getParams();
-        $result = Mage::helper('billmatecommon')->getBillmate()->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
+        $result = Mage::helper('billmatecommon')->getBillmate()
+            ->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
         if(!isset($result['code'])){
             Mage::register('billmate_checkout_complete',true);
         }
-        $codeToMethod = array(
-            1 => 'billmateinvoice',
-            4 => 'billmatepartpayment',
-            8 => 'billmatecardpay',
-            16 => 'billmatebankpay'
-        );
-        $method = $codeToMethod[$result['PaymentData']['method']];
+
+        $method = $this->paymentMethodMap[$result['PaymentData']['method']];
 
         $quote->getPayment()->importData(array('method' => $method));
 
@@ -279,29 +269,24 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                 if($order && $order->getStatus()) {
                     if($order->getStatus() == Mage::getStoreConfig('payment/'.$method.'/order_status')) {
                         $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $post['hash']),'_secure' => true));
-
                         break;
-
                     } else {
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $result['PaymentData']['order']['status'] . '<br/>' . 'Transaction ID: ' . $result['PaymentData']['order']['number']));
                         $order->setState('new', 'pending_payment', '', false);
                         $order->save();
 
                         $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $post['hash']),'_secure' => true));
-
                     }
 
-                }
-                else {
+                } else {
                     Mage::getSingleton('core/session')->addError(Mage::helper($method)->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
                     $url = Mage::getUrl(Mage::helper('checkout/url')->getCheckoutUrl());
-
                 }
                 break;
             case 'created':
             case 'paid':
                 $order = $this->place($quote);
-                if($order) {
+                if ($order) {
                     if($order->getStatus() != Mage::getStoreConfig('payment/'.$method.'/order_status')) {
                         $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $result['PaymentData']['order']['status'] . '<br/>' . 'Transaction ID: ' . $result['PaymentData']['order']['number']));
                         $order->setState('new', Mage::getStoreConfig('payment/'.$method.'/order_status'), '', false);
@@ -318,11 +303,10 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                         $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $post['hash']),'_secure' => true));
                     }
 
-                }
-                else {
+                } else {
                     Mage::getSingleton('core/session')->addError(Mage::helper($method)->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
                     $url = Mage::getUrl(Mage::helper('checkout/url')->getCheckoutUrl());
-                                    }
+                }
                 break;
             case 'cancelled':
                 Mage::getSingleton('core/session')->addError(Mage::helper($method)->__('The bank payment has been canceled. Please try again or choose a different payment method.'));
@@ -338,9 +322,13 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         }
         $response['url'] = $url;
         $this->getResponse()->setBody(json_encode($response));
-
     }
 
+    /**
+     * @param $quote
+     *
+     * @return bool|false|Mage_Core_Model_Abstract
+     */
     public function place($quote)
     {
         /** @var  $quote Mage_Sales_Model_Quote */
