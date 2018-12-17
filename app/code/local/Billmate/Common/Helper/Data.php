@@ -208,7 +208,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                 $article[] = array(
                     'quantity'   => (int) 1,
                     'artnr'      => 'discount',
-                    'title'      => Mage::helper('payment')->__('Discount') . ' ' . Mage::helper('billmatebankpay')->__('%s Vat', $percent),
+                    'title'      => Mage::helper('payment')->__('Discount') . ' ' . $this->__('%s Vat', $percent),
                     'aprice'     => round(($discountAmount * $marginal) * 100),
                     'taxrate'    => (float) $percent,
                     'discount'   => 0.0,
