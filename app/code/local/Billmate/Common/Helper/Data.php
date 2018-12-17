@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jesper
- * Date: 2015-01-28
- * Time: 17:48
- */
 require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
 require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
 
@@ -15,6 +9,9 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
     protected $totalTax = 0;
     protected $discounts = array();
 
+    /**
+     * @return BillMate
+     */
     public function getBillmate()
     {
         if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.1.0');
@@ -28,9 +25,14 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
         return new BillMate($eid, $secret, true, $testmode,false);
     }
 
+    /**
+     * @param $eid
+     * @param $secret
+     *
+     * @return bool
+     */
     public function verifyCredentials($eid,$secret)
     {
-
         $billmate = new BillMate($eid, $secret, true, false,false);
 
         $additionalinfo['PaymentData'] = array(
@@ -63,7 +65,11 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
         return $billmate->getAddress($values);
     }
 
-
+    /**
+     * @param $quote
+     *
+     * @return array
+     */
     public function prepareArticles($quote)
     {
         $bundleArr     = array();
@@ -78,7 +84,6 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
             }
 
             if ($_item->getProductType() == 'bundle' && $_item->getProduct()->getPriceType() == 1) {
-                // Set bundle id to $bundleArr
                 $bundleArr[] = $_item->getId();
             }
 
@@ -98,7 +103,6 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                     $marginal = ($percent / 100) / (1 + ($percent / 100));
 
                     $discountAmount = $_item->getDiscountAmount();
-                    // $discountPerArticle without VAT
                     $discountAmount = $discountAmount - ($discountAmount * $marginal);
 
                 }
@@ -107,12 +111,10 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                     'quantity' => (int)$_item->getQty(),
                     'artnr' => $_item->getProduct()->getSKU(),
                     'title' => addslashes($cp->getName() . ' - ' . $sp->getName()),
-                    // Dynamic pricing set price to zero
                     'aprice' => (int)round($price * 100, 0),
                     'taxrate' => (float)$percent,
                     'discount' => $discount,
                     'withouttax' => $total
-
                 );
 
                 $temp = $total;
@@ -129,7 +131,6 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                 continue;
             }
 
-            // If Product type == bunde and if bundle price type == dynamic
             if ($_item->getProductType() == 'bundle' && $_item->getProduct()->getPriceType() == 0) {
 
                 $percent = $_item->getTaxPercent();
@@ -144,14 +145,8 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                     'withouttax' => (int)0
 
                 );
-
-                // Else the item is not bundle and dynamic priced
             } else {
-
                 $percent = $_item->getTaxPercent();
-                // For tierPrices to work, we need to get calculation price not the price on the product.
-                // If a customer buys many of a kind and get a discounted price, the price will bee on the quote item.
-
                 $price = $_item->getCalculationPrice();
                 $discount = 0.0;
                 $discountAmount = 0;
@@ -161,9 +156,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                     $marginal = ($percent / 100) / (1 + ($percent / 100));
 
                     $discountAmount = $_item->getDiscountAmount();
-                    // $discountPerArticle without VAT
                     $discountAmount = $discountAmount - ($discountAmount * $marginal);
-
                 }
                 $parentItem = $_item->getParentItem();
                 if ($parentItem) {
@@ -172,10 +165,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                     $qty = $_item->getQty();
                 }
 
-
                 $total = ($discountAdded) ? (int)round((($price * $qty - $discountAmount) * 100)) : (int)round($price * 100) * $qty;
-
-
                 $article[] = array(
                     'quantity' => (int)$qty,
                     'artnr' => $_item->getProduct()->getSKU(),
@@ -226,6 +216,26 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
             'totalTax' => $totalTax,
             'discounts' => $discounts
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function getTermsUrl()
+    {
+        $termsPageId = Mage::getStoreConfig('billmate/checkout/terms_page');
+        $termPageUrl = Mage::helper('cms/page')->getPageUrl($termsPageId);
+        return $termPageUrl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrivacyUrl()
+    {
+        $privacyPolicyPageId = Mage::getStoreConfig('billmate/checkout/privacy_policy_page');
+        $privacyPolicyPageUrl= Mage::helper('cms/page')->getPageUrl($privacyPolicyPageId);
+        return $privacyPolicyPageUrl;
     }
     
 }

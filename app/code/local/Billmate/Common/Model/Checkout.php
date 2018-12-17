@@ -17,18 +17,14 @@ class Billmate_Common_Model_Checkout extends Billmate_Common_Model_Payment_Gatew
             'sendreciept' => 'yes'
         );
 
-        // Terms page
-        $termsPageId = Mage::getStoreConfig('billmate/checkout/terms_page');
-        $termsPagePermalink = Mage::helper('cms/page')->getPageUrl($termsPageId);
-        if ($termsPagePermalink != "") {
-            $orderValues['CheckoutData']['terms'] = $termsPagePermalink;
+        $termsUrl = $this->helper->getTermsUrl();
+        if ($termsUrl) {
+            $orderValues['CheckoutData']['terms'] = $termsUrl;
         }
 
-        // Privacy Policy page
-        $privacyPolicyPageId = Mage::getStoreConfig('billmate/checkout/privacy_policy_page');
-        $privacyPolicyPermaLink = Mage::helper('cms/page')->getPageUrl($privacyPolicyPageId);
-        if ($privacyPolicyPermaLink != '') {
-            $orderValues['CheckoutData']['privacyPolicy'] = $privacyPolicyPermaLink;
+        $privacyPolicyUrl = $this->helper->getPrivacyUrl();
+        if ($privacyPolicyUrl) {
+            $orderValues['CheckoutData']['privacyPolicy'] = $privacyPolicyUrl;
         }
 
         if (!$quote->getReservedOrderId()) {
@@ -145,7 +141,7 @@ class Billmate_Common_Model_Checkout extends Billmate_Common_Model_Payment_Gatew
         );
 
         $result = $billmateConnection->updateCheckout($orderValues);
-        if($previousTotal != $orderValues['Cart']['Total']['withtax']){
+        if ($previousTotal != $orderValues['Cart']['Total']['withtax']) {
             $result['update_checkout'] = true;
             $result['data'] = $orderValues;
         } else {
