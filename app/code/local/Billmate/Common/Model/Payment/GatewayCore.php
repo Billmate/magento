@@ -1,16 +1,16 @@
 <?php
-class Billmate_PaymentCore_Model_GatewayCore extends Varien_Object
+class Billmate_Common_Model_Payment_GatewayCore extends Varien_Object
 {
     const METHOD_CODE = 1;
 
     /**
-     * @var Billmate_PaymentCore_Helper_Data
+     * @var Billmate_Common_Helper_Data
      */
     protected $helper;
 
     public function __construct()
     {
-        $this->helper = Mage::helper('bmpaymentcore');
+        $this->helper = Mage::helper('billmatecommon');
     }
 
     /**
@@ -134,7 +134,7 @@ class Billmate_PaymentCore_Model_GatewayCore extends Varien_Object
     protected function calculateArticlesToQuote()
     {
         $quote = $this->getQuote();
-        return Mage::helper('billmatecommon')->prepareArticles($quote);
+        return $this->helper->prepareArticles($quote);
     }
 
     /**

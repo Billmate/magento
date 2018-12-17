@@ -1,5 +1,5 @@
 <?php
-class Billmate_Partpayment_Model_Gateway extends Billmate_PaymentCore_Model_GatewayCore
+class Billmate_Partpayment_Model_Gateway extends Billmate_Common_Model_Payment_GatewayCore
 {
     const METHOD_CODE = 4;
 

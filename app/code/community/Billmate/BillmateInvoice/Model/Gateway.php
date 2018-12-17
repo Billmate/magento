@@ -1,6 +1,6 @@
 <?php
 
-class Billmate_BillmateInvoice_Model_Gateway extends Billmate_PaymentCore_Model_GatewayCore
+class Billmate_BillmateInvoice_Model_Gateway extends Billmate_Common_Model_Payment_GatewayCore
 {
     const METHOD_CODE = 1;
 

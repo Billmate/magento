@@ -47,6 +47,11 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 
     }
 
+    /**
+     * @param $pno
+     *
+     * @return mixed
+     */
     public function getAddress($pno)
     {
         $billmate = $this->getBillmate();
@@ -65,33 +70,25 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
         $totalValue    = 0;
         $totalTax      = 0;
         $discountAdded = false;
-        $discountValue = 0;
         $configSku     = false;
         $discounts     = array();
-        $store         = Mage::app()->getStore();
         foreach ($quote->getAllItems() as $_item) {
-            // Continue if bundleArr contains item parent id, no need for get price then.
             if (in_array($_item->getParentItemId(), $bundleArr)) {
                 continue;
             }
 
-            $request = Mage::getSingleton('tax/calculation')->getRateRequest(null, null, null, $store);
-            $taxclassid = $_item->getProduct()->getData('tax_class_id');
-            // If Product type == bunde and if bundle price type == fixed
             if ($_item->getProductType() == 'bundle' && $_item->getProduct()->getPriceType() == 1) {
                 // Set bundle id to $bundleArr
                 $bundleArr[] = $_item->getId();
-
             }
+
             if ($_item->getProductType() == 'configurable') {
                 $configSku = $_item->getSku();
                 $cp = $_item->getProduct();
                 $sp = Mage::getModel('catalog/product')->loadByAttribute('sku', $_item->getSku());
 
                 $price = $_item->getCalculationPrice();
-                //$percent        = Mage::getSingleton( 'tax/calculation' )->getRate( $request->setProductClassId( $taxclassid ) );
                 $percent = $_item->getTaxPercent();
-
 
                 $discount = 0.0;
                 $discountAmount = 0;
@@ -129,8 +126,6 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 
             }
             if ($_item->getSku() == $configSku) {
-
-
                 continue;
             }
 
@@ -150,20 +145,14 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 
                 );
 
-
                 // Else the item is not bundle and dynamic priced
             } else {
-                $temp = 0;
-                //$percent = Mage::getSingleton( 'tax/calculation' )->getRate( $request->setProductClassId( $taxclassid ) );
+
                 $percent = $_item->getTaxPercent();
-
-
                 // For tierPrices to work, we need to get calculation price not the price on the product.
                 // If a customer buys many of a kind and get a discounted price, the price will bee on the quote item.
 
                 $price = $_item->getCalculationPrice();
-
-                //Mage::throwException( 'error '.$_regularPrice.'1-'. $_finalPrice .'2-'.$_finalPriceInclTax.'3-'.$_price);
                 $discount = 0.0;
                 $discountAmount = 0;
                 if ($_item->getDiscountPercent() != 0) {
@@ -230,6 +219,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                 $totalTax                  += (1 * round(($discountAmount * $marginal) * 100) * ($percent / 100));
             }
         }
+
         return array(
             'articles' => $article,
             'totalValue' => $totalValue,

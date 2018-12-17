@@ -1,9 +1,10 @@
 <?php
 class Billmate_PartPayment_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    public function getBillmate($ssl = true, $debug = false, $store=null, $eid = false, $secret = false,$testmode = false)
+
+    public function getBillmate()
     {
-        return Mage::helper('bmpaymentcore')->getBillmate($ssl, $debug);
+        return Mage::helper('billmatecommon')->getBillmate();
     }
 
     private function getLowestPaymentAccount($country)
