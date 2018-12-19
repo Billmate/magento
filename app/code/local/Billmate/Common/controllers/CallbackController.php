@@ -1,5 +1,6 @@
 <?php
-class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Action
+require_once ('BillmatecheckoutController.php');
+class Billmate_Common_CallbackController extends Billmate_Common_BillmatecheckoutController
 {
 
     public function callbackAction()
@@ -205,52 +206,5 @@ class Billmate_Common_CallbackController extends Mage_Core_Controller_Front_Acti
         }
         $this->getResponse()->setRedirect(Mage::helper('billmatecommon/url')->getCheckoutUrl());
         return;
-    }
-
-    /**
-     * @param $order
-     * @param $data
-     */
-    public function addTransaction($order, $data)
-    {
-        $payment = $order->getPayment();
-        $info = $payment->getMethodInstance()->getInfoInstance();
-        $info->setAdditionalInformation('invoiceid', $data['number']);
-
-        $payment->setTransactionId($data['number']);
-        $payment->setIsTransactionClosed(0);
-        $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH, null, false, false);
-        $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
-            ->save();
-        $payment->save();
-    }
-
-    /**
-     * @param $order
-     */
-    public function sendNewOrderMail($order)
-    {
-        $magentoVersion = Mage::getVersion();
-        $isEE = Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise');
-        if (version_compare($magentoVersion, '1.9.1', '>=') && !$isEE)
-            $order->queueNewOrderEmail();
-        else
-            $order->sendNewOrderEmail();
-    }
-
-    /**
-     * @return Billmate_Common_Model_Checkout_Order
-     */
-    protected function getCheckoutOrderModel()
-    {
-        return Mage::getModel('billmatecommon/checkout_order');
-    }
-
-    /**
-     * @return Billmate_Common_Helper_Data
-     */
-    protected function getHelper()
-    {
-        return Mage::helper('billmatecommon');
     }
 }
