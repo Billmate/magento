@@ -4,10 +4,37 @@ require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
 
 class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    const DEF_PAYMENT_METHOD = 'billmateinvoice';
+
+    /**
+     * @var array
+     */
     protected $bundleArr = array();
+
+    /**
+     * @var int
+     */
     protected $totalValue = 0;
+
+    /**
+     * @var int
+     */
     protected $totalTax = 0;
+
+    /**
+     * @var array
+     */
     protected $discounts = array();
+
+    /**
+     * @var array
+     */
+    protected $paymentMethodMap = [
+        1 => 'billmateinvoice',
+        4 => 'billmatepartpayment',
+        8 => 'billmatecardpay',
+        16 => 'billmatebankpay'
+    ];
 
     /**
      * @return BillMate
@@ -234,5 +261,27 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
         $privacyPolicyPageUrl= Mage::helper('cms/page')->getPageUrl($privacyPolicyPageId);
         return $privacyPolicyPageUrl;
     }
-    
+
+    /**
+     * @param $paymentId
+     *
+     * @return string
+     */
+    public function getPaymentMethodCode($paymentId)
+    {
+        if(isset($this->paymentMethodMap[$paymentId])) {
+            return $this->paymentMethodMap[$paymentId];
+        }
+        return self::DEF_PAYMENT_METHOD;
+    }
+
+    /**
+     * @param $billmateStatus
+     *
+     * @return string
+     */
+    public function getAdaptedStatus($billmateStatus)
+    {
+        return strtolower($billmateStatus);
+    }
 }
