@@ -6,6 +6,8 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 {
     const DEF_PAYMENT_METHOD = 'billmateinvoice';
 
+    const DEF_POST_CODE = '12345';
+
     /**
      * @var array
      */
@@ -283,5 +285,33 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
     public function getAdaptedStatus($billmateStatus)
     {
         return strtolower($billmateStatus);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultPostcode()
+    {
+        $postCode = Mage::getStoreConfig('shipping/origin/postcode');
+        if ($postCode) {
+            return $postCode;
+        }
+        return self::DEF_POST_CODE;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContryId()
+    {
+        return  Mage::getStoreConfig('general/country/default');
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultShipping()
+    {
+        return Mage::getStoreConfig('billmate/checkout/shipping_method');
     }
 }

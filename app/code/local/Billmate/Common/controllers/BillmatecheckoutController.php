@@ -14,12 +14,22 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
     public function indexAction()
     {
         $quote = Mage::getSingleton('checkout/session')->getQuote();
-        if(!$quote->isVirtual() && strlen($quote->getShippingAddress()->getCountry() < 2)){
-            $quote->getShippingAddress()->addData(array('postcode' => (strlen(Mage::getStoreConfig('shipping/origin/postcode')) > 0) ? Mage::getStoreConfig('shipping/origin/postcode') : '12345' ,'country_id' => Mage::getStoreConfig('general/country/default')));
-            $method = Mage::getStoreConfig('billmate/checkout/shipping_method');
+        if (!$quote->isVirtual() && (!$quote->getShippingAddress()->getCountry()
+                || !$quote->getShippingAddress()->getShippingMethod())) {
 
+            $quote->getShippingAddress()->addData([
+                'postcode' => $this->getHelper()->getDefaultPostcode(),
+                'country_id' => $this->getHelper()->getContryId(),
+            ]);
+
+            $method = $this->getHelper()->getDefaultShipping();
             Mage::log('assign country'.print_r($quote->getShippingAddress()->getData(),true),1,'billmate.log');
-            $quote->getShippingAddress()->setCollectShippingRates(true)->setShippingMethod($method)->collectTotals()->save();
+
+            $quote->getShippingAddress()
+                ->setCollectShippingRates(true)
+                ->setShippingMethod($method)
+                ->collectTotals()
+                ->save();
             
             $quote->save();
         }
