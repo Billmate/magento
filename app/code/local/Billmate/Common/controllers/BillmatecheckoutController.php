@@ -13,7 +13,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function indexAction()
     {
-        $quote = Mage::getSingleton('checkout/session')->getQuote();
+        $quote = $this->_getQuote();
         if (!$quote->isVirtual() && (!$quote->getShippingAddress()->getCountry()
                 || !$quote->getShippingAddress()->getShippingMethod())) {
 
@@ -48,8 +48,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $status = $this->getHelper()->getAdaptedStatus($checkout['PaymentData']['order']['status']);
 
             if ($status && in_array($status, $this->_allowedStates)) {
-                $quote = Mage::getSingleton('checkout/session')->getQuote();
-                $quote->setIsActive(false)->save();
+                $this->_getQuote()->setIsActive(false)->save();
                 Mage::getSingleton('checkout/session')->clear();
                 $this->loadLayout();
 
@@ -59,7 +58,6 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                 $this->getResponse()->setRedirect(Mage::getUrl('checkout/url'));
             }
         }
-
     }
 
     public function termsAction()
@@ -253,7 +251,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $url = '';
         $status = $this->getHelper()->getAdaptedStatus($result['PaymentData']['order']['status']);
         $paymentMethodStatus = Mage::getStoreConfig('payment/'.$method.'/order_status');
-        switch(strtolower($status))
+        switch($status)
         {
             case 'pending':
                 $order = $checkoutOrderModel->place($quote);
@@ -278,20 +276,11 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             case 'paid':
                 $order = $checkoutOrderModel->place($quote);
                 if ($order) {
-                    if($order->getStatus() != $paymentMethodStatus) {
-                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $result['PaymentData']['order']['status'] . '<br/>' . 'Transaction ID: ' . $result['PaymentData']['order']['number']));
-                        $order->setState('new', $paymentMethodStatus, '', false);
-                        $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
-                        $order->save();
-                        $this->addTransaction($order,$result['PaymentInfo']['number']);
-                        $this->sendNewOrderMail($order);
-                    } else {
-                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $result['PaymentData']['order']['status'] . '<br/>' . 'Transaction ID: ' . $result['PaymentData']['order']['number']));
-                        $order->setState('new',$paymentMethodStatus, '', false);
-                        $order->setCustomerIsGuest(($quote->getCustomerId() == NULL) ? 1 : 0);
-                        $order->save();
-
-                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $hash),'_secure' => true));
+                    $redirectSuccess = $checkoutOrderModel->updateOrder($paymentMethodStatus, $result['PaymentInfo']['order']);
+                    if ($redirectSuccess) {
+                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',
+                            array('_query' => array('hash' => $hash),'_secure' => true)
+                        );
                     }
                 } else {
                     Mage::getSingleton('core/session')->addError(Mage::helper($method)->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
@@ -311,37 +300,6 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         }
         $response['url'] = $url;
         $this->getResponse()->setBody(json_encode($response));
-    }
-
-    /**
-     * @param $order
-     */
-    public function sendNewOrderMail($order)
-    {
-        $magentoVersion = Mage::getVersion();
-        $isEE = Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise');
-        if (version_compare($magentoVersion, '1.9.1', '>=') && !$isEE)
-            $order->queueNewOrderEmail();
-        else
-            $order->sendNewOrderEmail();
-    }
-
-    /**
-     * @param $order
-     * @param $data
-     */
-    public function addTransaction($order, $data)
-    {
-        $payment = $order->getPayment();
-        $info = $payment->getMethodInstance()->getInfoInstance();
-        $info->setAdditionalInformation('invoiceid', $data['number']);
-
-        $payment->setTransactionId($data['number']);
-        $payment->setIsTransactionClosed(0);
-        $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH, null, false, false);
-        $transaction->setOrderId($order->getId())->setIsClosed(0)->setTxnId($data['number'])->setPaymentId($payment->getId())
-            ->save();
-        $payment->save();
     }
 
     /**
