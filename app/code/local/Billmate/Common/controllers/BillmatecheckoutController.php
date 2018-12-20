@@ -40,23 +40,25 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function confirmationAction()
     {
+        $runRedirect = true;
         $billmate = $this->getHelper()->getBillmate();
         $hash = $this->getRequest()->getParam('hash');
 
         $checkout = $billmate->getCheckout(array('PaymentData' => array('hash' => $hash)));
         if (isset($checkout['PaymentData']['order']['status'])) {
             $status = $this->getHelper()->getAdaptedStatus($checkout['PaymentData']['order']['status']);
-
             if ($status && in_array($status, $this->_allowedStates)) {
                 $this->_getQuote()->setIsActive(false)->save();
                 Mage::getSingleton('checkout/session')->clear();
                 $this->loadLayout();
-
                 Mage::register('billmate_confirmation_url',$checkout['PaymentData']['url']);
                 $this->renderLayout();
-            } else {
-                $this->getResponse()->setRedirect(Mage::getUrl('checkout/url'));
+                $runRedirect = false;
             }
+        }
+
+        if ($runRedirect) {
+            $this->getResponse()->setRedirect(Mage::helper('checkout/url')->getCartUrl());
         }
     }
 
