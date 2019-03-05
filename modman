@@ -1,4 +1,7 @@
-app/code/community/Billmate										app/code/community/Billmate/
+app/code/community/Billmate/Cardpay	     						app/code/community/Billmate/Cardpay/
+app/code/community/Billmate/Bankpay	     						app/code/community/Billmate/Bankpay/
+app/code/community/Billmate/BillmateInvoice	     				app/code/community/Billmate/BillmateInvoice/
+app/code/community/Billmate/PartPayment	     					app/code/community/Billmate/PartPayment/
 app/code/local/Billmate											app/code/local/Billmate/
 lib/Billmate													lib/Billmate/
 media/billmate													media/billmate
