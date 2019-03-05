@@ -17,6 +17,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
     {
         if (!$this->isAvailableToProcess()) {
             $this->getResponse()->setRedirect($this->getRedirectUrl());
+            return;
         }
 
         $quote = $this->_getQuote();

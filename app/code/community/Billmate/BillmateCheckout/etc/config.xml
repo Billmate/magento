@@ -84,44 +84,6 @@
                 <base_fee_tax_amount><to_order>*</to_order></base_fee_tax_amount>
             </sales_convert_quote_address>
         </fieldsets>
-        <events>
-			<sales_order_save_after>
-				<observers>
-					<sampleobserver_sales_order_save_after_observer>
-						<type>singleton</type>
-						<class>billmatecheckout/observer</class>
-						<method>activate</method>
-					</sampleobserver_sales_order_save_after_observer>
-				</observers>
-			</sales_order_save_after>
-            <sales_order_payment_place_end>
-                <observers>
-                    <billmatecheckout>
-                        <type>singleton</type>
-                        <class>billmatecheckout/observer</class>
-                        <method>salesOrderPaymentPlaceEnd</method>
-                    </billmatecheckout>
-                </observers>
-            </sales_order_payment_place_end>
-            <sales_order_invoice_save_after>
-                <observers>
-                    <billmatecheckout_fee_save>
-                        <type>singleton</type>
-                        <class>billmatecheckout/observer</class>
-                        <method>invoiceSaveInvoiceFee</method>
-                    </billmatecheckout_fee_save>
-                </observers>
-            </sales_order_invoice_save_after>
-            <sales_order_creditmemo_save_after>
-                <observers>
-                    <billmatecheckout_creditmemo_fee>
-                        <type>singleton</type>
-                        <class>billmatecheckout/observer</class>
-                        <method>creditmemoSaveAfter</method>
-                    </billmatecheckout_creditmemo_fee>
-                </observers>
-            </sales_order_creditmemo_save_after>
-        </events>
    </global>
    <default>
         <payment>
@@ -159,7 +121,7 @@
         <layout>
             <updates>
                 <billmatecheckout module="Billmate_BillmateCheckout">
-                    <file>billmatecheckout.xml</file>
+                    <file>billmate_checkout_method.xml</file>
                 </billmatecheckout>
             </updates>
         </layout>
@@ -174,13 +136,6 @@
                 </args>
             </billmatecheckout>
         </routers>
-        <layout>
-            <updates>
-                <billmatecheckout>
-                    <file>billmatecheckout.xml</file>
-                </billmatecheckout>
-            </updates>
-        </layout>
         <translate>
             <modules>
                 <Billmate_BillmateCheckout>
