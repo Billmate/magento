@@ -120,7 +120,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $shippingRates = array();
             foreach ($rates as $carrier) {
                 foreach ($carrier as $rate) {
-                    $shippingRates[$carrier][] = $rate->getData();
+                    $shippingRates[$rate->getCarrier()][] = $rate->getData();
                 }
             }
 
@@ -220,7 +220,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
     {
         $checkout = Mage::getModel('billmatecommon/checkout');
         $methodId = $this->getRequest()->getParams('method');
-        $method = $this->getHelper()->getPaymentMethodCode($methodId);
+        $method = $this->getHelper()->getPaymentMethodCode();
         /** @var $quote Mage_Sales_Model_Quote */
         $quote = $this->_getQuote();
         $quote->getPayment()->importData(array('method' => $method));
@@ -248,7 +248,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             Mage::register('billmate_checkout_complete',true);
         }
 
-        $method = $this->getHelper()->getPaymentMethodCode($result['PaymentData']['method']);
+        $method = $this->getHelper()->getPaymentMethodCode();
+
         $quote->getPayment()->importData(array('method' => $method));
 
         $quote->getPayment()->setAdditionalInformation(

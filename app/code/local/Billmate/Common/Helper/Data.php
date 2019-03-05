@@ -265,16 +265,12 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * @param $paymentId
      *
      * @return string
      */
-    public function getPaymentMethodCode($paymentId)
+    public function getPaymentMethodCode()
     {
-        if(isset($this->paymentMethodMap[$paymentId])) {
-            return $this->paymentMethodMap[$paymentId];
-        }
-        return self::DEF_PAYMENT_METHOD;
+        return Billmate_BillmateCheckout_Model_Billmatecheckout::METHOD_CODE;
     }
 
     /**

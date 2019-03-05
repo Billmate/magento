@@ -25,7 +25,7 @@ class Billmate_Common_CallbackController extends Billmate_Common_Billmatecheckou
 
         Mage::register('billmate_checkout_complete',true);
         $payment = $billmateConnection->getPaymentInfo(array('number' => $data['number']));
-        $method =  $this->getHelper()->getPaymentMethodCode($payment['PaymentData']['method']);
+        $method =  $this->getHelper()->getPaymentMethodCode();
 
         $quote->getPayment()->importData(array('method' => $method));
         $quote->save();
@@ -100,7 +100,7 @@ class Billmate_Common_CallbackController extends Billmate_Common_Billmatecheckou
 
         Mage::register('billmate_checkout_complete',true);
         $payment = $billmateConnection->getPaymentInfo(array('number' => $data['number']));
-        $method =  $this->getHelper()->getPaymentMethodCode($payment['PaymentData']['method']);
+        $method =  $this->getHelper()->getPaymentMethodCode();
 
         $quote->getPayment()->importData(array('method' => $method));
         $quote->save();
