@@ -130,7 +130,7 @@
                 <countries>SE,DE,NL</countries>
                 <order_status>pending</order_status>
                 <title><![CDATA[
-                Billmate Сheckout - %s invoice fee is added to the order.
+                Billmate Сheckout
                 ]]></title>
                 <active>1</active>
                 <include_tax>1</include_tax>

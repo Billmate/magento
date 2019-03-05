@@ -3,7 +3,7 @@
 class Billmate_BillmateCheckout_Model_Billmatecheckout extends Mage_Payment_Model_Method_Abstract
 {
     const METHOD_CODE = 'billmatecheckout';
-    
+
     protected $_code = 'billmatecheckout';
 
     protected $_formBlockType = 'billmatecheckout/form';
@@ -27,9 +27,7 @@ class Billmate_BillmateCheckout_Model_Billmatecheckout extends Mage_Payment_Mode
         $countries = explode(',', Mage::getStoreConfig('payment/billmatecheckout/countries'));
 
         if( in_array($quote->getShippingAddress()->getCountry(), $countries ) ){
-			//$data = $quote->getTotals();
 			$total = $quote->getSubtotal();
-            $status = false;
 			$min_total = Mage::getStoreConfig('payment/billmatecheckout/min_amount');
 			$max_total = Mage::getStoreConfig('payment/billmatecheckout/max_amount');
 			if(!empty($min_total) && $min_total > 0){
@@ -93,36 +91,7 @@ class Billmate_BillmateCheckout_Model_Billmatecheckout extends Mage_Payment_Mode
 
     public function authorize(Varien_Object $payment, $amount)
     {
-
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        $invoiceFee = Mage::getStoreConfig( 'payment/billmatecheckout/billmate_fee' );
-        $invoiceFee = Mage::helper( 'billmatecheckout' )->replaceSeparator( $invoiceFee );
-        $invoiceFee = ($invoiceFee) ? $invoiceFee : 0;
-
-
-        $quote = Mage::getModel('checkout/cart')->getQuote();
-        $Shipping = $quote->getShippingAddress();
-        if(strlen(Mage::getStoreConfig( 'payment/billmatecheckout/billmate_fee' )) > 0
-            && Mage::getStoreConfig( 'payment/billmatecheckout/billmate_fee' ) > 0) {
-            $feeinfo = Mage::helper('billmatecheckout')
-                ->getInvoiceFeeArray($invoiceFee, $Shipping, $quote->getCustomerTaxClassId());
-
-            $invFee = (isset($feeinfo['rate']) && $feeinfo['rate'] != 0 && Mage::getStoreConfig('payment/billmatecheckout/include_tax')) ? ($feeinfo['rate'] / 100 + 1) * $invoiceFee : $invoiceFee;
-
-
-            $invFee = Mage::helper('core')->currency($invFee, true, false);
-            return (strlen(Mage::getStoreConfig('payment/billmatecheckout/title')) > 0) ? Mage::helper('billmatecheckout')->__(Mage::getStoreConfig('payment/billmatecheckout/title'), $invFee) : Mage::helper('billmatecheckout')->__('Billmate Сheckout - %s invoice fee is added to the order.', $invFee);
-        } else {
-            return (strlen(Mage::getStoreConfig('payment/billmatecheckout/title')) > 0) ? Mage::helper('billmatecheckout')->__(Mage::getStoreConfig('payment/billmatecheckout/title')) : Mage::helper('billmatecheckout')->__('Billmate Сheckout');
-
-        }
-
+        return $this;
     }
 
     public function canUseForCurrency($currencyCode)

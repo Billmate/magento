@@ -15,6 +15,10 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function indexAction()
     {
+        if (!$this->isAvailableToProcess()) {
+            $this->getResponse()->setRedirect($this->getRedirectUrl());
+        }
+
         $quote = $this->_getQuote();
         if (!$quote->isVirtual() && (!$quote->getShippingAddress()->getCountry()
                 || !$quote->getShippingAddress()->getShippingMethod())) {
@@ -219,7 +223,6 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
     public function updatepaymentmethodAction()
     {
         $checkout = Mage::getModel('billmatecommon/checkout');
-        $methodId = $this->getRequest()->getParams('method');
         $method = $this->getHelper()->getPaymentMethodCode();
         /** @var $quote Mage_Sales_Model_Quote */
         $quote = $this->_getQuote();
@@ -240,6 +243,11 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function createorderAction()
     {
+        if (!$this->isAvailableToProcess()) {
+            $response['url'] = $this->getRedirectUrl();
+            $this->getResponse()->setBody(json_encode($response));
+        }
+
         $quote = $this->_getQuote();
         $hash = $this->getRequest()->getParam('hash');
         $result = $this->getHelper()->getBillmate()
@@ -249,11 +257,11 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         }
 
         $method = $this->getHelper()->getPaymentMethodCode();
-
         $quote->getPayment()->importData(array('method' => $method));
 
+
         $quote->getPayment()->setAdditionalInformation(
-            self::BM_ADDITIONAL_INFO_CODE, 'type of payment'
+            self::BM_ADDITIONAL_INFO_CODE, $result['PaymentData']['method_name']
         );
 
         $checkoutOrderModel = $this->getCheckoutOrderModel();
@@ -285,7 +293,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             case 'paid':
                 $order = $checkoutOrderModel->place($quote);
                 if ($order) {
-                    $redirectSuccess = $checkoutOrderModel->updateOrder($paymentMethodStatus, $result['PaymentInfo']['order']);
+                    $redirectSuccess = $checkoutOrderModel->updateOrder($paymentMethodStatus, $result['PaymentData']['order']);
                     if ($redirectSuccess) {
                         $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',
                             array('_query' => array('hash' => $hash),'_secure' => true)
@@ -342,5 +350,21 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
     protected function _getCart()
     {
         return Mage::getSingleton('checkout/cart');
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAvailableToProcess()
+    {
+        return (bool)$this->_getQuote()->hasItems();
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getRedirectUrl()
+    {
+        return Mage::helper('checkout/url')->getCartUrl();
     }
 }
