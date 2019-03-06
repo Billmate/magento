@@ -2,7 +2,7 @@
 
 class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Front_Action
 {
-    const BM_ADDITIONAL_INFO_CODE = 'bm_payment_method';
+
 
     /**
      * @var array
@@ -262,7 +262,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
 
         $quote->getPayment()->setAdditionalInformation(
-            self::BM_ADDITIONAL_INFO_CODE, $result['PaymentData']['method_name']
+            Billmate_BillmateCheckout_Model_Billmatecheckout::BM_ADDITIONAL_INFO_CODE,
+            $result['PaymentData']['method_name']
         );
 
         $checkoutOrderModel = $this->getCheckoutOrderModel();

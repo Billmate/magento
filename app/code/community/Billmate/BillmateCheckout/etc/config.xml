@@ -91,9 +91,7 @@
                 <model>billmatecheckout/billmatecheckout</model>
                 <countries>SE,DE,NL</countries>
                 <order_status>pending</order_status>
-                <title><![CDATA[
-                Billmate Сheckout
-                ]]></title>
+                <title><![CDATA[Billmate Сheckout]]></title>
                 <active>1</active>
                 <include_tax>1</include_tax>
                 <min_amount>0</min_amount>

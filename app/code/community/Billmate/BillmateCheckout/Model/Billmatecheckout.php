@@ -4,6 +4,8 @@ class Billmate_BillmateCheckout_Model_Billmatecheckout extends Mage_Payment_Mode
 {
     const METHOD_CODE = 'billmatecheckout';
 
+    const BM_ADDITIONAL_INFO_CODE = 'bm_payment_method';
+
     protected $_code = 'billmatecheckout';
 
     protected $_formBlockType = 'billmatecheckout/form';
@@ -49,10 +51,18 @@ class Billmate_BillmateCheckout_Model_Billmatecheckout extends Mage_Payment_Mode
 
 	public function cancel( Varien_Object $payment )
 	{
-
 		$this->void($payment);
 		return $this;
 	}
+
+    public function getTitle()
+    {
+        $paymentTitle = parent::getTitle();
+        if ($this->isOrderPage()) {
+            $paymentTitle .= $this->getPaymentType();
+        }
+        return $paymentTitle;
+    }
 
 	public function void( Varien_Object $payment )
 	{
@@ -185,5 +195,51 @@ class Billmate_BillmateCheckout_Model_Billmatecheckout extends Mage_Payment_Mode
                 Mage::throwException(Mage::helper('payment')->__('Missing phone number'));
             }
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isOrderPage()
+    {
+        return (bool)$this->getCurrentOrder();
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getCurrentOrder()
+    {
+        if($this->getCurrentInvoice()) {
+            return $this->getCurrentInvoice()->getOrder();
+        }
+
+        if($this->getCurrentShipment()) {
+            return $this->getCurrentShipment()->getOrder();
+        }
+        return Mage::registry('current_order');
+    }
+
+    public function getCurrentInvoice()
+    {
+        return Mage::registry('current_invoice');
+    }
+
+    public function getCurrentShipment()
+    {
+        return Mage::registry('current_shipment');
+    }
+
+    /**
+     * @return string
+     */
+    protected function getPaymentType()
+    {
+        $payment = $this->getCurrentOrder()->getPayment();
+        $additionalInformation = $payment->getAdditionalInformation(self::BM_ADDITIONAL_INFO_CODE);
+        if ($additionalInformation) {
+           return  $this->_getHelper()->__(' - %s', $additionalInformation);
+        }
+        return '';
     }
 }
