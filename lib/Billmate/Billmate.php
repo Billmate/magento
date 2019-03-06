@@ -42,7 +42,7 @@ class BillMate{
 	var $TEST = false;
 	var $DEBUG = false;
 	var $REFERER = false;
-	function BillMate($id,$key,$ssl=true,$test=false,$debug=false,$referer=array()){
+	function __construct($id,$key,$ssl=true,$test=false,$debug=false,$referer=array()){
 		$this->ID = $id;
 		$this->KEY = $key;
         defined('BILLMATE_LANGUAGE') || define('BILLMATE_LANGUAGE',  "" );
@@ -82,9 +82,11 @@ class BillMate{
 	function verify_hash($response) {
 		$response_array = is_array($response)?$response:json_decode($response,true);
 		//If it is not decodable, the actual response will be returnt.
-		if(!$response_array && !is_array($response))
-			return $response;
-		if(is_array($response)) {
+		if (!$response_array && !is_array($response)) {
+            return $response;
+        }
+
+		if (is_array($response) && !is_array($response['credentials']) && !is_array($response['data'])) {
 			$response_array['credentials'] = json_decode($response['credentials'], true);
 			$response_array['data'] = json_decode($response['data'],true);
 		}

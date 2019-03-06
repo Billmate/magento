@@ -11,9 +11,20 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
      */
     protected $_quote = null;
 
+    /**
+     * @var array
+     */
+    protected $bmRequestData;
+
+    /**
+     * @var Billmate_Common_Helper_Data
+     */
+    protected $helper;
+
+
     public function __construct()
     {
-
+        $this->helper = Mage::helper('billmatecommon');
     }
 
     /**
@@ -21,8 +32,12 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
      *
      * @return bool|false|Mage_Sales_Model_Order
      */
-    public function place($quote)
+    public function place($quote = null)
     {
+        if (is_null($quote)) {
+            $quote = $this->getActualQuote();
+        }
+
         /** @var  $quote Mage_Sales_Model_Quote */
         $orderModel = Mage::getModel('sales/order');
         $orderModel->load($quote->getId(), 'quote_id');
@@ -111,18 +126,63 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
     }
 
     /**
+     * @return Mage_Sales_Model_Quote
+     */
+    protected function getActualQuote()
+    {
+        $bmRequestData = $this->getBmRequestData();
+        $method = $this->helper->getPaymentMethodCode();
+
+        $quote = $this->getQuote();
+        $quote->getPayment()->importData(['method' => $method]);
+        $quote->getPayment()->setAdditionalInformation(
+            Billmate_BillmateCheckout_Model_Billmatecheckout::BM_ADDITIONAL_INFO_CODE,
+            $bmRequestData['PaymentData']['method_name']
+        );
+        $quote->save();
+        return $quote;
+    }
+
+    /**
      * @return Mage_Sales_Model_Order|null
      */
-    protected function getOrder()
+    public function getOrder()
     {
         return $this->_order;
     }
 
     /**
+     * @param $quote
+     *
+     * @return $this
+     */
+    public function setQuote($quote)
+    {
+        $this->_quote = $quote;
+        return $this;
+    }
+
+    /**
      * @return Mage_Sales_Model_Quote|null
      */
-    protected function getQuote()
+    public function getQuote()
     {
         return $this->_quote;
+    }
+
+    /**
+     * @param $requestData
+     *
+     * @return $this
+     */
+    public function setBmRequestData($requestData)
+    {
+        $this->bmRequestData = $requestData;
+        return $this;
+    }
+
+    public function getBmRequestData()
+    {
+        return $this->bmRequestData;
     }
 }

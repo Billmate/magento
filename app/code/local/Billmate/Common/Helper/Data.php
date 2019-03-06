@@ -4,8 +4,6 @@ require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
 
 class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    const DEF_PAYMENT_METHOD = 'billmateinvoice';
-
     const DEF_POST_CODE = '12345';
 
     /**
@@ -309,5 +307,13 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
     public function getDefaultShipping()
     {
         return Mage::getStoreConfig('billmate/checkout/shipping_method');
+    }
+
+    /**
+     * @return string
+     */
+    public function getBillmateCheckoutOrderStatus()
+    {
+        return Mage::getStoreConfig('payment/billmatecheckout/order_status');
     }
 }

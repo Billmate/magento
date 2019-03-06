@@ -253,7 +253,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $hash = $this->getRequest()->getParam('hash');
         $result = $this->getHelper()->getBillmate()
             ->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
-        if(!isset($result['code'])){
+        if (!isset($result['code'])) {
             Mage::register('billmate_checkout_complete',true);
         }
 
@@ -368,5 +368,34 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
     protected function getRedirectUrl()
     {
         return Mage::helper('checkout/url')->getCartUrl();
+    }
+
+
+    protected function getBmPaymentData($bmRequestData)
+    {
+        return $this->getHelper()->getBillmate()
+            ->getPaymentinfo(array('number' => $bmRequestData['data']['number']));
+    }
+
+    /**
+     * @return mixed
+     * @throws Exception
+     */
+    protected function getBmRequestData()
+    {
+        $bmRequestData = $this->getRequest()->getParam('data');
+        $bmRequestCredentials = $this->getRequest()->getParam('credentials');
+
+        if ($bmRequestData && $bmRequestCredentials) {
+            $postData['data'] = json_decode($bmRequestData, true);
+            $postData['credentials'] = json_decode($bmRequestCredentials, true);
+            return $postData;
+        }
+
+        $jsonBodyRequest = file_get_contents('php://input');
+        if ($jsonBodyRequest) {
+            return json_decode($jsonBodyRequest, true);
+        }
+        throw new Exception('The request does not contain information');
     }
 }
