@@ -1,3 +1,4 @@
+app/code/community/Billmate/BillmateCheckout	     						app/code/community/Billmate/BillmateCheckout/
 app/code/community/Billmate/Cardpay	     						app/code/community/Billmate/Cardpay/
 app/code/community/Billmate/Bankpay	     						app/code/community/Billmate/Bankpay/
 app/code/community/Billmate/BillmateInvoice	     				app/code/community/Billmate/BillmateInvoice/
