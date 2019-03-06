@@ -254,7 +254,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $result = $this->getHelper()->getBillmate()
             ->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
         if (!isset($result['code'])) {
-            Mage::register('billmate_checkout_complete',true);
+            $this->registerBmComplete();
         }
 
         $method = $this->getHelper()->getPaymentMethodCode();
@@ -397,5 +397,10 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             return json_decode($jsonBodyRequest, true);
         }
         throw new Exception('The request does not contain information');
+    }
+
+    protected function registerBmComplete()
+    {
+        Mage::register('billmate_checkout_complete',true);
     }
 }

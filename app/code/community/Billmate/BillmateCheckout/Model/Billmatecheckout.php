@@ -26,16 +26,7 @@ class Billmate_BillmateCheckout_Model_Billmatecheckout extends Mage_Payment_Mode
             return false;
         }
 
-        if(Mage::getSingleton('checkout/session')->getBillmateHash()) {
-            return true;
-        }
-
-        if( Mage::getStoreConfig('payment/billmatecheckout/active') != 1 ) {
-            return false;
-        }
-
-
-		return false;
+		return true;
     }
 
     /**
