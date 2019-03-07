@@ -247,6 +247,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         if (!$this->isAvailableToProcess()) {
             $response['url'] = $this->getRedirectUrl();
             $this->getResponse()->setBody(json_encode($response));
+            return;
         }
 
         $quote = $this->_getQuote();
