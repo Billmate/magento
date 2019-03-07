@@ -244,82 +244,93 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function createorderAction()
     {
-        if (!$this->isAvailableToProcess()) {
-            $response['url'] = $this->getRedirectUrl();
-            $this->getResponse()->setBody(json_encode($response));
-            return;
-        }
-
-        $quote = $this->_getQuote();
-        $hash = $this->getRequest()->getParam('hash');
-        $result = $this->getHelper()->getBillmate()
+        /** @var  $quote Mage_Sales_Model_Quote */
+        $bmPaymentData = $this->getHelper()->getBillmate()
             ->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
-        if (!isset($result['code'])) {
-            $this->registerBmComplete();
+
+        try {
+            if (!$this->isAvailableToProcess()) {
+                throw new Exception(
+                    $this->getHelper()->__('You have no items in your shopping cart.')
+                );
+            }
+            $bmRequestData['data'] = $bmPaymentData['PaymentData']['order'];
+            $this->runCallbackProcess($bmRequestData);
+            $response['url'] = Mage::getUrl('checkout/onepage/success', array('_secure' => true));
+        } catch (Exception $e) {
+            Mage::getSingleton('core/session')->addError($e->getMessage());
+            $response['url'] = $this->getRedirectUrl();
+        }
+        $this->getResponse()->setBody(json_encode($response));
+    }
+
+    /**
+     * @param $bmRequestData
+     *
+     * @throws Exception
+     */
+    protected function runCallbackProcess($bmRequestData)
+    {
+        $verifiedData = $this->getBmPaymentData($bmRequestData);
+        if (isset($verifiedData['code'])) {
+            $codeMessage = $this->getHelper()->__('Unfortunately your payment was not processed correctly.
+                 Please try again or choose another payment method.');
+            throw new Exception($codeMessage);
         }
 
-        $method = $this->getHelper()->getPaymentMethodCode();
-        $quote->getPayment()->importData(array('method' => $method));
+        $this->registerBmComplete();
+        $checkoutOrderModel = $this->getCheckoutOrderModel()
+            ->setQuote($this->_getQuote())
+            ->setBmRequestData($verifiedData);
 
-
-        $quote->getPayment()->setAdditionalInformation(
-            Billmate_BillmateCheckout_Model_Billmatecheckout::BM_ADDITIONAL_INFO_CODE,
-            $result['PaymentData']['method_name']
-        );
-
-        $checkoutOrderModel = $this->getCheckoutOrderModel();
-        $url = '';
-        $status = $this->getHelper()->getAdaptedStatus($result['PaymentData']['order']['status']);
-        $paymentMethodStatus = Mage::getStoreConfig('payment/'.$method.'/order_status');
-        switch($status)
-        {
+        $status = $this->getHelper()->getAdaptedStatus($bmRequestData['data']['status']);
+        $paymentMethodStatus = $this->getHelper()->getBillmateCheckoutOrderStatus();
+        switch ($status) {
             case 'pending':
-                $order = $checkoutOrderModel->place($quote);
-                if ($order && $order->getStatus()) {
-                    if($order->getStatus() == $paymentMethodStatus) {
-                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $hash),'_secure' => true));
-                        break;
-                    } else {
-                        $order->addStatusHistoryComment(Mage::helper('payment')->__('Order processing completed' . '<br/>Billmate status: ' . $result['PaymentData']['order']['status'] . '<br/>' . 'Transaction ID: ' . $result['PaymentData']['order']['number']));
-                        $order->setState('new', 'pending_payment', '', false);
-                        $order->save();
-                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',array('_query' => array('hash' => $hash),'_secure' => true));
-                    }
-                } else {
-                    Mage::getSingleton('core/session')->addError(
-                        Mage::helper($method)->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.')
+                $order = $checkoutOrderModel->place();
+                if (!$order || !$order->getStatus()) {
+                    throw new Exception(
+                        $this->getHelper()->
+                        __('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.')
                     );
-                    $url = Mage::getUrl(Mage::helper('checkout/url')->getCheckoutUrl());
+                }
+
+                if ($order->getStatus() != $paymentMethodStatus) {
+                    $order->addStatusHistoryComment(
+                        $this->getHelper()->__('Order processing completed' .
+                            '<br/>Billmate status: %s  
+                                <br/>' . 'Transaction ID: %s',[
+                            $verifiedData['data']['status'],
+                            $verifiedData['data']['number']
+                        ]));
+                    $order->setState('new', 'pending_payment', '', false);
+                    $order->save();
                 }
                 break;
             case 'created':
             case 'paid':
-                $order = $checkoutOrderModel->place($quote);
-                if ($order) {
-                    $redirectSuccess = $checkoutOrderModel->updateOrder($paymentMethodStatus, $result['PaymentData']['order']);
-                    if ($redirectSuccess) {
-                        $url = Mage::getUrl('billmatecommon/billmatecheckout/confirmation',
-                            array('_query' => array('hash' => $hash),'_secure' => true)
-                        );
-                    }
-                } else {
-                    Mage::getSingleton('core/session')->addError(Mage::helper($method)->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
-                    $url = Mage::getUrl(Mage::helper('checkout/url')->getCheckoutUrl());
+                $order = $checkoutOrderModel->place();
+                if (!$order) {
+                    throw new Exception(
+                        $this->getHelper()->
+                        __('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.')
+                    );
                 }
+                $checkoutOrderModel->updateOrder($paymentMethodStatus, $bmRequestData['data']);
                 break;
             case 'cancelled':
-                Mage::getSingleton('core/session')->addError(Mage::helper($method)->__('The bank payment has been canceled. Please try again or choose a different payment method.'));
-                $url = Mage::getUrl(Mage::helper('checkout/url')->getCheckoutUrl());
+                throw new Exception(
+                    $this->getHelper()->
+                    __('The bank payment has been canceled. Please try again or choose a different payment method.')
+                );
                 break;
             case 'failed':
-                Mage::getSingleton('core/session')->addError(Mage::helper($method)->__('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.'));
-                $url = Mage::getUrl(Mage::helper('checkout/url')->getCheckoutUrl());
-
+                throw new Exception(
+                    $this->getHelper()->
+                    __('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.')
+                );
                 break;
-
         }
-        $response['url'] = $url;
-        $this->getResponse()->setBody(json_encode($response));
     }
 
     /**
