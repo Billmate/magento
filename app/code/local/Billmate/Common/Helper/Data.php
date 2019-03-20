@@ -46,7 +46,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
         $eid = Mage::getStoreConfig('billmate/credentials/eid');
         $secret = Mage::getStoreConfig('billmate/credentials/secret');
         $testmode = Mage::getStoreConfig('billmate/checkout/testmode');
-        return new BillMate($eid, $secret, true, $testmode,false);
+        return new Billmate_Billmate($eid, $secret, true, $testmode,false);
     }
 
     /**
@@ -57,7 +57,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function verifyCredentials($eid,$secret)
     {
-        $billmate = new BillMate($eid, $secret, true, false,false);
+        $billmate = new Billmate_Billmate($eid, $secret, true, false,false);
 
         $additionalinfo['PaymentData'] = array(
             "currency"=> 'SEK',//SEK

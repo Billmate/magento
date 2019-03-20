@@ -168,7 +168,7 @@ class Billmate_Bankpay_Model_BillmateBankpay extends Mage_Payment_Model_Method_A
 
     public function refund(Varien_Object $payment, $amount)
     {
-        if(Mage::getStoreConfig('billmate/settings/activation')) {
+        if (Mage::getStoreConfig('billmate/settings/activation')) {
             $k = Mage::helper('billmatebankpay')->getBillmate();
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
