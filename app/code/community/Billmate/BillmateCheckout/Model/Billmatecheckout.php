@@ -156,8 +156,8 @@ class Billmate_BillmateCheckout_Model_Billmatecheckout extends Mage_Payment_Mode
             }
 
             if ($paymentInfo['PaymentData']['status'] == 'Paid') {
-                $values['partcredit'] = false;
-                $paymentData['PaymentData'] = $values;
+                $paymentData['partcredit'] = false;
+                $paymentData['PaymentData'] = $paymentData;
                 $result = $this->getBMConnection()->creditPayment($paymentData);
                 if (!isset($result['code'])) {
                     $this->getBMConnection()->activatePayment(array('number' => $result['number']));
@@ -223,8 +223,8 @@ class Billmate_BillmateCheckout_Model_Billmatecheckout extends Mage_Payment_Mode
             $paymentInfo = $this->getActualBmPaymentInfo($bmRequestData);
 
             if ($paymentInfo['PaymentData']['status'] == 'Paid' || $paymentInfo['PaymentData']['status'] == 'Factoring') {
-                $values['partcredit'] = false;
-                $result = $this->getBMConnection()->creditPayment(array('PaymentData' => $values));
+                $bmRequestData['partcredit'] = false;
+                $result = $this->getBMConnection()->creditPayment(array('PaymentData' => $bmRequestData));
                 if(isset($result['code']) )
                     Mage::throwException(utf8_encode($result['message']));
                 if(!isset($result['code'])){
