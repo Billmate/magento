@@ -12,7 +12,7 @@ class Billmate_Common_Block_Checkout extends Mage_Core_Block_Template
             $checkout = $billmate->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
             $quote = Mage::getSingleton('checkout/session')->getQuote();
             $total = $quote->getGrandTotal();
-            if($checkout['Cart']['Total']['withtax'] != $total){
+            if ($checkout['Cart']['Total']['withtax'] != $total) {
                 $result = Mage::getModel('billmatecommon/checkout')->updateCheckout();
                 if(!isset($result['data']['code'])){
                     $checkout = $billmate->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));

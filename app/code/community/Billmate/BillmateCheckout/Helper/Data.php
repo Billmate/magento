@@ -5,6 +5,17 @@ class Billmate_BillmateCheckout_Helper_Data extends Mage_Core_Helper_Abstract
 	protected $_InvoicePriceIncludesTax;
 
     /**
+     * @var Billmate_Common_Helper_Data
+     */
+	protected $commonHelper;
+
+
+	public function __construct()
+    {
+        $this->commonHelper = Mage::helper('billmatecommon');
+    }
+
+    /**
      * @return string
      */
 	public function getMethodName()
@@ -227,5 +238,13 @@ class Billmate_BillmateCheckout_Helper_Data extends Mage_Core_Helper_Abstract
     public function displayInvoiceBothPrices()
     {
         return $this->getInvoiceFeeDisplayType() == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowedBackEvents()
+    {
+        return $this->commonHelper->isAllowedBackEvents();
     }
 }

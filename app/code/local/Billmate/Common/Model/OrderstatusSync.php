@@ -42,7 +42,11 @@ class Billmate_Common_Model_OrderstatusSync
                 if(!in_array($paymentCode,array('billmateinvoice','billmatebankpay','billmatecardpay','billmatepartpayment')))
                     continue;
 
-                $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+                $invoiceId = $payment->getMethodInstance()
+                                    ->getInfoInstance()
+                                    ->getAdditionalInformation(
+                                        Billmate_BillmateCheckout_Model_Billmatecheckout::BM_INVOICE_NUMBER_CODE_PARAM
+                                    );
 
                 if(!$invoiceId)
                     continue;

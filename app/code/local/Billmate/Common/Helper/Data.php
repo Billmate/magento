@@ -316,4 +316,12 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return Mage::getStoreConfig('payment/billmatecheckout/order_status');
     }
+
+    /**
+     * @return bool
+     */
+    public function isAllowedBackEvents()
+    {
+        return  (bool)Mage::getStoreConfig('billmate/settings/activation');
+    }
 }

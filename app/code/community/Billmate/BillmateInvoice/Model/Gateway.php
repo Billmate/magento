@@ -86,7 +86,7 @@ class Billmate_BillmateInvoice_Model_Gateway extends Billmate_Common_Model_Payme
             }
         } else {
             $session = Mage::getSingleton( 'core/session', array( 'name' => 'frontend' ) );
-            $session->setData( 'billmateinvoice_id', $result['number'] );
+            $session->setData( 'invoiceid', $result['number'] );
             $session->setData( 'billmateorder_id', $result['orderid'] );
             $session->setData('billmate_status',$result['status']);
             return $result['number'];

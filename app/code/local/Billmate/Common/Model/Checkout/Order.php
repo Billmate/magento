@@ -102,7 +102,7 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
     {
         $payment = $order->getPayment();
         $info = $payment->getMethodInstance()->getInfoInstance();
-        $info->setAdditionalInformation('invoiceid', $data['number']);
+        $info->setAdditionalInformation('', $data['number']);
 
         $payment->setTransactionId($data['number']);
         $payment->setIsTransactionClosed(0);
@@ -138,6 +138,10 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
         $quote->getPayment()->setAdditionalInformation(
             Billmate_BillmateCheckout_Model_Billmatecheckout::BM_ADDITIONAL_INFO_CODE,
             $bmRequestData['PaymentData']['method_name']
+        );
+        $quote->getPayment()->setAdditionalInformation(
+            Billmate_BillmateCheckout_Model_Billmatecheckout::BM_INVOICE_NUMBER_CODE_PARAM,
+            $bmRequestData['invoice_number']
         );
         $quote->save();
         return $quote;

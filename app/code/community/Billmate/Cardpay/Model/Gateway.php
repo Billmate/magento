@@ -56,7 +56,7 @@ class Billmate_Cardpay_Model_Gateway extends Billmate_Common_Model_Payment_Gatew
             Mage::throwException( utf8_encode($result['message']));
         }else{
             $session = Mage::getSingleton('core/session', array('name' => 'frontend'));
-            $session->setData('billmateinvoice_id', $result['number']);
+            $session->setData('invoiceid', $result['number']);
             $session->setData('billmateorder_id', $result['orderid']);
         }
         return $result;

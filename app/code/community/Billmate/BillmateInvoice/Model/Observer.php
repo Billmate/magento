@@ -15,8 +15,8 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
         if(!in_array($method,array('billmateinvoice','billmatepartpayment'))) return;
 
 		$session = Mage::getSingleton("core/session",  array("name"=>"frontend"));
-		$liveid = $session->getData("billmateinvoice_id");
-		$session->unsetData('billmateinvoice_id');
+		$liveid = $session->getData("invoiceid");
+		$session->unsetData('invoiceid');
         $k = Mage::helper('billmateinvoice')->getBillmate();
 
         $orderValues = array();

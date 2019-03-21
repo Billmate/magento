@@ -385,8 +385,10 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     protected function getBmPaymentData($bmRequestData)
     {
-        return $this->getHelper()->getBillmate()
+        $responseBmData = $this->getHelper()->getBillmate()
             ->getPaymentinfo(array('number' => $bmRequestData['data']['number']));
+        $responseBmData['invoice_number'] = $bmRequestData['data']['number'];
+        return $responseBmData;
     }
 
     /**
