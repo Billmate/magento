@@ -40,7 +40,11 @@ class Billmate_BillmateCheckout_Model_Billmatecheckout extends Mage_Payment_Mode
      */
     public function isAvailable($quote = null)
     {
-        if ($quote == null ) {
+        if (is_null($quote)) {
+            return false;
+        }
+
+        if (!$quote->getIsBmCheckout()) {
             return false;
         }
 

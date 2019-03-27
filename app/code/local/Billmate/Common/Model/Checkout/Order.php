@@ -134,6 +134,7 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
         $method = $this->helper->getPaymentMethodCode();
 
         $quote = $this->getQuote();
+        $quote->setIsBmCheckout(true);
         $quote->getPayment()->importData(['method' => $method]);
         $quote->getPayment()->setAdditionalInformation(
             Billmate_BillmateCheckout_Model_Billmatecheckout::BM_ADDITIONAL_INFO_CODE,

@@ -227,6 +227,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $method = $this->getHelper()->getPaymentMethodCode();
         /** @var $quote Mage_Sales_Model_Quote */
         $quote = $this->_getQuote();
+        $quote->setIsBmCheckout(true);
         $quote->getPayment()->importData(array('method' => $method));
         $quote->save();
         $result =  $checkout->updateCheckout();
