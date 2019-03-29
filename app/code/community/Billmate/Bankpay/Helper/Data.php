@@ -7,7 +7,7 @@ class Billmate_Bankpay_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return Billmate
      */
-    public function getBillmate($ssl = true, $debug = false )
+    public function getBillmate()
     {
         return Mage::helper('billmatecommon')->getBillmate();
     }
