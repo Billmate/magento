@@ -19,15 +19,6 @@
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                         </active>
-                        <test_mode translate="label">
-                            <label>Test Mode</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <sort_order>30</sort_order>
-                        </test_mode>
                         <title translate="label">
                             <label>Title</label>
 							<comment>
