@@ -1,15 +1,28 @@
 <?php
+class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract
+{
 
-
-
-class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
 	protected $_InvoicePriceIncludesTax;
 
-	function replaceSeparator($amount, $thousand = '.', $decimal = ','){
+    /**
+     * @param        $amount
+     * @param string $thousand
+     * @param string $decimal
+     *
+     * @return mixed|string
+     */
+	public function replaceSeparator($amount, $thousand = '.', $decimal = ',')
+    {
 		return $this->convert2Decimal($amount);
 	}
 
-	function convert2Decimal($amount){
+    /**
+     * @param $amount
+     *
+     * @return mixed|string
+     */
+	public function convert2Decimal($amount)
+    {
 		if( empty( $amount)) {
 			return '';
 		}
@@ -25,32 +38,35 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
 			return $p.'.'.$data[1];
 		}
 	}
-	
-    function getBillmate($ssl = true, $debug = false ){
 
-        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.1.0');
-        if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.9');
-
-        $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
-        if(!defined('BILLMATE_LANGUAGE'))define('BILLMATE_LANGUAGE',$lang[0]);
-        require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
-        require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
-        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
-        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
-
-
-        $eid = Mage::getStoreConfig('billmate/credentials/eid');
-        $secret= Mage::getStoreConfig('billmate/credentials/secret');
-        $testmode=(boolean)Mage::getStoreConfig('payment/billmateinvoice/test_mode');
-
-        return new Billmate($eid, $secret, $ssl, $testmode,$debug);
+    /**
+     * @param bool $ssl
+     * @param bool $debug
+     *
+     * @return Billmate
+     */
+    public function getBillmate($ssl = true, $debug = false )
+    {
+        return Mage::helper('billmatecommon')->getBillmate();
     }
+
+    /**
+     * @return bool
+     */
     public function isOneStepCheckout()
     {
         return (bool) Mage::getStoreConfig(
             'onestepcheckout/general/rewrite_checkout_links'
         );
     }
+
+    /**
+     * @param $base
+     * @param $address
+     * @param $taxClassId
+     *
+     * @return array
+     */
     public function getInvoiceFeeArray($base, $address, $taxClassId)
     {
         //Get the correct rate to use
@@ -110,13 +126,25 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
 		$value = Mage::helper('directory')->currencyConvert($value,$baseCurrencyCode,$currentCurrencyCode);
 	    return $value;
     }
-	function getInvoiceTaxClass($store)
+
+    /**
+     * @param $store
+     *
+     * @return int
+     */
+	public function getInvoiceTaxClass($store)
     {
         return (int)Mage::getStoreConfig(
             'payment/billmateinvoice/tax_class',
             $store
         );
     }
+
+    /**
+     * @param null $store
+     *
+     * @return mixed
+     */
     public function InvoicePriceIncludesTax($store = null)
     {
         $storeId = Mage::app()->getStore($store)->getId();
@@ -124,6 +152,15 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
         return $this->_InvoicePriceIncludesTax[$storeId];
     }
 
+    /**
+     * @param      $price
+     * @param null $includingTax
+     * @param null $shippingAddress
+     * @param null $ctc
+     * @param null $store
+     *
+     * @return float
+     */
     public function getInvoicePrice($price, $includingTax = null, $shippingAddress = null, $ctc = null, $store = null)
     {
         $billingAddress = false;
@@ -149,25 +186,38 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract{
         }
     }
 
+    /**
+     * @param null $store
+     *
+     * @return int
+     */
     public function getInvoiceFeeDisplayType($store = null)
     {
         $storeId = Mage::app()->getStore($store)->getId();
         return $this->_shippingPriceDisplayType[$storeId] = Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH;
     }
 
+    /**
+     * @return bool
+     */
     public function displayInvoiceFeeIncludingTax()
     {
         return $this->getInvoiceFeeDisplayType() == Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX;
     }
 
+    /**
+     * @return bool
+     */
     public function displayInvoiceFeeExcludingTax()
     {
         return $this->getInvoiceFeeDisplayType() == Mage_Tax_Model_Config::DISPLAY_TYPE_EXCLUDING_TAX;
     }
 
+    /**
+     * @return bool
+     */
     public function displayInvoiceBothPrices()
     {
         return $this->getInvoiceFeeDisplayType() == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH;
     }
-
 }

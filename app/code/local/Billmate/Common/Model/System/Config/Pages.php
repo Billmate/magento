@@ -4,6 +4,9 @@ class Billmate_Common_Model_System_Config_Pages
 {
     protected static $pages = null;
 
+    /**
+     * @return array|null
+     */
     public function toOptionArray()
     {
         if (null === self::$pages) {

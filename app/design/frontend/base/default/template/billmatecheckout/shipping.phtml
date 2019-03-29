@@ -45,20 +45,6 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
     var countriesWithOptionalZip = <?php echo $this->helper('directory')->getCountriesWithOptionalZip(true) ?>;
 
     coShippingMethodForm.submit = function () {
-        /*var country = $F('country');
-         var optionalZip = false;
-
-         for (i=0; i < countriesWithOptionalZip.length; i++) {
-         if (countriesWithOptionalZip[i] == country) {
-         optionalZip = true;
-         }
-         }
-         if (optionalZip) {
-         $('postcode').removeClassName('required-entry');
-         }
-         else {
-         $('postcode').addClassName('required-entry');
-         }*/
         return VarienForm.prototype.submit.bind(coShippingMethodForm)();
     };
 
@@ -71,7 +57,6 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
     }
     $$('[name="estimate_method"].radio').each(function(el){
         el.observe('click',function(e){
-            console.log('clicked radio');
             clearTimeout(billmateCheckoutShippingTimer);
             billmateCheckoutShippingTimer = setTimeout(function() {
                 if($$('[name="estimate_method"]:checked')[0].value != selectedShippingMethod) {
@@ -85,14 +70,17 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
     });
 
     function updateShippingMethod(method) {
+        b_iframe.lock();
         new Ajax.Request('<?php echo Mage::getUrl('billmatecommon/billmatecheckout/updateshippingmethod', array('_secure' => true)) ?>',{
             parameters: {estimate_method: method},
             method: 'post',
             onSuccess: function(transport){
                 var result = transport.responseText.evalJSON();
-                if(result.success){
-                    if(result.hasOwnProperty("update_checkout") && result.update_checkout === true)
-                        b_iframe.updateCheckout();
+                if(result.success) {
+                    if(result.hasOwnProperty("update_checkout") && result.update_checkout === true) {
+                        b_iframe.update();
+                        b_iframe.unlock();
+                    }
                 }
             }
         });

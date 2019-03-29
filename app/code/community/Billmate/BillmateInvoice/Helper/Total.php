@@ -2,8 +2,11 @@
 
 class Billmate_BillmateInvoice_Helper_Total extends Mage_Core_Helper_Abstract
 {
-
-
+    /**
+     * @param $block
+     *
+     * @return Mage_Core_Block_Abstract
+     */
     public function addToBlock($block)
     {
         $order = $block->getOrder();

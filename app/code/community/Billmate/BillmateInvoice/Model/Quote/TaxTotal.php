@@ -2,6 +2,11 @@
 
 class Billmate_BillmateInvoice_Model_Quote_TaxTotal extends Mage_Sales_Model_Quote_Address_Total_Tax
 {
+    /**
+     * @param Mage_Sales_Model_Quote_Address $address
+     *
+     * @return $this
+     */
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
 		//parent::collect($address);
@@ -76,6 +81,11 @@ class Billmate_BillmateInvoice_Model_Quote_TaxTotal extends Mage_Sales_Model_Quo
         return $this;
     }
 
+    /**
+     * @param Mage_Sales_Model_Quote_Address $address
+     *
+     * @return $this
+     */
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {        
         $store = $address->getQuote()->getStore();

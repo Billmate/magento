@@ -1,23 +1,14 @@
 <?php
-class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
-    function getBillmate($ssl = true, $debug = false, $store,$eid = false, $secret = false,$testmode = false){
-        if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.1.0');
-        if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.9');
-		$store = $store ? $store : Mage::app()->getStore()->getId();
-        $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
-        //if(!defined('BILLMATE_LANGUAGE'))define('BILLMATE_LANGUAGE',$lang[0]);
-        require_once Mage::getBaseDir('lib').'/Billmate/Billmate.php';
-        require_once Mage::getBaseDir('lib').'/Billmate/utf8.php';
-        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpc.inc");
-        //include_once(Mage::getBaseDir('lib')."/Billmate/xmlrpc-2.2.2/xmlrpcs.inc");
+class Billmate_PartPayment_Helper_Data extends Mage_Core_Helper_Abstract
+{
 
-
-        $eid = $eid ? $eid : Mage::getStoreConfig('billmate/credentials/eid',$store);
-        $secret= $secret ? $secret : Mage::getStoreConfig('billmate/credentials/secret',$store);
-        $testmode= $testmode ? $testmode : (boolean)Mage::getStoreConfig('payment/billmatepartpayment/test_mode',$store);
-        return new Billmate($eid, $secret, $ssl, $testmode,$debug);
+    public function getBillmate()
+    {
+        return Mage::helper('billmatecommon')->getBillmate();
     }
-    private function getLowestPaymentAccount($country) {
+
+    private function getLowestPaymentAccount($country)
+    {
         switch ($country) {
             case 'SWE':
                 $amount = 50.0;
@@ -52,7 +43,8 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
      *
      * @throws Exception
      */
-    public function checkPclasses($frondend = false){
+    public function checkPclasses($frondend = false)
+    {
         $collection = Mage::getModel('partpayment/pclass')->getCollection();
         $collection->addFieldToFilter('store_id',($frondend) ? Mage::app()->getStore()->getId() :Mage::helper('partpayment')->getStoreIdForConfig());
         $first = $collection->getFirstItem();
@@ -60,7 +52,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
         if($collection->getSize() == 0 || (strtotime($first->getCreated() <= strtotime('-1 week')))){
             $collectionPclass = Mage::getModel('partpayment/pclass')->getCollection();
             $collectionPclass->addFieldToFilter('store_id',($frondend) ? Mage::app()->getStore()->getId() :Mage::helper('partpayment')->getStoreIdForConfig());
-            if($collection->getSize() > 0) {
+            if ($collection->getSize() > 0) {
                 foreach ($collectionPclass as $row) {
                     $row->delete();
                 }
@@ -69,99 +61,69 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
             // Fetch new Pclasses
             $countries = explode(',',Mage::getStoreConfig('payment/billmatepartpayment/countries'));
             $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
-            $eid = (int)Mage::getStoreConfig('billmate/credentials/eid');
-            $secret=(float)Mage::getStoreConfig('billmate/credentials/secret');
-            $testMode=(boolean)Mage::getStoreConfig('payment/billmatepartpayment/test_mode');
 
-
-            foreach($countries as $country)
-                $this->savePclasses($eid, $secret, $country, $testMode,$lang[0]);
-
+            foreach ($countries as $country) {
+                $this->savePclasses($country, $lang[0]);
+            }
             return;
         }
         return;
 
     }
+
+    /**
+     * @return int
+     */
     public function getStoreIdForConfig()
     {
-        if(strlen($code = Mage::getSingleton('adminhtml/config_data')->getStore()))
-        {
+        if (strlen($code = Mage::getSingleton('adminhtml/config_data')->getStore())) {
             $store_id = Mage::getModel('core/store')->load($code)->getId();
-        }
-        elseif(strlen($code = Mage::getSingleton('adminhtml/config_data')->getWebsite())){
-
+        } elseif (strlen($code = Mage::getSingleton('adminhtml/config_data')->getWebsite())) {
             $website_id = Mage::getModel('core/website')->load($code)->getId();
             $store_id = Mage::app()->getWebsite($website_id)->getDefaultStore()->getId();
-        }
-        else{
+        } else {
             $store_id = 0;
         }
-
 
         return $store_id;
     }
 
     /**
-     * Save Paymentplans
-     * @param $eid
-     * @param $secret
-     * @param $countrycode
-     * @param $testmode
-     * @param $lang
+     * @param      $eid
+     * @param      $secret
+     * @param      $countrycode
+     * @param      $testmode
+     * @param      $lang
+     * @param bool $store
      */
-    function savePclasses($eid, $secret, $countrycode, $testmode ,$lang, $store = false){
-    
-
-        $store_id =$store ? $store : Mage::app()->getStore()->getId();
-
-        $eid = (int)$eid;
-        $secret=(float)$secret;
-        $ssl=true;
-        $debug = false;
-        $billmate = $this->getBillmate($ssl,$debug,$store_id,$eid,$secret);
+    public function savePclasses($countrycode, $lang, $store = false)
+    {
+        $store_id = $store ? $store : Mage::app()->getStore()->getId();
+        $billmate = $this->getBillmate();
 
 		switch ($countrycode) {
 			// Sweden
 			case 'SE':
-				$country = 209;
-				$language = 'sv';
-				$encoding = 2;
 				$currency = 'SEK';
 				break;
 			// Finland
 			case 'FI':
-				$country = 73;
-				$language = 'fi';
-				$encoding = 4;
 				$currency = 'EUR';
 				break;
 			// Denmark
 			case 'DK':
-				$country = 59;
-				$language = 'da';
-				$encoding = 5;
 				$currency = 'DKK';
 				break;
 			// Norway	
 			case 'NO':
-				$country = 164;
-				$language = 'no';
-				$encoding = 3;
 				$currency = 'NOK';
-
 				break;
 			// Germany	
 			case 'DE':
-				$country = 81;
-				$language = 'de';
-				$encoding = 6;
 				$currency = 'EUR';
 				break;
 			// Netherlands															
 			case 'NL':
-				$country = 154;
-				$language = 'nl';
-				$encoding = 7;
 				$currency = 'EUR';
 				break;
 		}
@@ -172,8 +134,9 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 	        "language"=>$lang,//Swedish
         );
 
+        $eid = (int)Mage::getStoreConfig('billmate/credentials/eid');
         $data = $billmate->getPaymentplans($additionalinfo);
-        if(!isset($data['code'])) {
+        if (!isset($data['code'])) {
 
             array_walk($data, array($this, 'correct_lang_billmate'));
             foreach ($data as $_row) {
@@ -192,8 +155,14 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
         }
 
     }
-    function getPlclass($total){
 
+    /**
+     * @param $total
+     *
+     * @return array
+     */
+    public function getPlclass($total)
+    {
 	   $baseCurrencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
        $currentCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
        $_directory = Mage::helper('directory');
@@ -256,8 +225,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 					$sum = $total;
 	
 					$lowest_payment = $this->getLowestPaymentAccount($isoCode3);
-					$monthly_cost = 0;
-	
+
 					$monthly_fee = $pclass->getHandlingfee();
 					$start_fee = $pclass->getStartfee();
 	
@@ -322,6 +290,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 					}
 				}
 			}
+
 			$monthly_cost = $_directory->currencyConvert($monthly_cost,$baseCurrencyCode,$currentCurrencyCode);
 	
 			$payment_option_temp['monthly_cost'] = $monthly_cost;
@@ -334,8 +303,14 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 		
 		return $payment_option;
     }
-    function getLowPclass($total){
-        $method = array();
+
+    /**
+     * @param $total
+     *
+     * @return string
+     */
+    public function getLowPclass($total)
+    {
         $this->checkPclasses(true);
 		$payment_option = $this->getPlclass($total);
 		$status = true;
@@ -349,8 +324,7 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 			$sort_order[$key] = $value['monthly_cost'];
 		}
 	
-		array_multisort($sort_order, SORT_ASC, $payment_option);	
-		$method = array();
+		array_multisort($sort_order, SORT_ASC, $payment_option);
 		$title = '';
 		if ($status) {
 			$currency = Mage::app()->getStore()->getCurrentCurrencyCode(); 
@@ -359,11 +333,13 @@ class Billmate_PartPayment_Helper_data extends Mage_Core_Helper_Abstract{
 		}
 		return $title;
     }
-    function correct_lang_billmate(&$item, $index){
-        //$keys = array('paymentplanid', 'description','nbrofmonths', 'startfee','handlingfee','interestrate', 'minamount', 'country', 'type', 'expirydate','currency', 'maxamount','language' );
 
-
-        //$item = array_combine( $keys, $item );
+    /**
+     * @param $item
+     * @param $index
+     */
+    public function correct_lang_billmate(&$item, $index)
+    {
         $item['startfee'] = $item['startfee'] / 100;
         $item['handlingfee'] = $item['handlingfee'] / 100;
         $item['interestrate'] = $item['interestrate'] / 100;

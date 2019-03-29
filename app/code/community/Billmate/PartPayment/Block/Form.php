@@ -1,9 +1,9 @@
 <?php
 
-class Billmate_PartPayment_Block_Form extends Mage_Payment_Block_Form{
-
-	public function termsx(){
-	
+class Billmate_PartPayment_Block_Form extends Mage_Payment_Block_Form
+{
+	public function termsx()
+    {
 		$total = Mage::getSingleTon('checkout/session')
 				 ->getQuote()
 				 ->getShippingAddress()
@@ -11,7 +11,9 @@ class Billmate_PartPayment_Block_Form extends Mage_Payment_Block_Form{
 				 
 		return Mage::helper('partpayment')->getPlclass($total);
 	}
-    protected function _construct(){
+
+    protected function _construct()
+    {
         parent::_construct();
         $this->setTemplate('billmate/partpayment/invoice.phtml');
     }

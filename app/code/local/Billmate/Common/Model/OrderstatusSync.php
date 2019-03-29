@@ -1,15 +1,13 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Boxedsolutions
- * Date: 2016-12-01
- * Time: 14:49
- */
 class Billmate_Common_Model_OrderstatusSync
 {
-    public function checkOrders(){
-        if(Mage::getStoreConfig('billmate/fraud_check/order_status_check')) {
+    /**
+     * @return $this
+     */
+    public function checkOrders()
+    {
+        if (Mage::getStoreConfig('billmate/fraud_check/order_status_check')) {
 
             $statusesToCheck = array();
 
@@ -44,7 +42,11 @@ class Billmate_Common_Model_OrderstatusSync
                 if(!in_array($paymentCode,array('billmateinvoice','billmatebankpay','billmatecardpay','billmatepartpayment')))
                     continue;
 
-                $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
+                $invoiceId = $payment->getMethodInstance()
+                                    ->getInfoInstance()
+                                    ->getAdditionalInformation(
+                                        Billmate_BillmateCheckout_Model_Billmatecheckout::BM_INVOICE_NUMBER_CODE_PARAM
+                                    );
 
                 if(!$invoiceId)
                     continue;

@@ -1,12 +1,12 @@
 <?php
 
 
-class Billmate_Partpayment_IndexController extends Mage_Core_Controller_Front_Action{
+class Billmate_Partpayment_IndexController extends Mage_Core_Controller_Front_Action
+{
 
-    function IndexAction(){
-        $quote =  Mage::getSingleton('checkout/session')->getQuote();
-                
-        if ($this->getRequest()->isPost()){
+    public function indexAction()
+    {
+        if ($this->getRequest()->isPost()) {
             $gateway = Mage::getSingleton('partpayment/gateway');
             $gateway->init();
             
@@ -16,8 +16,10 @@ class Billmate_Partpayment_IndexController extends Mage_Core_Controller_Front_Ac
         }
     
     }
-    function updateAddressAction(){
-        if ($this->getRequest()->isPost()){
+
+    public function updateAddressAction()
+    {
+        if ($this->getRequest()->isPost()) {
             $gateway = Mage::getSingleton('partpayment/gateway');
             $gateway->init(true);
             
@@ -27,8 +29,8 @@ class Billmate_Partpayment_IndexController extends Mage_Core_Controller_Front_Ac
         }
     }
 
-    public function checkpclassAction(){
+    public function checkpclassAction()
+    {
         $billmate = Mage::helper('partpayment')->checkPclasses();
-
     }
 }

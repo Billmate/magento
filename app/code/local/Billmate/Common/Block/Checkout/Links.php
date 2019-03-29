@@ -1,14 +1,10 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Boxedsolutions
- * Date: 2016-09-26
- * Time: 10:23
- */
 class Billmate_Common_Block_Checkout_Links extends Mage_Checkout_Block_Links
 {
-
+    /**
+     * @return $this
+     */
     public function addCheckoutLink()
     {
         if(Mage::getStoreConfig('billmate/checkout/active') == 1){

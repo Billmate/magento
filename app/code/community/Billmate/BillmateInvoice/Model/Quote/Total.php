@@ -7,7 +7,11 @@ class Billmate_BillmateInvoice_Model_Quote_Total extends Mage_Sales_Model_Quote_
 
     protected $paymentMethod;
 
-
+    /**
+     * @param Mage_Sales_Model_Quote_Address $address
+     *
+     * @return $this
+     */
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
 
@@ -72,7 +76,11 @@ class Billmate_BillmateInvoice_Model_Quote_Total extends Mage_Sales_Model_Quote_
         );
     }
 
-
+    /**
+     * @param Mage_Sales_Model_Quote_Address $address
+     *
+     * @return $this
+     */
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {
         if ($address->getAddressType() != "shipping") {

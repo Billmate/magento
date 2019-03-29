@@ -6,17 +6,6 @@
         </Billmate_PartPayment>
     </modules>
     <global>
-        <events>
-            <sales_order_save_after>
-                <observers>
-                    <sampleobserver_sales_order_save_after_observer>
-                        <type>singleton</type>
-                        <class>billmateinvoice/observer</class>
-                        <method>activate</method>
-                    </sampleobserver_sales_order_save_after_observer>
-                </observers>
-            </sales_order_save_after>
-        </events>
         <models>
             <partpayment>
                 <class>Billmate_PartPayment_Model</class>
@@ -62,17 +51,6 @@
                 </connection>
             </partpayment_write>
         </resources>
-        <!--<events>
-            <admin_system_config_changed_section_payment>
-                <observers>
-                    <PartPayment>
-                        <type>singleton</type>
-                        <class>partpayment/observer</class>
-                        <method>adminSystemConfigChangedSectionPartpayment</method>
-                    </PartPayment>
-                </observers>
-            </admin_system_config_changed_section_payment>
-        </events> -->
     </global>
     <default>
         <payment>

@@ -1,0 +1,20 @@
+app/code/community/Billmate/BillmateCheckout	     						app/code/community/Billmate/BillmateCheckout/
+app/code/community/Billmate/Cardpay	     						app/code/community/Billmate/Cardpay/
+app/code/community/Billmate/Bankpay	     						app/code/community/Billmate/Bankpay/
+app/code/community/Billmate/BillmateInvoice	     				app/code/community/Billmate/BillmateInvoice/
+app/code/community/Billmate/PartPayment	     					app/code/community/Billmate/PartPayment/
+app/code/local/Billmate											app/code/local/Billmate/
+lib/Billmate													lib/Billmate/
+media/billmate													media/billmate
+skin/adminhtml/default/default/js/billmate						skin/adminhtml/default/default/js/billmate/
+skin/frontend/base/default/js/*									skin/frontend/base/default/js/
+skin/frontend/base/default/css/*								skin/frontend/base/default/css/
+app/design/adminhtml/default/default/layout/*					app/design/adminhtml/default/default/layout/
+app/design/adminhtml/default/default/template/billmate			app/design/adminhtml/default/default/template/billmate/
+app/design/frontend/base/default/template/billmate/*			app/design/frontend/base/default/template/billmate/
+app/design/frontend/base/default/template/billmatecheckout/*	app/design/frontend/base/default/template/billmatecheckout/
+app/design/frontend/base/default/template/page/*				app/design/frontend/base/default/template/page/
+app/design/frontend/base/default/layout/*						app/design/frontend/base/default/layout/
+app/locale/sv_SE												app/locale/sv_SE/
+app/etc/modules/*												app/etc/modules/
+
