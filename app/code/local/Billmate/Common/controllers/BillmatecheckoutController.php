@@ -30,7 +30,9 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             ]);
 
             $method = $this->getHelper()->getDefaultShipping();
-            Mage::log('assign country'.print_r($quote->getShippingAddress()->getData(),true),1,'billmate.log');
+
+            Mage::log('-------------- assign country ----------',1,'billmate.log');
+            Mage::log($quote->getShippingAddress()->getCountry(),null,'billmate.log');
 
             $quote->getShippingAddress()
                 ->setCollectShippingRates(true)

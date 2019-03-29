@@ -37,6 +37,11 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
     ];
 
     /**
+     * @var array
+     */
+    protected $shippingRatesCodes = [];
+
+    /**
      * @return BillMate
      */
     public function getBillmate()
@@ -306,7 +311,33 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getDefaultShipping()
     {
-        return Mage::getStoreConfig('billmate/checkout/shipping_method');
+        $shippingMethodCode = Mage::getStoreConfig('billmate/checkout/shipping_method');
+        $allowedShippingMethods = $this->getAllowedShippingMethods();
+        if (!in_array($shippingMethodCode, $allowedShippingMethods)) {
+            return current($allowedShippingMethods);
+        }
+        return $shippingMethodCode;
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function getAllowedShippingMethods()
+    {
+        $checkoutSession = Mage::getSingleton('checkout/session');
+        $shippingAddress = $checkoutSession->getQuote()->getShippingAddress();
+
+        $shippingRates = $shippingAddress
+            ->setCollectShippingRates(true)
+            ->collectShippingRates()
+            ->getAllShippingRates();
+
+        foreach ($shippingRates as $rate) {
+            $this->shippingRatesCodes[] = $rate->getCode();
+        }
+
+        return $this->shippingRatesCodes;
     }
 
     /**
