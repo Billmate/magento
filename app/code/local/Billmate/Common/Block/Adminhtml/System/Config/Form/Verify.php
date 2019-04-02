@@ -14,16 +14,27 @@ class Billmate_Common_Block_Adminhtml_System_Config_Form_Verify extends Mage_Adm
         $this->setTemplate('billmate/system/config/verify.phtml');
     }
 
+    /**
+     * @param Varien_Data_Form_Element_Abstract $element
+     *
+     * @return string
+     */
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
         return $this->_toHtml();
     }
 
+    /**
+     * @return string
+     */
     public function getAjaxCheckUrl()
     {
         return Mage::helper('adminhtml')->getUrl('adminhtml/adminhtml_billmatecommon/verify');
     }
 
+    /**
+     * @return string
+     */
     public function getButtonHtml()
     {
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
@@ -34,6 +45,4 @@ class Billmate_Common_Block_Adminhtml_System_Config_Form_Verify extends Mage_Adm
             ));
         return $button->toHtml();
     }
-
-
 }

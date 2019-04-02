@@ -1,12 +1,11 @@
 <?php
 
 
-class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Front_Action{
-
-    function IndexAction(){
-        $quote =  Mage::getSingleton('checkout/session')->getQuote();
-                
-        if ($this->getRequest()->isPost()){
+class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Front_Action
+{
+    public function indexAction()
+    {
+        if ($this->getRequest()->isPost()) {
 
 			$payment = $_POST['payment'];
             $pophide = $this->getRequest()->getPost('pophide',false);
@@ -32,7 +31,6 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
                             $stream."\r".
                             '}';
                         die($js);
-                        //die('alert("' . Mage::helper('payment')->__('Missing Social Security Number / Corporate Registration Number') . '")');
                     }
                 }
                 else {
@@ -42,7 +40,6 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
                             '$("'.$payment['method'].'_pno").insert({after: "<div class=\"validation-advice\" id=\"getaddress_failure\">'.Mage::helper('billmatecommon')->__('Missing Social Security Number / Corporate Registration Number').'</div>"})'."\r".
                             '}';
                         die($js);
-                        //die('alert("' . Mage::helper('payment')->__('Missing Social Security Number / Corporate Registration Number') . '")');
                     }
                 }
                 if (empty($payment[$payment['method'] . '_phone'])) {
@@ -57,12 +54,16 @@ class Billmate_BillmateInvoice_IndexController extends Mage_Core_Controller_Fron
         }
     
     }
-	function getInfoAction(){
+
+	public function getInfoAction()
+    {
 		$this->loadLayout();
 		$this->_initLayoutMessages('customer/session');
 		$this->renderLayout();
 	}
-    function updateAddressAction(){
+
+    public function updateAddressAction()
+    {
         if ($this->getRequest()->isPost()){
             $gateway = Mage::getSingleton('billmateinvoice/gateway');
             $gateway->init(true);

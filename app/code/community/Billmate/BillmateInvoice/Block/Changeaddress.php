@@ -28,8 +28,12 @@ class Billmate_BillmateInvoice_Block_ChangeAddress extends Mage_Payment_Block_Fo
         $this->matched = $gateway->isMatched;
         $this->setTemplate('billmate/changeaddress.phtml');
     }
-    
-    public function isMatched(){
+
+    /**
+     * @return bool
+     */
+    public function isMatched()
+    {
         return $this->matched;
     }
 }

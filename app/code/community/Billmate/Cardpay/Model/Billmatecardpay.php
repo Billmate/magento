@@ -33,7 +33,7 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
     public function void( Varien_Object $payment )
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
+            $k = Mage::helper('billmatecardpay')->getBillmate();
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
                 'number' => $invoiceId
@@ -77,9 +77,8 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
         if( Mage::getStoreConfig('payment/billmatecardpay/active') != 1 ) return false;
         $countries = explode(',', Mage::getStoreConfig('payment/billmatecardpay/countries'));	
         if( in_array($quote->getShippingAddress()->getCountry(), $countries ) ){
-			//$data = $quote->getTotals();
+
             $total = $quote->getSubtotal();
-            $status = false;
 			$min_total = Mage::getStoreConfig('payment/billmatecardpay/min_amount');
 			$max_total = Mage::getStoreConfig('payment/billmatecardpay/max_amount');
             
@@ -103,7 +102,7 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
     public function capture(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation') && Mage::getStoreConfig('payment/billmatecardpay/payment_action') == 'authorize') {
-            $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
+            $k = Mage::helper('billmatecardpay')->getBillmate();
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
                 'number' => $invoiceId
@@ -136,7 +135,7 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
     public function refund(Varien_Object $payment, $amount)
     {
         if(Mage::getStoreConfig('billmate/settings/activation')) {
-            $k = Mage::helper('billmatecardpay')->getBillmate(true, false);
+            $k = Mage::helper('billmatecardpay')->getBillmate();
             $invoiceId = $payment->getMethodInstance()->getInfoInstance()->getAdditionalInformation('invoiceid');
             $values = array(
                 'number' => $invoiceId
@@ -182,25 +181,4 @@ class Billmate_Cardpay_Model_BillmateCardpay extends Mage_Payment_Model_Method_A
         
         return $result['url'];
     }
-    /*
-    public function getOrderPlaceRedirectUrl()
-    {
-        //when you click on place order you will be redirected on this url, if you don't want this action remove this method
-        $session = Mage::getSingleton('checkout/session');
-        $session->setBillmateQuoteId($session->getQuoteId());
-        $session->setRebuildCart(true);
-
-        $gateway = Mage::getSingleton('billmatecardpay/gateway');
-
-        $result = $gateway->makePayment();
-
-
-        return $result['url'];
-    }
-    */
-
-	/*
-    public function validate(){
-    }*/
 }
-?>

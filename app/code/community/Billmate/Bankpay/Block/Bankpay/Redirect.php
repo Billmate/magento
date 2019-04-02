@@ -2,7 +2,9 @@
 
 class Billmate_Bankpay_Block_Bankpay_Redirect extends Mage_Core_Block_Abstract
 {
-    
+    /**
+     * @return string
+     */
     protected function _toHtml()
     {
         $standard = Mage::getModel('billmatebankpay/billmatebankpay');

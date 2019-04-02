@@ -2,7 +2,6 @@
 
 class Billmate_Cardpay_Block_Cardpay_Redirect extends Mage_Core_Block_Abstract
 {
-    
     protected function _toHtml()
     {
         $standard = Mage::getModel('billmatecardpay/billmatecardpay');

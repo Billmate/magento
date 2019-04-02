@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jesper
- * Date: 2014-12-08
- * Time: 12:54
- */
 class Billmate_BillmateInvoice_Block_Adminhtml_Sales_Creditmemo_Totals extends Mage_Sales_Block_Order_Creditmemo_Totals
 {
     protected function _initTotals()
@@ -22,5 +16,4 @@ class Billmate_BillmateInvoice_Block_Adminhtml_Sales_Creditmemo_Totals extends M
         }
         return Mage::helper('billmateinvoice/total')->addToBlock($this);
     }
-    // @codingStandardsIgnoreEnd
 }

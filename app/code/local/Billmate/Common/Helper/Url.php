@@ -1,13 +1,14 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Boxedsolutions
- * Date: 2017-02-17
- * Time: 12:02
- */
 class Billmate_Common_Helper_Url extends Mage_Checkout_Helper_Url
 {
+    /**
+     * @return bool
+     */
+    public function isBMCheckoutActive()
+    {
+        return (bool)Mage::getStoreConfig("billmate/checkout/active");
+    }
 
     /**
      * Retrieve checkout url
@@ -16,9 +17,17 @@ class Billmate_Common_Helper_Url extends Mage_Checkout_Helper_Url
      */
     public function getCheckoutUrl()
     {
-        if (Mage::getStoreConfig("billmate/checkout/active") == 1) {
-            return $this->_getUrl('billmatecommon/billmatecheckout', array('_secure'=>true));
+        if ($this->isBMCheckoutActive()) {
+            return $this->getBMCheckoutUrl();
         }
         return parent::getCheckoutUrl();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBMCheckoutUrl()
+    {
+        return $this->_getUrl('billmatecommon/billmatecheckout', array('_secure'=>true));
     }
 }
