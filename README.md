@@ -64,6 +64,16 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.2.0 (2019-04-02)
+* Feature - Added ability to install via modman.
+* Feature - Changed payment method logic to use joined payment method logic.
+* Fix - Some refactoring done for cleaner code.
+* Fix - Cleaned up admin panel and removed options that are no longer in use.
+* Fix - Locked checkout iframe when shipping methods are changing.
+* Fix - Refund Swish payments.
+* Fix - Default shipping method.
+* Fix - Custom pay did not work while checkout was active.
+
 ### 3.1.0 (2018-05-28)
 * Feature - Settings for Terms and Privacy Policy pages
 
