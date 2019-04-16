@@ -416,18 +416,12 @@ AddEvent(window,'resize',function(){
         }
     }
 });
-function addTerms(){
 
-    jQuery(document).Terms("villkor",{invoicefee:0},'#terms');
-    jQuery(document).Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34},"#terms-delbetalning");
-
-}
 AddEvent(window, 'load', function(){
     match_media_mount();
     if(typeof checkout!= 'undefined' && typeof checkout.form == 'undefined'){
         changeBillEvent();
     }
-    jQuery.getScript('https://billmate.se/billmate/base_jquery.js', function() {addTerms();});
 
     modalWin = new CreateModalPopUpObject();
     if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
