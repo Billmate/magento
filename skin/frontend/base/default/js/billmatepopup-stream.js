@@ -246,16 +246,7 @@ function changeBillEvent(){
 
     if( oldurl == null && typeof payment != 'undefined' && typeof billmateindexurl != 'undefined'){
 
-       /* oldurl = payment.saveUrl;
-        payment.saveUrl = billmateindexurl;
-        payment.onComplete = function(res){
-            checkout.setLoadWaiting(Billmate.getStep());
-            eval(res.responseText);
-        }*/
     }
-//	if( typeof FireCheckout != 'undefined' && fireoldurl == null ){
-//		fireoldurl = checkout.urls.save;
-//	}
 }
 function updateAddress(){
     if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || (typeof checkout != 'undefined' && typeof checkout.form != 'undefined') || typeof checkoutForm!= 'undefined'){
@@ -387,8 +378,7 @@ function paymentSave(){
             checkout.save();
         }
         if(typeof streamcheckout != 'undefined'){
-            //streamcheckout.placeUrl = oldurl;
-            //streamcheckout.onComplete = streamcomplete;
+
             streamcheckout.place();
             afterSave();
 
@@ -448,19 +438,6 @@ AddEvent(window, 'load', function(){
         $checkoutbtn = $('checkout:savebutton').onclick;
     }
     if(typeof streamcheckout != 'undefined'){
-        //oldurl = streamcheckout.placeUrl;
-        //streamcheckout.placeUrl = billmateindexurl;
-        /*streamcomplete = streamcheckout.onComplete;
-        streamcheckout.onCreate = function(res){
-            $(streamcheckout.container).addClassName('ajax-loading');
-            $(streamcheckout.container).addClassName('ajax-totals-loading');
-        }
-        streamcheckout.onComplete = function(res){
-            $(streamcheckout.container).removeClassName('ajax-loading');
-            $(streamcheckout.container).removeClassName('ajax-totals-loading');
-            eval(res.responseText);
-
-        }*/
     }
 
 });

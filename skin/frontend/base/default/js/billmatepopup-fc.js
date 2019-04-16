@@ -250,9 +250,6 @@ function changeBillEvent(){
             eval(res.responseText);
         }
     }
-//	if( typeof FireCheckout != 'undefined' && fireoldurl == null ){
-//		fireoldurl = checkout.urls.save;
-//	}
 }
 function updateAddress(){
     if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout.form != 'undefined'){

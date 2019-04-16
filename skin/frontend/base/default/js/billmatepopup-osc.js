@@ -260,16 +260,7 @@ function changeBillEvent(){
 
     if( oldurl == null && typeof payment != 'undefined' && typeof billmateindexurl != 'undefined'){
 
-        /*oldurl = payment.saveUrl;
-        payment.saveUrl = billmateindexurl;
-        payment.onComplete = function(res){
-            checkout.setLoadWaiting(Billmate.getStep());
-            eval(res.responseText);
-        }*/
     }
-//	if( typeof FireCheckout != 'undefined' && fireoldurl == null ){
-//		fireoldurl = checkout.urls.save;
-//	}
 }
 function updateAddress(){
     var osc = false;
@@ -412,15 +403,7 @@ function paymentSave(){
     }
     if( typeof checkout != 'undefined' && typeof checkout.form == 'undefined'){
         checkout.setLoadWaiting(Billmate.getStep());
-        /*payment.saveUrl = oldurl;
-        payment.onComplete = function(){
-            checkout.setLoadWaiting(Billmate.getStep());
-            payment.saveUrl = billmateindexurl;
-            payment.onComplete = function(res){
-                checkout.setLoadWaiting(false);
-                eval(res.responseText);
-            }
-        };*/
+
         review.save();
     }else{
         if( typeof FireCheckout != 'undefined' || typeof OPC != 'undefined'){

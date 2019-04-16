@@ -1,6 +1,6 @@
 //https://github.com/paulirish/matchMedia.js/
 window.billmatepopupLoaded = true;
-function match_media_mount(){
+function match_media_mount() {
 window.matchMedia = window.matchMedia || (function(doc, undefined){
 
   var docElem  = doc.documentElement,
@@ -100,7 +100,6 @@ function ModalPopupWindow() {
     var maximize = false;
 	div = document.createElement("div");
 	div.innerHTML = strOverLayHTML;
-    //document.body.appendChild(div);
 	document.body.insertBefore(div, document.body.firstChild);
 
     this.ResizePopUp = function(height, width) {
@@ -230,7 +229,6 @@ function ModalPopupWindow() {
     }
 }
 
-
 function AddEvent(html_element, event_name, event_function) 
 {       
    if(html_element.attachEvent) //Internet Explorer
@@ -241,18 +239,10 @@ function AddEvent(html_element, event_name, event_function)
 var modalWin = null;
 function changeBillEvent(){
 
-	if( oldurl == null && typeof payment != 'undefined' && typeof billmateindexurl != 'undefined'){
-
+	if (oldurl == null && typeof payment != 'undefined'
+        && typeof billmateindexurl != 'undefined') {
 		oldurl = payment.saveUrl;
-		/*payment.saveUrl = billmateindexurl;
-		payment.onComplete = function(res){
-			checkout.setLoadWaiting(Billmate.getStep());
-			eval(res.responseText);
-		}*/
 	}
-//	if( typeof FireCheckout != 'undefined' && fireoldurl == null ){
-//		fireoldurl = checkout.urls.save;
-//	}
 }
 function updateAddress(){
 	if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout.form != 'undefined' || typeof checkoutForm!= 'undefined'){
@@ -370,16 +360,6 @@ function paymentSave(){
 	}
 	if(typeof checkout.form == 'undefined'){
 		checkout.setLoadWaiting(Billmate.getStep());
-		/*payment.saveUrl = oldurl;
-		payment.onComplete = function(){
-			checkout.setLoadWaiting(Billmate.getStep());
-			payment.saveUrl = billmateindexurl;
-			payment.onComplete = function(res){
-				checkout.setLoadWaiting(false);
-				eval(res.responseText);
-			}
-		};
-		payment.save();*/
         review.save();
 	}else{
 		if( typeof FireCheckout != 'undefined' || typeof OPC != 'undefined' ){
@@ -421,13 +401,16 @@ function addTerms(){
     jQuery(document).Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34},"#terms-delbetalning");
 
 }
-AddEvent(window, 'load', function(){
+
+AddEvent(window, 'load', function() {
 	match_media_mount();
 	if(typeof checkout!= 'undefined' && typeof checkout.form == 'undefined'){
 		changeBillEvent();
 	}
-	jQuery.getScript('https://billmate.se/billmate/base_jquery.js', function() {addTerms();});
-    if($('person_number')){
+	jQuery.getScript('https://billmate.se/billmate/base_jquery.js', function() {
+	    addTerms();
+	});
+    if ($('person_number')) {
         jQuery(document).on('click','#p_method_billmatepartpayment',function(){
 
             var pno = $('person_number').value;
@@ -448,11 +431,6 @@ AddEvent(window, 'load', function(){
 
     }
 	modalWin = new CreateModalPopUpObject();
-	/*if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
-		$checkoutbtn = $$('#checkout-review-submit .btn-checkout')[0].onclick;
-		$$('#checkout-review-submit .btn-checkout')[0].onclick = function(){ checkAddress(); return false;};
-	}*/
-
 });
 function ShowDivInCenter(divId)
 {
@@ -494,7 +472,6 @@ function ShowDivInCenter(divId)
         ojbDiv.style.top = top + 'px';
         ojbDiv.style.left = offsetLeft + 'px';
         ojbDiv.style.display = "block";
-
     }
     catch (e) {}
 }
