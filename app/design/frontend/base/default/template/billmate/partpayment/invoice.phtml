@@ -31,7 +31,7 @@ if (Mage::getStoreConfig('firecheckout/general/enabled') && Mage::getStoreConfig
     <li>
         <label for="<?php echo $_code ?>_phone" class="required"><em>*</em><?php echo $this->__('Payment Options') ?></label>
         <div class="input-box">
-			<select name="pclass" id="pclass">
+			<select name="payment[pclass]" id="pclass">
 			<?php
 				$terms = $this->termsx();
 				$currency = Mage::app()->getStore()->getCurrentCurrencyCode(); 
