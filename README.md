@@ -64,6 +64,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.2.1 (2019-04-24)
+* Fix - Added payment plan id to requested data for Partpayment method
+
 ### 3.2.0 (2019-04-02)
 * Feature - Added ability to install via modman.
 * Feature - Changed payment method logic to use joined payment method logic.
