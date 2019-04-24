@@ -81,6 +81,7 @@ class Billmate_Common_Model_Payment_GatewayCore extends Varien_Object
 
         return [
             'method'       => static::METHOD_CODE,
+            'paymentplanid' => $quote->getPayment()->getData('pclass'),
             'currency'     => $currentCurrencyCode,
             'country'      => $storeCountryIso2,
             'orderid' => ($quote->getReservedOrderId()) ? $quote->getReservedOrderId() : (string)time(),
