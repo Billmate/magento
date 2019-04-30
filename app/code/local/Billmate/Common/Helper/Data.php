@@ -126,15 +126,7 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
 
                 $discount = 0.0;
                 $discountAmount = 0;
-                if ($_item->getDiscountPercent() != 0) {
-                    $discountAdded = true;
-                    $discount = $_item->getDiscountPercent();
-                    $marginal = ($percent / 100) / (1 + ($percent / 100));
 
-                    $discountAmount = $_item->getDiscountAmount();
-                    $discountAmount = $discountAmount - ($discountAmount * $marginal);
-
-                }
                 $total = ($discountAdded) ? (int)round((($price * $_item->getQty() - $discountAmount) * 100)) : (int)round($price * 100) * $_item->getQty();
                 $article[] = array(
                     'quantity' => (int)$_item->getQty(),
@@ -179,14 +171,6 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
                 $price = $_item->getCalculationPrice();
                 $discount = 0.0;
                 $discountAmount = 0;
-                if ($_item->getDiscountPercent() != 0) {
-                    $discountAdded = true;
-                    $discount = $_item->getDiscountPercent();
-                    $marginal = ($percent / 100) / (1 + ($percent / 100));
-
-                    $discountAmount = $_item->getDiscountAmount();
-                    $discountAmount = $discountAmount - ($discountAmount * $marginal);
-                }
                 $parentItem = $_item->getParentItem();
                 if ($parentItem) {
                     $qty = $parentItem->getQty();
