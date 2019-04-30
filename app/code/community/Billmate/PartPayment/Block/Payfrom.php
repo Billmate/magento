@@ -16,11 +16,11 @@ class Billmate_PartPayment_Block_Payfrom extends Mage_Core_Block_Template
 
         if (($product = Mage::registry('product'))) {
             if(!Mage::getSingleton('customer/session')->isLoggedIn()) {
-                return $this->helper('partpayment')->getLowPclass($product->getPrice(), true);
+                return $this->helper('partpayment')->getLowPclass($product->getPrice());
             } else {
                 $bill = Mage::getSingleton('customer/session')->getCustomer()->getDefaultBillingAddress();
                 if ($bill && $bill->getCountryId() && $bill->getCountryId() == 'SE') {
-                    return $this->helper('partpayment')->getLowPclass($product->getPrice(), true);
+                    return $this->helper('partpayment')->getLowPclass($product->getPrice());
                 }
             }
         } else {
