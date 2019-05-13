@@ -128,11 +128,11 @@ class Billmate_PartPayment_Model_PartPayment extends Mage_Payment_Model_Method_A
 	 	$title = '';
 	 	if ($address) {
             $selectedPClass = $this->getInfoInstance()->getAdditionalInformation('pclass');
-	        $grandTotal = $address->getGrandTotal();
+	        $subTotal = $address->getSubtotal();
 	        if ($this->getCurrentOrder()) {
-                $grandTotal = $this->getCurrentOrder()->getGrandTotal();
+                $subTotal = $this->getCurrentOrder()->getSubtotal();
             }
-	        $title = Mage::helper('partpayment')->getLowPclass($grandTotal, $selectedPClass);
+	        $title = Mage::helper('partpayment')->getLowPclass($subTotal, $selectedPClass);
 	    }
 
 	    $preTitle = Mage::helper('partpayment')->__('Billmate Partpayment');
