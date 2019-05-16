@@ -64,7 +64,7 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
-### 3.3.3 (2019-05-16)
+### 3.2.3 (2019-05-16)
 * Fix - Custom pay uses Billmate's new logos
 * Fix - Part payment updates in checkout view
 
