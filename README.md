@@ -66,6 +66,7 @@ Copy the code below for the size that fits your needs.
 
 ### 3.3.3 (2019-05-16)
 * Fix - Custom pay uses Billmate's new logos
+* Fix - Part payment updates in checkout view
 
 ### 3.2.2 (2019-04-29)
 Fix - Solved high rounding when adding two discounts on a order.
