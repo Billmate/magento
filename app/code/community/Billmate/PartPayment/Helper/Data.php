@@ -1,6 +1,10 @@
 <?php
 class Billmate_PartPayment_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    /**
+     * @var
+     */
+    protected $paymentOptions;
 
     public function getBillmate()
     {
@@ -163,132 +167,105 @@ class Billmate_PartPayment_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getPlclass($total)
     {
-	   $baseCurrencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
-       $currentCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
-       $_directory = Mage::helper('directory');
-
-       $payment_option = array();
-       $quote = Mage::getSingleTon('checkout/session')->getQuote();
-	   $address = $quote->getShippingAddress();
-	   $isoCode3 =  'SWE';//Mage::getModel('directory/country')->load($address->getCountryId())->getIso3Code();
-	   $isoCode2 =  Mage::getModel('directory/country')->load($address->getCountryId())->getIso2Code();
-	   $collection = Mage::getModel('partpayment/pclass')
-	   		   ->getCollection()
-	   		   ->addFieldToFilter('country', $isoCode2 )
-                ->addFieldToFilter('store_id',Mage::app()->getStore()->getId());
-
-        if($collection->getSize() == 0) {
-            $collection = Mage::getModel('partpayment/pclass')
-                ->getCollection()
-                ->addFieldToFilter('country', $isoCode2)
-                ->addFieldToFilter('store_id', 0);
+        if (!is_null($this->paymentOptions)) {
+            return $this->paymentOptions;
         }
-		// Maps countries to currencies
-		$country_to_currency = array(
-			'NOR' => 'NOK',
-			'SWE' => 'SEK',
-			'FIN' => 'EUR',
-			'DNK' => 'DKK',
-			'DEU' => 'EUR',
-			'NLD' => 'EUR'
-		);
 
-		$country_to_currency = array(
-			'NOR' => 'NOK',
-			'SWE' => 'SEK',
-			'FIN' => 'EUR',
-			'DNK' => 'DKK',
-			'DEU' => 'EUR',
-			'NLD' => 'EUR'
-		);
+        $baseCurrencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
+        $currentCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+        $_directory = Mage::helper('directory');
 
-		foreach ($collection as $pclass) {
+        $payment_option = array();
+        $isoCode3 =  'SWE';
+        $collection = $this->getPartialPlansCollection();
 
-			// 0 - Campaign
-			// 1 - Account
-			// 2 - Special
-			// 3 - Fixed
-			if (!in_array($pclass->getType() , array(0, 2, 1, 3, 4))) {
-				continue;
-			}
-	
-			if ($pclass->getType() == 2) {
-				$monthly_cost = -1;
-			} else {
-				if ($total < $pclass->getMinamount() || ($total > $pclass->getMaxamount() && $pclass->getMaxamount() > 0)) {
-					continue;
-				}
-	
-				if ($pclass->getType() == 3) {
-					continue;
-				} else {
-					$sum = $total;
-	
-					$lowest_payment = $this->getLowestPaymentAccount($isoCode3);
+        foreach ($collection as $pclass) {
 
-					$monthly_fee = $pclass->getHandlingfee();
-					$start_fee = $pclass->getStartfee();
-	
-					$sum += $start_fee;
-	
-					$base = ($pclass->getType() == 1);
-	
-					$minimum_payment = ($pclass->getType() === 1) ? $this->getLowestPaymentAccount($isoCode3) : 0;
-	
-					if ($pclass->getNbrofmonths() == 0) {
-						$payment = $sum;
-					} elseif ((int)$pclass->getInterestrate() == 0) {
-						$payment = $sum / $pclass->getNbrofmonths();
-					} else {
-						// Because Interest rate is in decimal for example 0.12 no need to multiply by 100
-						$interest_rate = $pclass->getInterestrate() / 12;
-						$payment = $sum * $interest_rate / (1 - pow((1 + $interest_rate), -$pclass->getNbrofmonths()));
-					}
-	
-					$payment += $monthly_fee;
-	
-					$balance = $sum;
-					$pay_data = array();
-	
-					$months = $pclass->getNbrofmonths();
-					
-					while (($months != 0) && ($balance > 0.01)) {
-						// Because Interest rate is in decimal for example 0.12 no need to multiply by 100
-						$interest = $balance * $pclass->getInterestrate()/ 12;
-						$new_balance = $balance + $interest + $monthly_fee;
-	
-						if ($minimum_payment >= $new_balance || $payment >= $new_balance) {
-							$pay_data[] = $new_balance;
-							break;
-						}
-	
-						$new_payment = max($payment, $minimum_payment);
-						
-						if ($base) {
-							$new_payment = max($new_payment, $balance / 24.0 + $monthly_fee + $interest);
-						}
-	
-						$balance = $new_balance - $new_payment;
-						
-						$pay_data[] = $new_payment;
-						
-						$months -= 1;
-					}
+            // 0 - Campaign
+            // 1 - Account
+            // 2 - Special
+            // 3 - Fixed
+            if (!in_array($pclass->getType() , array(0, 2, 1, 3, 4))) {
+                continue;
+            }
 
-					$monthly_cost = round(isset($pay_data[0]) ? ($pay_data[0]) : 0, 0);
-	
-					if ($monthly_cost < 0.01) {
-						continue;
-					}
-	
-					if ($pclass->getType() == 1 && $monthly_cost < $lowest_payment) {
-						$monthly_cost = $lowest_payment;
-					}
-	
-					if ($pclass->getType() == 0 && $monthly_cost < $lowest_payment) {
-						continue;
-					}
-				}
+            if ($pclass->getType() == 2) {
+                $monthly_cost = -1;
+            } else {
+                if ($total < $pclass->getMinamount() || ($total > $pclass->getMaxamount() && $pclass->getMaxamount() > 0)) {
+                    continue;
+                }
+
+                if ($pclass->getType() == 3) {
+                    continue;
+                } else {
+                    $sum = $total;
+
+                    $lowest_payment = $this->getLowestPaymentAccount($isoCode3);
+
+                    $monthly_fee = $pclass->getHandlingfee();
+                    $start_fee = $pclass->getStartfee();
+
+                    $sum += $start_fee;
+
+                    $base = ($pclass->getType() == 1);
+
+                    $minimum_payment = ($pclass->getType() === 1) ? $this->getLowestPaymentAccount($isoCode3) : 0;
+
+                    if ($pclass->getNbrofmonths() == 0) {
+                        $payment = $sum;
+                    } elseif ((int)$pclass->getInterestrate() == 0) {
+                        $payment = $sum / $pclass->getNbrofmonths();
+                    } else {
+                        // Because Interest rate is in decimal for example 0.12 no need to multiply by 100
+                        $interest_rate = $pclass->getInterestrate() / 12;
+                        $payment = $sum * $interest_rate / (1 - pow((1 + $interest_rate), -$pclass->getNbrofmonths()));
+                    }
+
+                    $payment += $monthly_fee;
+
+                    $balance = $sum;
+                    $pay_data = array();
+
+                    $months = $pclass->getNbrofmonths();
+
+                    while (($months != 0) && ($balance > 0.01)) {
+                        // Because Interest rate is in decimal for example 0.12 no need to multiply by 100
+                        $interest = $balance * $pclass->getInterestrate()/ 12;
+                        $new_balance = $balance + $interest + $monthly_fee;
+
+                        if ($minimum_payment >= $new_balance || $payment >= $new_balance) {
+                            $pay_data[] = $new_balance;
+                            break;
+                        }
+
+                        $new_payment = max($payment, $minimum_payment);
+
+                        if ($base) {
+                            $new_payment = max($new_payment, $balance / 24.0 + $monthly_fee + $interest);
+                        }
+
+                        $balance = $new_balance - $new_payment;
+
+                        $pay_data[] = $new_payment;
+
+                        $months -= 1;
+                    }
+
+                    $monthly_cost = round(isset($pay_data[0]) ? ($pay_data[0]) : 0, 0);
+
+                    if ($monthly_cost < 0.01) {
+                        continue;
+                    }
+
+                    if ($pclass->getType() == 1 && $monthly_cost < $lowest_payment) {
+                        $monthly_cost = $lowest_payment;
+                    }
+
+                    if ($pclass->getType() == 0 && $monthly_cost < $lowest_payment) {
+                        continue;
+                    }
+                }
 			}
 
 			$monthly_cost = $_directory->currencyConvert($monthly_cost,$baseCurrencyCode,$currentCurrencyCode);
@@ -298,10 +275,11 @@ class Billmate_PartPayment_Helper_Data extends Mage_Core_Helper_Abstract
 			$payment_option_temp['pclass_id'] = $pclass->getPaymentplanid();
 			$payment_option_temp['months'] = $pclass->getNbrofmonths();
 			$payment_option_temp['description'] = $pclass->getDescription();
-            $payment_option[] = $payment_option_temp;
+            $payment_option[$payment_option_temp['pclass_id']] = $payment_option_temp;
+            $this->paymentOptions = $payment_option;
 		}
 		
-		return $payment_option;
+		return $this->paymentOptions;
     }
 
     /**
@@ -309,28 +287,36 @@ class Billmate_PartPayment_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return string
      */
-    public function getLowPclass($total)
+    public function getLowPclass($amount, $selectedOption = null)
     {
+        $coreHelper = Mage::helper('core');
         $this->checkPclasses(true);
-		$payment_option = $this->getPlclass($total);
-		$status = true;
-		if (!$payment_option) {
-			$status = false;
+
+		$paymentOptions = $this->getPlclass($amount);
+
+		if (!$paymentOptions) {
+			return '';
 		}
-		
-		$sort_order = array(); 
-		  
-		foreach ($payment_option as $key => $value) {
-			$sort_order[$key] = $value['monthly_cost'];
-		}
-	
-		array_multisort($sort_order, SORT_ASC, $payment_option);
-		$title = '';
-		if ($status) {
-			$currency = Mage::app()->getStore()->getCurrentCurrencyCode(); 
-			$price = round(Mage::helper('core')->currency($payment_option[0]['monthly_cost'], false, true),2);
-			$title = ' '.Mage::helper('partpayment')->__('from').' '.$price.' '.$currency.' / '. Mage::helper('partpayment')->__('month');
-		}
+
+        $activeOption = current($paymentOptions);
+
+		if ($selectedOption && isset($paymentOptions[$selectedOption])) {
+            $activeOption = $paymentOptions[$selectedOption];
+        }
+
+        $currency = Mage::app()->getStore()->getCurrentCurrencyCode();
+        $price = $coreHelper->currency(
+            $activeOption['monthly_cost'],
+            false,
+            true
+        );
+
+        $title = $this->__(' %s from %s %s / month',
+            $activeOption['description'],
+            $price,
+            $currency
+        );
+
 		return $title;
     }
 
@@ -345,5 +331,53 @@ class Billmate_PartPayment_Helper_Data extends Mage_Core_Helper_Abstract
         $item['interestrate'] = $item['interestrate'] / 100;
         $item['minamount'] = $item['minamount'] / 100;
         $item['maxamount'] = $item['maxamount'] / 100;
+    }
+
+    public function getPartialPlansCollection()
+    {
+        $shippingAddress = $this->getCurrentShippingAddress();
+        $isoCode2 =  Mage::getModel('directory/country')->load(
+            $shippingAddress->getCountryId()
+        )->getIso2Code();
+
+        $collection = Mage::getModel('partpayment/pclass')
+            ->getCollection()
+            ->addFieldToFilter('country', $isoCode2 )
+            ->addFieldToFilter('store_id',Mage::app()->getStore()->getId());
+
+        if($collection->getSize() == 0) {
+            $collection = Mage::getModel('partpayment/pclass')
+                ->getCollection()
+                ->addFieldToFilter('country', $isoCode2)
+                ->addFieldToFilter('store_id', 0);
+        }
+        $collection->setOrder('nbrofmonths', 'ASC');
+        return $collection;
+    }
+
+    public function getCurrentShippingAddress()
+    {
+        $shippingAddress = $this->getQuote()->getShippingAddress();
+        if ($this->getCurrentOrder()) {
+            return $this->getCurrentOrder()->getShippingAddress();
+        }
+
+        return $shippingAddress;
+    }
+
+    /**
+     * @return Mage_Sales_Model_Order
+     */
+    public function getCurrentOrder()
+    {
+        return Mage::registry('current_order');
+    }
+
+    /**
+     * @return Mage_Sales_Model_Quote
+     */
+    public function getQuote()
+    {
+        return Mage::getSingleton('checkout/session')->getQuote();
     }
 }
