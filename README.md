@@ -63,8 +63,13 @@ Copy the code below for the size that fits your needs.
 `<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_s.png" alt="Billmate Payment Gateway" /></a>`
 
 ## Changelog
+
+### 3.2.3 (2019-05-16)
+* Fix - Custom pay uses Billmate's new logos
+* Fix - Part payment updates in checkout view
+
 ### 3.2.2 (2019-04-29)
-* Fix - Solved high rounding when adding two discounts on a order.
+Fix - Solved high rounding when adding two discounts on a order.
 
 ### 3.2.1 (2019-04-24)
 * Fix - Added payment plan id to requested data for Partpayment method.
