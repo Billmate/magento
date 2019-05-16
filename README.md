@@ -65,10 +65,10 @@ Copy the code below for the size that fits your needs.
 ## Changelog
 
 ### 3.3.3 (2019-05-16)
-* Feature - Settings for Terms and Privacy Policy pages
+* Fix - Custom pay uses Billmate's new logos
 
 ### 3.2.2 (2019-04-29)
-* Fix - Custom pay uses Billmate's new logos
+* Feature - Settings for Terms and Privacy Policy pages
 
 ### 3.2.1 (2019-04-24)
 * Fix - Added payment plan id to requested data for Partpayment method.
