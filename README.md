@@ -64,6 +64,11 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.2.4 (2019-05-23)
+* Fix - Added error message in case of incorrect org/pno
+* Fix - Added support to run Billmate Checkout even if Swedish is not the Default Country
+* Fix - Removed code to improve traffic to Billmate server
+
 ### 3.2.3 (2019-05-16)
 * Fix - Custom pay uses Billmate's new logos
 * Fix - Part payment updates in checkout view
