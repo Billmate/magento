@@ -46,8 +46,6 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getBillmate()
     {
-        $lang = explode('_',Mage::getStoreConfig('general/locale/code'));
-        if(!defined('BILLMATE_LANGUAGE'))define('BILLMATE_LANGUAGE',$lang[0]);
         $eid = Mage::getStoreConfig('billmate/credentials/eid');
         $secret = Mage::getStoreConfig('billmate/credentials/secret');
         $testmode = Mage::getStoreConfig('billmate/checkout/testmode');
