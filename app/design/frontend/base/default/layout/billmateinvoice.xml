@@ -1,39 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layout version="0.1.0">
-    <default>
-        <reference name="head">
-            <action method="addItem">
-                <type>skin_css</type>
-                <name>css/billmatestyle.css</name>
-            </action>
-            <action method="addItem" ifconfig="billmate/settings/customcss">
-                <type>skin_css</type>
-                <name>css/billmatestyle-custom.css</name>
-            </action>
-            <block type="core/text" name="billmate.inline.javascript">
-                <action method="setText">
-                    <text><![CDATA[
-					<script type="text/javascript">
-                            if (!window.jQuery){
-                                var jq = document.createElement('script');
-                                jq.type = "text/javascript";
-                                jq.src = "/skin/frontend/base/default/js/jquery.js";
-                                document.getElementsByTagName('head')[0].appendChild(jq);
-                            }
-
-					</script>
-<script type="text/javascript">
-var oldurl = null;
-</script>
-]]>
-</text>
-                </action>
-            </block>
-
-            <block type="core/template" template="billmate/billmatescript.phtml"/>
-        </reference>
-    </default>
     <checkout_onepage_index>
+        <update handle="billmate_invoice_scripts"/>
         <reference name="head">
             <block type="core/template" template="billmate/getaddress.phtml"/>
         </reference>
@@ -63,6 +31,7 @@ var oldurl = null;
         </reference>
     </checkout_onepage_paymentmethod>
     <onestepcheckout_index_index>
+        <update handle="billmate_invoice_scripts"/>
         <reference name="head">
             <block type="core/template" template="billmate/getaddress.phtml"/>
         </reference>
@@ -79,6 +48,7 @@ var oldurl = null;
         </reference>
     </onestepcheckout_index_index>
     <streamcheckout_index_index>
+        <update handle="billmate_invoice_scripts"/>
         <reference name="head">
             <block type="core/template" template="billmate/getaddress.phtml"/>
             <action method="removeItem" ifconfig="streamcheckout/general/enabled"><type>skin_css</type><name>css/billmatestyle.css</name></action>
@@ -100,6 +70,7 @@ var oldurl = null;
         </reference>
     </streamcheckout_index_index>
     <firecheckout_index_index>
+        <update handle="billmate_invoice_scripts"/>
         <reference name="head">
             <action method="removeItem" ifconfig="firecheckout/general/enabled"><type>skin_css</type><name>css/billmatestyle.css</name></action>
             <action method="addItem" ifconfig="firecheckout/general/enabled">
@@ -160,4 +131,39 @@ var oldurl = null;
             <block name="billmateinvoice_fee" type="billmateinvoice/invoice_totals_fee" before="tax"/>
         </reference>
     </sales_email_order_invoice_items>
+    <billmatecommon_billmatecheckout_index>
+        <update handle="billmate_invoice_scripts"/>
+    </billmatecommon_billmatecheckout_index>
+
+    <billmate_invoice_scripts>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/billmatestyle.css</name>
+            </action>
+            <action method="addItem" ifconfig="billmate/settings/customcss">
+                <type>skin_css</type>
+                <name>css/billmatestyle-custom.css</name>
+            </action>
+            <block type="core/text" name="billmate.inline.javascript">
+                <action method="setText">
+                    <text><![CDATA[
+					<script type="text/javascript">
+                        if (!window.jQuery) {
+                            var jq = document.createElement('script');
+                            jq.type = "text/javascript";
+                            jq.src = "/skin/frontend/base/default/js/jquery.js";
+                            document.getElementsByTagName('head')[0].appendChild(jq);
+                        }
+					</script>
+                    <script type="text/javascript">
+                        var oldurl = null;
+                    </script>
+                    ]]>
+                    </text>
+                </action>
+            </block>
+            <block type="billmateinvoice/script" template="billmate/billmatescript.phtml"/>
+        </reference>
+    </billmate_invoice_scripts>
 </layout>
