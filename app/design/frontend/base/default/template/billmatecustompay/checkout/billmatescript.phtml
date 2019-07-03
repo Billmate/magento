@@ -1,0 +1,20 @@
+<?php
+/**
+ * @var $this Billmate_CustomPay_Block_Invoice_Script
+ */
+?>
+
+<script type="text/javascript">
+    var billmateindexurl = "<?php echo $this->getUrl('custompay/index') ?>";
+    var billmatesaveurl  = '<?php echo $this->getUrl('custompay/index/updateAddress') ?>';
+    var skinurl = '<?php echo  $this->getMediaUrl() ?>';
+    var PARTPAYMENT_EID = '<?php echo $this->getConnectionId()?>';
+    var billmatecust_loggedin = '<?php echo $this->isCustomerLogged() ? "true" : "false" ?>';
+
+    if (!window.billmatepopupLoaded) {
+        var jq = document.createElement('script');
+        jq.type = "text/javascript";
+        jq.src = "<?php echo $this->getScriptPath(); ?>";
+        document.getElementsByTagName('head')[0].appendChild(jq);
+    }
+</script>

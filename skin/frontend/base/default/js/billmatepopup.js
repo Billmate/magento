@@ -1,6 +1,6 @@
 //https://github.com/paulirish/matchMedia.js/
 window.billmatepopupLoaded = true;
-function match_media_mount() {
+function match_media_mount(){
 window.matchMedia = window.matchMedia || (function(doc, undefined){
 
   var docElem  = doc.documentElement,
@@ -100,6 +100,7 @@ function ModalPopupWindow() {
     var maximize = false;
 	div = document.createElement("div");
 	div.innerHTML = strOverLayHTML;
+    //document.body.appendChild(div);
 	document.body.insertBefore(div, document.body.firstChild);
 
     this.ResizePopUp = function(height, width) {
@@ -229,6 +230,7 @@ function ModalPopupWindow() {
     }
 }
 
+
 function AddEvent(html_element, event_name, event_function) 
 {       
    if(html_element.attachEvent) //Internet Explorer
@@ -238,14 +240,12 @@ function AddEvent(html_element, event_name, event_function)
 } 
 var modalWin = null;
 function changeBillEvent(){
-
-	if (oldurl == null && typeof payment != 'undefined'
-        && typeof billmateindexurl != 'undefined') {
+	if (oldurl == null && typeof payment != 'undefined' && typeof billmateindexurl != 'undefined') {
 		oldurl = payment.saveUrl;
 	}
 }
-function updateAddress(){
-	if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout.form != 'undefined' || typeof checkoutForm!= 'undefined'){
+function updateAddress() {
+	if (typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout.form != 'undefined' || typeof checkoutForm!= 'undefined') {
 		if( typeof checkout.form == 'undefined'){
 			params = Form.serialize(checkoutForm.form.id);
 		} else if(typeof checkout.form != 'undefined'){
@@ -325,7 +325,7 @@ function checkAddress(psn){
         if ($('getaddress_failure'))
             $('getaddress_failure').remove();
         $('person_number').addClassName('validation-failed');
-        $('billmategetaddress').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'})
+        $('person_number').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'})
         checkout.setLoadWaiting(false);
 
     }else if(!$('person_number') && $(selectedmethod+'_pno').value == ''){
@@ -395,14 +395,19 @@ AddEvent(window,'resize',function(){
 		}
 	}
 });
+function addTerms(){
 
-AddEvent(window, 'load', function() {
+    jQuery(document).Terms("villkor",{invoicefee:0},'#terms');
+    jQuery(document).Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34},"#terms-delbetalning");
+
+}
+AddEvent(window, 'load', function(){
 	match_media_mount();
 	if(typeof checkout!= 'undefined' && typeof checkout.form == 'undefined'){
 		changeBillEvent();
 	}
-
-    if ($('person_number')) {
+	jQuery.getScript('https://billmate.se/billmate/base_jquery.js', function() {addTerms();});
+    if($('person_number')){
         jQuery(document).on('click','#p_method_billmatepartpayment',function(){
 
             var pno = $('person_number').value;
@@ -464,6 +469,7 @@ function ShowDivInCenter(divId)
         ojbDiv.style.top = top + 'px';
         ojbDiv.style.left = offsetLeft + 'px';
         ojbDiv.style.display = "block";
+
     }
     catch (e) {}
 }

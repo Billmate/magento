@@ -250,6 +250,9 @@ function changeBillEvent(){
             eval(res.responseText);
         }
     }
+//	if( typeof FireCheckout != 'undefined' && fireoldurl == null ){
+//		fireoldurl = checkout.urls.save;
+//	}
 }
 function updateAddress(){
     if( typeof FireCheckout != 'undefined' || typeof Lightcheckout != 'undefined' || typeof checkout.form != 'undefined'){
@@ -320,7 +323,7 @@ function checkAddress() {
         if ($('getaddress_failure'))
             $('getaddress_failure').remove();
         $('person_number').addClassName('validation-failed');
-        $('billmategetaddress').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'})
+        $('person_number').insert({after: '<div class="validation-advice" id="getaddress_failure">' + PNO_ERROR + '</div>'})
         checkout.setLoadWaiting(false);
 
     }else if(!$('billing-new-address-form').visible() &&  $(selectedGateway+'_pno').value == ''){
@@ -425,7 +428,12 @@ function SaveAddress(){
         }
     });
 }
+function addTerms(){
 
+        jQuery(document).Terms("villkor",{invoicefee:0},'#terms');
+        jQuery(document).Terms("villkor_delbetalning",{eid: PARTPAYMENT_EID,effectiverate:34},"#terms-delbetalning");
+
+}
 AddEvent(window, 'load', function(){
     match_media_mount();
 
@@ -435,6 +443,7 @@ AddEvent(window, 'load', function(){
         changeBillEvent();
     }
     modalWin = new CreateModalPopUpObject();
+    jQuery.getScript('https://billmate.se/billmate/base_jquery.js',function(){addTerms();});
 
     if( $$('#checkout-review-submit .btn-checkout').length > 0 ){
         if($('billing-new-address-form').visible()) {

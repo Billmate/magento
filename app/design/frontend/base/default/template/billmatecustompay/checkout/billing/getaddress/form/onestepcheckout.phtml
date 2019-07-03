@@ -1,0 +1,15 @@
+<li class="wide person_number billmate-getaddress">
+    <label for="person_number">
+        <?php echo $this->__('Social Security Number / Corporate Registration Number'); ?>
+    </label>
+    <input type="text"
+           class="input-text"
+           style="width:62%!important"
+           value="<?php echo $this->getParentBlock()->getPno() ?>"
+           name="payment[person_number]"
+           id="person_number"
+           title="<?php echo $this->__('Social Security Number / Corporate Registration Number'); ?>"/>
+    <button class="button" id="billmategetaddress">
+        <span><span><?php echo $this->__('Get Address'); ?></span></span>
+    </button>
+</li>

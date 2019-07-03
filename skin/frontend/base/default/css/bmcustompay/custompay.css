@@ -1,0 +1,17 @@
+#payment_form_bmcustom_invoice {
+}
+
+#payment_form_bmcustom_invoice .input-invoice {
+    float:left;
+    margin:3px;
+}
+
+#payment_form_bmcustom_invoice .additional-payment-info #terms,
+#payment_form_bmcustom_invoice .additional-payment-info #privacy-policy {
+    float:none!important;
+    margin-left: 0px!important;
+}
+
+#payment_form_bmcustom_invoice .additional-payment-info{
+    display:inline-flex
+}

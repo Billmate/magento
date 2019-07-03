@@ -1,0 +1,44 @@
+<?php
+if (strlen($code = Mage::app()->getRequest()->getParam('store'))) { // store level
+    $store_id = Mage::getModel('core/store')->load($code)->getId();
+} elseif (strlen($code = $code = Mage::app()->getRequest()->getParam('website'))) { // website level
+    $website_id = Mage::getModel('core/website')->load($code)->getId();
+    $store_id = Mage::app()->getWebsite($website_id)->getDefaultStore()->getId();
+} else { // default level
+    $store_id = 0;
+}
+
+?>
+
+<script type="text/javascript">
+    function updateplans(){
+
+        new Ajax.Request('<?php echo $this->getAjaxCheckUrl().'?store_id='.$store_id ?>',{
+            method: 'get',
+            onSuccess: function(transport){
+                if(transport.responseText) {
+                    var response = transport.responseText.evalJSON();
+                    if (response.success){
+                        $('row_payment_partpayment_view_pclass').down('.value').update(response.content);
+                        if($('updated'))
+                            $('updated').remove();
+                        if($('updateerror'))
+                            $('updateerror').remove();
+
+                        $('partpayment_update').insert({after: '<h3 style="color:green;" id="updated"><?php echo Mage::helper('billmatecustompay')->__('Updated paymentplans'); ?></h3>'})
+                    }
+                    else{
+                        if($('updateerror'))
+                            $('updateerror').remove();
+                        if($('updated'))
+                            $('updated').remove();
+                        $('partpayment_update').insert({after: '<h3 style="color:red;" id="updateerror"><?php echo Mage::helper('billmatecustompay')->__('Couldn’t update Paymentplans'); ?></h3>'})
+                    }
+
+                }
+            }
+        })
+    }
+</script>
+
+<?php echo $this->getButtonHtml(); ?>

@@ -1,0 +1,56 @@
+<?php
+$customerEmail = $this->getCustomerEmail();
+$_code = $this->getMethodCode();
+$methodLogo = $this->getMethodLogo();
+
+$lang = explode('_',Mage::app()->getLocale()->getLocaleCode());
+
+if ($this->useCustomStyles()) {
+    $padding = 'margin-right: 10px;';
+    $visuality = 'display:none';
+} else {
+	$padding = '';
+    $visuality = 'display:block';
+}
+?>
+
+<ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display: none;">
+    <li>
+        <img src="<?php echo $methodLogo?>" />
+    </li>
+    <li style="<?php echo $visuality; ?>">
+        <label for="<?php echo $_code ?>_pno" class="required">
+            <em>*</em><?php echo $this->__('Personal Number') ?>
+        </label>
+        <div class="input-box">
+            <input type="text" title="<?php echo $this->__('Social Security Number / Corporate Registration Number') ?>"
+                   class="input-text required-entry"
+                   id="<?php echo $this->getFieldPnoCode() ?>"
+                   name="payment[<?php echo $this->getFieldPnoCode() ?>]"
+            />
+        </div>
+    </li>
+    <li class="additional-payment-info">
+		<input type="checkbox" checked="checked" id="<?php echo $this->getFieldPhoneCode()  ?>"
+               name="payment[<?php echo $this->getFieldPhoneCode();?>]" title="<?php echo $this->__('Phone Number') ?>"
+               class="required-entry input-invoice" value="on" style="<?php echo $padding; ?>" />
+        <label class="required" style="font-weight:normal"><em>*</em>
+            <?php echo $this->__('My email, <b>%1$s</b> is accurate and can be used for invoicing. I also confirm the ', $customerEmail ) ?>
+            <a id="terms">
+                <?php echo $this->__('terms & conditions'); ?>
+            </a>,
+            <a id="privacy-policy" href="https://www.billmate.se/integritetspolicy/" target="_blank">
+                <?php echo $this->__('Privacy Policy'); ?>
+            </a>
+            <?php echo $this->__('and accept the liability.'); ?>
+        </label>
+    </li>
+    <?php echo $this->getChildHtml() ?>
+</ul>
+<script type="text/javascript">
+    var billmateindexurl = "<?php echo $this->getUrl('custompay/index',array('_secure' => true)) ?>";
+    var billmatesaveurl  = '<?php echo $this->getUrl('custompay/method/updateaddress',array('_secure' => true));?>';
+    var skinurl = '<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) ?>';
+    var PARTPAYMENT_EID = '<?php echo Mage::getStoreConfig('payment/billmatepartpayment/eid'); ?>';
+    var PNO_ERROR = '<?php echo $this->__('Missing Social Security Number / Corporate Registration Number'); ?>';
+</script>

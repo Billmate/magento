@@ -1,0 +1,16 @@
+<div class="billmate-getaddress">
+    <div class="field person-number field-type-text">
+        <div class="input-box">
+        <input placeholder="<?php echo $this->__('Social Security Number / Corporate Registration Number');?>"
+               value="<?php echo $this->getParentBlock()->getPno() ?>"
+               type="text"
+               id="person_number"
+               name="payment[person_number]"
+               title="<?php echo $this->__('Social Security Number / Corporate Registration Number');?>"
+               class="input-text">
+        </div>
+    </div>
+    <button class="button" id="billmategetaddress">
+        <span><span><?php echo  $this->__('Get Address');?></span></span>
+    </button>
+</div>

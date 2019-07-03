@@ -1,0 +1,39 @@
+<?php
+$storeId = $this->getStoreId();
+?>
+    <script type="text/javascript">
+        function verify(){
+            var eid = $('payment_bm_connnection_eid').value;
+            var secret = $('payment_bm_connnection_secret').value;
+            new Ajax.Request('<?php echo $this->getAjaxCheckUrl() . 'store_id=' . $storeId ?>',{
+                method: 'post',
+                parameters: {
+                    eid: eid,
+                    secret: secret
+                },
+                onSuccess: function(transport){
+                    if(transport.responseText){
+                        var response = transport.responseText.evalJSON();
+                        if(response.success){
+                            if($('error'))
+                                $('error').remove();
+                            if($('verified'))
+                                $('verified').remove();
+                            $('bmconnection_verify').insert({after:'<h3 id="verified" style="color:green;"><?php echo $this->__('Verified'); ?></h3>'})
+
+                        } else {
+                            if($('verified'))
+                                $('verified').remove();
+                            if($('error'))
+                                $('error').remove();
+                            $('bmconnection_verify').insert({after:'<h3 id="error" style="color:red;"><?php echo $this->__('Invalid credentials'); ?></h3>'})
+
+                        }
+
+                    }
+                }
+            })
+        }
+    </script>
+
+<?php echo $this->getButtonHtml(); ?>

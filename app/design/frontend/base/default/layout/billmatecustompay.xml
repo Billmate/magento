@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <checkout_onepage_index>
+        <update handle="billmate_invoice_scripts"/>
+        <update handle="getaddress_pno_form" />
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/bmcustompay/custompay.css</name>
+            </action>
+        </reference>
+        <block type="core/template" template="billmatecustompay/checkout/billmatescript.phtml"/>
+
+        <reference name="checkout.onepage.payment.additional">
+            <block type="core/text" name="billmate.additional.div">
+                <action method="setText">
+                    <text>
+                        <![CDATA[
+                            <div id="checkout-billmate-load" style="display:none;"></div>
+                        ]]>
+                    </text>
+                </action>
+            </block>
+        </reference>
+    </checkout_onepage_index>
+
+    <getaddress_pno_form>
+        <reference name="head">
+            <block type="billmatecustompay/checkout_PnoAddress"
+                   name="bm_pno_address_form"
+                   template="billmatecustompay/checkout/billing/getaddress.phtml">
+                <block type="core/template" name="default_pno_form"
+                       template="billmatecustompay/checkout/billing/getaddress/form/default.phtml"/>
+                <block type="core/template" name="firecheckout_pno_form"
+                   template="billmatecustompay/checkout/billing/getaddress/form/firecheckout.phtml"/>
+                <block type="core/template" name="streamcheckout_pno_form"
+                   template="billmatecustompay/checkout/billing/getaddress/form/streamcheckout.phtml"/>
+                <block type="core/template" name="onestepcheckout_pno_form"
+                   template="billmatecustompay/checkout/billing/getaddress/form/onestepcheckout.phtml"/>
+            </block>
+        </reference>
+    </getaddress_pno_form>
+
+    <billmate_update_address>
+        <!-- Billmate_Checkout -->
+        <remove name="right"/>
+        <remove name="left"/>
+
+        <block type="billmatecustompay/invoice_changeAddress"
+               name="root"
+               output="toHtml"
+               template="billmatecustompay/checkout/changeaddress.phtml"
+        />
+    </billmate_update_address>
+
+    <billmate_complete_checkout>
+        <!-- Billmate_Checkout -->
+        <remove name="right"/>
+        <remove name="left"/>
+
+        <block type="billmatecustompay/invoice_complete"
+               name="root"
+               output="toHtml"
+               template="billmatecustompay/checkout/complete-checkout.phtml"
+        />
+    </billmate_complete_checkout>
+
+    <checkout_onepage_paymentmethod>
+        <reference name="checkout.onepage.payment.methods.additional">
+            <block type="core/text" name="billmate.additional.div">
+                <action method="setText">
+                    <text>
+                        <![CDATA[
+                            <div id="checkout-billmate-load" style="display:none;"></div>
+                        ]]>
+                    </text>
+                </action>
+            </block>
+        </reference>
+    </checkout_onepage_paymentmethod>
+
+    <onestepcheckout_index_index>
+        <update handle="billmate_invoice_scripts"/>
+        <update handle="getaddress_pno_form" />
+        <reference name="before_body_end">
+            <block type="core/text" name="billmate.additional.div">
+                <action method="setText">
+                    <text>
+                        <![CDATA[
+                            <div id="checkout-billmate-load" style="display:none;"></div>
+                        ]]>
+                    </text>
+                </action>
+            </block>
+        </reference>
+    </onestepcheckout_index_index>
+
+    <streamcheckout_index_index>
+        <update handle="billmate_invoice_scripts"/>
+        <update handle="getaddress_pno_form" />
+        <reference name="head">
+            <action method="removeItem" ifconfig="streamcheckout/general/enabled"><type>skin_css</type><name>css/billmatestyle.css</name></action>
+            <action method="addItem" ifconfig="streamcheckout/general/enabled">
+                <type>skin_css</type>
+                <name>css/billmatestyle-stream.css</name>
+            </action>
+        </reference>
+        <reference name="before_body_end">
+            <block type="core/text" name="billmate.additional.div">
+                <action method="setText">
+                    <text>
+                        <![CDATA[
+                            <div id="checkout-billmate-load" style="display:none;"></div>
+                        ]]>
+                    </text>
+                </action>
+            </block>
+        </reference>
+    </streamcheckout_index_index>
+
+    <firecheckout_index_index>
+        <update handle="billmate_invoice_scripts"/>
+        <reference name="head">
+            <action method="removeItem" ifconfig="firecheckout/general/enabled"><type>skin_css</type><name>css/billmatestyle.css</name></action>
+            <action method="addItem" ifconfig="firecheckout/general/enabled">
+                <type>skin_css</type>
+                <name>css/billmatestyle-fc.css</name>
+            </action>
+        </reference>
+        <update handle="getaddress_pno_form" />
+    </firecheckout_index_index>
+
+    <sales_order_print>
+        <reference name="order_totals">
+            <block name="billmateinvoice_fee" type="billmateinvoice/order_totals_fee" before="tax"/>
+        </reference>
+    </sales_order_print>
+
+    <sales_order_view>
+        <reference name="order_totals">
+            <block name="billmateinvoice_fee" type="billmateinvoice/order_totals_fee" before="tax"/>
+        </reference>
+    </sales_order_view>
+
+    <sales_order_invoice>
+        <reference name="invoice_totals">
+            <block name="billmateinvoice_fee" type="billmateinvoice/invoice_totals_fee" before="tax"/>
+        </reference>
+    </sales_order_invoice>
+
+    <sales_order_printinvoice>
+        <reference name="invoice_totals">
+            <block name="billmateinvoice_fee" type="billmateinvoice/invoice_totals_fee" before="tax"/>
+        </reference>
+    </sales_order_printinvoice>
+
+    <sales_email_order_items>
+        <reference name="order_totals">
+            <block name="billmateinvoice_fee" type="billmateinvoice/order_totals_fee" before="tax"/>
+        </reference>
+    </sales_email_order_items>
+
+    <sales_email_order_invoice_items>
+        <reference name="invoice_totals">
+            <block name="billmateinvoice_fee" type="billmateinvoice/invoice_totals_fee" before="tax"/>
+        </reference>
+    </sales_email_order_invoice_items>
+
+    <billmate_invoice_scripts>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/billmatestyle.css</name>
+            </action>
+            <action method="addItem" ifconfig="payment/bm_connnection/customcss">
+                <type>skin_css</type>
+                <name>css/billmatestyle-custom.css</name>
+            </action>
+            <block type="core/text" name="billmate.inline.javascript">
+                <action method="setText">
+                    <text><![CDATA[
+					<script type="text/javascript">
+                            if (!window.jQuery){
+                                var jq = document.createElement('script');
+                                jq.type = "text/javascript";
+                                jq.src = "/skin/frontend/base/default/js/jquery.js";
+                                document.getElementsByTagName('head')[0].appendChild(jq);
+                            }
+
+                                            </script>
+                    <script type="text/javascript">
+                    var oldurl = null;
+                    </script>
+                    ]]>
+                    </text>
+                </action>
+            </block>
+
+            <block type="billmatecustompay/invoice_script" template="billmatecustompay/checkout/billmatescript.phtml"/>
+        </reference>
+    </billmate_invoice_scripts>
+</layout>

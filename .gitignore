@@ -1,7 +1,0 @@
-var/connect/Billmate_BillmateInvoice.xml
-var/connect/Billmate_Magento-1.23.0.tgz
-var/connect/Billmate_Magento-1.20.0.tgz
-var/connect/package.xml
-var/connect/Billmate_Magento.xml
-.idea
-.DS_Store

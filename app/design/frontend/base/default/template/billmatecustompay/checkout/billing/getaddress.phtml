@@ -1,0 +1,78 @@
+<?php
+/**
+ * @var $this Billmate_CustomPay_Block_Checkout_PnoAddress
+ */
+?>
+<?php if(!$this->isAvailableToShow()): ?>
+    <?php return; ?>
+<?php endif; ?>
+
+<script type="text/javascript">
+
+    document.observe('dom:loaded',function(){
+        <?php if ($this->isEnabledFirecheckout()) : ?>
+                var pno = '<?php echo $this->prepareForJsView($this->getChildHtml('firecheckout_pno_form')) ?>';
+                $('billing-new-address-form').down('ul').down('li').insert({before: pno});
+        <?php elseif ($this->isEnabledStreamcheckout()) : ?>
+                var pno = '<?php echo $this->prepareForJsView($this->getChildHtml('streamcheckout_pno_form')) ?>';
+                $('billing-new-address-form').down('fieldset').down('div').insert({before: pno});
+        <?php elseif($this->isEnabledOnestepcheckout()) : ?>
+                var pno = '<?php echo $this->prepareForJsView($this->getChildHtml('onestepcheckout_pno_form')) ?>';
+                $('billing-new-address-form').down('ul').down('li').insert({before: pno});
+        <?php else : ?>
+            var pno = '<?php echo $this->prepareForJsView($this->getChildHtml('default_pno_form')) ?>';
+            $('billing-new-address-form').down('ul').innerHTML = pno + $('billing-new-address-form').down('ul').innerHTML;
+        <?php endif; ?>
+
+        $('billmategetaddress').observe('click',function(event) {
+            event.preventDefault();
+            var person_number = $('person_number').value;
+            new Ajax.Request('<?php echo $this->getUrl('custompay/getaddress', array('_secure' => true)); ?>',{
+                method: 'post',
+                parameters: {billmate_pno: person_number},
+                encoding: 'UTF-8',
+                onSuccess: function(transport){
+                    var result = transport.responseText.evalJSON();
+                    if (result.success) {
+                        if($('getaddress_failure')) {
+                            $('getaddress_failure').remove();
+                        }
+
+                        $('person_number').removeClassName('validation-failed');
+
+                        if(typeof result.data.company != 'undefined') {
+                            $('billing:company').setValue(result.data.company);
+                        } else {
+                            $('billing:firstname').setValue(result.data.firstname);
+                            $('billing:lastname').setValue(result.data.lastname);
+                        }
+
+                        if(result.data.email != ''){
+
+                            $('billing:email').setValue(result.data.email);
+                            <?php if($this->isEnabledOnestepcheckout()): ?>
+                                $('billing:email').triggerEvent('blur');
+                            <?php endif ?>
+                        }
+                        if(result.data.phone != ''){
+                            $('billing:telephone').setValue(result.data.phone);
+                        }
+                        $('billing:street1').setValue(result.data.street);
+                        $('billing:city').setValue(result.data.city);
+                        $('billing:postcode').setValue(result.data.zip);
+                        $('billing:country_id').setValue(result.data.country);
+                        $('billing:country_id').triggerEvent('change');
+
+                    } else {
+                        if ($('getaddress_failure')) {
+                            $('getaddress_failure').remove();
+                        }
+                        $('person_number').addClassName('validation-failed');
+                        $('person_number').insert({after:'<div class="validation-advice" id="getaddress_failure">'+result.message+'</div>'});
+                    }
+                }
+            })
+        })
+
+    });
+</script>

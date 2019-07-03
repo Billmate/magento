@@ -1,0 +1,41 @@
+<?php
+/**
+ *  @var $this Billmate_CustomPay_Block_Invoice_Complete
+ */
+
+$addressFields = $this->getAddressFields();
+$addressGroups = $this->getAddressGroups();
+
+?>
+
+
+<?php
+echo 'if(typeof streamcheckout != "undefined"){'."\n";
+    if($this->isEnabledFirecheckout() && $this->isCustomerLoggedIn()){
+        echo 'billing.newAddress(true)'."\n";
+    }
+    foreach ($addressGroups as $group) {
+        foreach ($addressFields as $fieldName => $addressField) {
+            echo 'if($$(\'input[name="'.$group.'[' . $fieldName . ']"]\').size() > 0 )' .
+                '{ $$(\'input[name="'.$group.'[' . $fieldName . ']"]\')[0].value="' . $addressField . '";}',"\n";
+        }
+    }
+echo 'closefunc(); modalWin.HideModalPopUp();paymentSave();',"\n";
+echo '}'."\n"; ?>
+
+<?php
+echo 'if((typeof checkout != "undefined" && typeof checkout.form != "undefined" ) ' .
+    '|| typeof checkoutForm != "undefined" || typeof OneStepCheckoutLoginPopup != "undefined") {',"\n";
+    if ($this->isEnabledFirecheckout() && $this->isCustomerLoggedIn()) {
+        echo 'billing.newAddress(true)'."\n";
+    }
+
+    foreach ($addressGroups as $group) {
+        foreach ($addressFields as $fieldName => $addressField) {
+            echo 'if($$(\'input[name="'.$group.'[' . $fieldName . ']"]\').size() > 0 )' .
+                '{ $$(\'input[name="'.$group.'[' . $fieldName . ']"]\')[0].value="' . $addressField . '";}',"\n";
+        }
+    }
+echo 'closefunc();modalWin.HideModalPopUp();',"\n";
+echo '} paymentSave();';
+?>

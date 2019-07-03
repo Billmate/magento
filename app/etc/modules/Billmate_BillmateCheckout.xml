@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<config>
-    <modules>
-        <Billmate_BillmateCheckout>
-            <active>true</active>
-            <codePool>community</codePool>
-        </Billmate_BillmateCheckout>
-    </modules>
-</config>

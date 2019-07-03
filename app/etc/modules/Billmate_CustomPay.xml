@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Billmate_CustomPay>
+            <active>true</active>
+            <codePool>community</codePool>
+            <depends>
+                <Billmate_Connection />
+            </depends>
+        </Billmate_CustomPay>
+    </modules>
+</config>
