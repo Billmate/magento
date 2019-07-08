@@ -68,7 +68,7 @@ Copy the code below for the size that fits your needs.
 * Fix - Added error message in case of incorrect organisation/personal number
 * Fix - Added support to run Billmate Checkout even if Sweden is not the Default Country
 * Fix - Reduced the size of the payload for the API Calls to Billmate API
-* Feature - Changed position that cart comes after billmate checkout in mobile version
+* Enhancement - Changed position that cart comes after Billmate Checkout in mobile version
 
 ### 3.2.3 (2019-05-16)
 * Fix - Custom pay uses Billmate's new logos
