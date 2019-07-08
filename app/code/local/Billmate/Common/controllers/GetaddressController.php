@@ -11,15 +11,15 @@ class Billmate_Common_GetaddressController extends Mage_Core_Controller_Front_Ac
 
     public function indexAction()
     {
+        $response = [];
         $pno = $this->getRequest()->getParam('billmate_pno');
         Mage::getSingleton('checkout/session')->setBillmatePno($pno);
         $data = Mage::helper('billmatecommon')->getAddress($pno);
 
-        $status = (!isset($data['code'])) ? true : false;
-        $result['success'] = $status;
-        $result['message'] = (isset($data['code'])) ? utf8_encode($data['message']) : '';
-        $result['data'] = $data;
-
-        $this->getResponse()->setBody(Zend_Json::encode($result));
+        $response['success'] = (!isset($data['code'])) ? true : false;
+        $response['message'] = (isset($data['code'])) ? utf8_encode($data['message']) : '';
+        $response['data'] = $data;
+        $response['data']['message'] = $response['message'];
+        $this->getResponse()->setBody(json_encode($response));
     }
 }

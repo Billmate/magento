@@ -30,10 +30,13 @@
  * 2.1.9 20151103 Yuksel Findik: CURLOPT_CAINFO is added, Check for Zero length data.
  */
 
-if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.2.3');
+if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.2.4');
 if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.7');
 
 class Billmate_Billmate{
+
+	const BILLMATE_LANGUAGE = 'sv';
+
 	var $ID = "";
 	var $KEY = "";
 	var $URL = "api.billmate.se";
@@ -45,7 +48,6 @@ class Billmate_Billmate{
 	function __construct($id,$key,$ssl=true,$test=false,$debug=false,$referer=array()){
 		$this->ID = $id;
 		$this->KEY = $key;
-        defined('BILLMATE_LANGUAGE') || define('BILLMATE_LANGUAGE',  "" );
 		$this->SSL = $ssl;
 		$this->DEBUG = $debug;
 		$this->TEST = $test;
@@ -65,7 +67,7 @@ class Billmate_Billmate{
 				"serverdata"=>array_merge($_SERVER,$this->REFERER),
 				"time"=>microtime(true),
 				"test"=>$this->TEST?"1":"0",
-				"language"=>BILLMATE_LANGUAGE
+				"language"=> self::BILLMATE_LANGUAGE
 			),
 			"data"=> $params,
 			"function"=>$function,

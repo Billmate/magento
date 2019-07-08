@@ -56,10 +56,10 @@
         </reference>
         <reference name="root">
             <action method="setTemplate" ifconfig="billmate/checkout/cart_left">
-                <template>page/2columns-left.phtml</template>
+                <template>page/2columns-left-billmate.phtml</template>
             </action>
             <action method="setTemplate" ifconfig="billmate/checkout/cart_right">
-                <template>page/2columns-right.phtml</template>
+                <template>page/2columns-right-billmate.phtml</template>
             </action>
             <action method="addBodyClass" ifconfig="billmate/checkout/cart_right">
                 <classname>billmate-cart-right</classname>
