@@ -33,13 +33,13 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
             Mage::log('-------------- assign country ----------',1,'billmate.log');
             Mage::log($quote->getShippingAddress()->getCountry(),null,'billmate.log');
-
             $quote->getShippingAddress()
                 ->setCollectShippingRates(true)
                 ->setShippingMethod($method)
+                ->setCollectShippingRates(true)
                 ->collectTotals()
                 ->save();
-            
+            $quote->collectTotals();
             $quote->save();
         }
         
