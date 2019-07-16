@@ -60,7 +60,6 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
             clearTimeout(billmateCheckoutShippingTimer);
             billmateCheckoutShippingTimer = setTimeout(function() {
                 if($$('[name="estimate_method"]:checked')[0].value != selectedShippingMethod) {
-                    console.log('different method');
                     selectedShippingMethod = $$('[name="estimate_method"]:checked')[0].value;
                     updateShippingMethod($$('[name="estimate_method"]:checked')[0].value);
                 }
