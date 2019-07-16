@@ -66,6 +66,7 @@ Copy the code below for the size that fits your needs.
 
 ### 3.2.5 (2019-07-16)
 * Fix - Customer name is set as the buyer's name instead of guest in the Order View
+* Fix - Billmate Checkout sends out order confirmation mail
 
 ### 3.2.4 (2019-05-23)
 * Fix - Added error message in case of incorrect organisation/personal number
