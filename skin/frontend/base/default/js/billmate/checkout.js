@@ -10,7 +10,6 @@ var BillmateIframe = new function(){
     this.loadingBlockId = '#checkout-loader';
     this.updateAddress = function (data) {
         // When address in checkout updates;
-
         jQuery.ajax({
             url : UPDATE_ADDRESS_URL,
             data: data,
@@ -133,8 +132,6 @@ var BillmateIframe = new function(){
                     jQuery('#checkoutdiv').removeClass('loading');
                     break;
                 default:
-                    console.log(event);
-                    console.log('not implemented')
                     break;
 
             }
