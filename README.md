@@ -68,7 +68,7 @@ Copy the code below for the size that fits your needs.
 * Fix - Customer name is set as the buyer's name instead of guest in the Order View
 * Fix - Billmate Checkout sends out order confirmation mail
 * Fix - Billmate Checkout includes shipping in total price.
-* Fix - The order is created when you change delivery address in Billmate Checkout
+* Fix - Orders are created in back office when choosing another delivery shipping in Billmate Checkout
 
 ### 3.2.4 (2019-05-23)
 * Fix - Added error message in case of incorrect organisation/personal number
