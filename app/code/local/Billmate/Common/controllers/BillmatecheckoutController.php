@@ -127,7 +127,12 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $shippingAddress->setStreet($result['Customer']['Shipping']['street']);
             $shippingAddress->setCompany(isset($result['Customer']['Shipping']['company']) ? $result['Customer']['Shipping']['company'] : '');
             $shippingAddress->setCity($result['Customer']['Shipping']['city']);
-            $shippingAddress->setTelephone($result['Customer']['Shipping']['phone']);
+            if (array_key_exists('phone', $result['Customer']['Shipping'])) {
+                $shippingAddress->setTelephone($result['Customer']['Shipping']['phone']);
+            }
+            else {
+                $shippingAddress->setTelephone($result['Customer']['Billing']['phone']);
+            }
             $shippingAddress->setCountryId(isset($result['Customer']['Shipping']['country']) ? $result['Customer']['Shipping']['country'] : $result['Customer']['Billing']['country'])
                 ->setPostcode($result['Customer']['Shipping']['zip'])
                 ->setCollectShippingrates(true);
