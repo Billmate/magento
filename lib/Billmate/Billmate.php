@@ -30,7 +30,7 @@
  * 2.1.9 20151103 Yuksel Findik: CURLOPT_CAINFO is added, Check for Zero length data.
  */
 
-if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.2.4');
+if(!defined('BILLMATE_CLIENT')) define('BILLMATE_CLIENT','MAGENTO:3.2.5');
 if(!defined('BILLMATE_SERVER')) define('BILLMATE_SERVER','2.1.7');
 
 class Billmate_Billmate{
