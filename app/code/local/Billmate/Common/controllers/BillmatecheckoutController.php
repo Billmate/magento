@@ -33,13 +33,13 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
             Mage::log('-------------- assign country ----------',1,'billmate.log');
             Mage::log($quote->getShippingAddress()->getCountry(),null,'billmate.log');
-
             $quote->getShippingAddress()
                 ->setCollectShippingRates(true)
                 ->setShippingMethod($method)
+                ->setCollectShippingRates(true)
                 ->collectTotals()
                 ->save();
-            
+            $quote->collectTotals();
             $quote->save();
         }
         
@@ -92,7 +92,21 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
             $billingAddress = $cart->getQuote()->getBillingAddress();
             $cart->getQuote()->setCustomerEmail($result['Customer']['Billing']['email']);
-
+            $website = Mage::app()->getWebsite();
+            $customer = Mage::getModel('customer/customer')->setWebsiteId($website->getId())->loadByEmail($result['Customer']['Billing']['email']);
+            if (!$customer->getId()){
+                $cart->getQuote()->setCustomerId(null);
+                $cart->getQuote()->setCustomerEmail($result['Customer']['Billing']['email']);
+                $cart->getQuote()->setCustomerIsGuest(true);
+                $cart->getQuote()->setCustomerGroupId(Mage_Customer_Model_Group::NOT_LOGGED_IN_ID);
+                $cart->getQuote()->setCheckoutMethod(Mage_Sales_Model_Quote::CHECKOUT_METHOD_GUEST);
+                $cart->getQuote()->setCustomerFirstname($result['Customer']['Billing']['firstname']);
+                $cart->getQuote()->setCustomerLastname($result['Customer']['Billing']['lastname']);
+            }
+            else {
+                $cart->getQuote()->getBillingAddress()->setCustomerId($customer->getId());
+                $cart->getQuote()->getShippingAddress()->setCustomerId($customer->getId());
+            }
             $billingAddress->setFirstname($result['Customer']['Billing']['firstname']);
             $billingAddress->setLastname($result['Customer']['Billing']['lastname']);
             $billingAddress->setEmail($result['Customer']['Billing']['email']);
@@ -113,7 +127,12 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             $shippingAddress->setStreet($result['Customer']['Shipping']['street']);
             $shippingAddress->setCompany(isset($result['Customer']['Shipping']['company']) ? $result['Customer']['Shipping']['company'] : '');
             $shippingAddress->setCity($result['Customer']['Shipping']['city']);
-            $shippingAddress->setTelephone($result['Customer']['Shipping']['phone']);
+            if (array_key_exists('phone', $result['Customer']['Shipping'])) {
+                $shippingAddress->setTelephone($result['Customer']['Shipping']['phone']);
+            }
+            else {
+                $shippingAddress->setTelephone($result['Customer']['Billing']['phone']);
+            }
             $shippingAddress->setCountryId(isset($result['Customer']['Shipping']['country']) ? $result['Customer']['Shipping']['country'] : $result['Customer']['Billing']['country'])
                 ->setPostcode($result['Customer']['Shipping']['zip'])
                 ->setCollectShippingrates(true);

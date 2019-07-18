@@ -64,6 +64,12 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.2.5 (2019-07-17)
+* Fix - Customer name is set as the buyer's name instead of guest in the Order View
+* Fix - Billmate Checkout sends out order confirmation mail
+* Fix - Billmate Checkout includes shipping in total price.
+* Fix - Orders are created in back office when choosing another delivery shipping in Billmate Checkout
+
 ### 3.2.4 (2019-07-28)
 * Fix - Added error message in case of incorrect organisation/personal number
 * Fix - Added support to run Billmate Checkout even if Sweden is not the Default Country

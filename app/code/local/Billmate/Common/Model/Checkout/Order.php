@@ -58,6 +58,7 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
                 ->setLastRealOrderId($order->getIncrementId());
 
         }
+        $order->queueNewOrderEmail();
         $quote->setIsActive(false)->save();
         if ($order) {
             $this->_quote = $quote;
