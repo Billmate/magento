@@ -70,10 +70,11 @@ Copy the code below for the size that fits your needs.
 * Fix - Billmate Checkout includes shipping in total price.
 * Fix - Orders are created in back office when choosing another delivery shipping in Billmate Checkout
 
-### 3.2.4 (2019-05-23)
+### 3.2.4 (2019-07-28)
 * Fix - Added error message in case of incorrect organisation/personal number
 * Fix - Added support to run Billmate Checkout even if Sweden is not the Default Country
 * Fix - Reduced the size of the payload for the API Calls to Billmate API
+* Enhancement - Changed position that cart comes after Billmate Checkout in mobile version
 
 ### 3.2.3 (2019-05-16)
 * Fix - Custom pay uses Billmate's new logos
