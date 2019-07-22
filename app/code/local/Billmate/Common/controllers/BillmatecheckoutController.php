@@ -100,13 +100,13 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                 $cart->getQuote()->setCustomerIsGuest(true);
                 $cart->getQuote()->setCustomerGroupId(Mage_Customer_Model_Group::NOT_LOGGED_IN_ID);
                 $cart->getQuote()->setCheckoutMethod(Mage_Sales_Model_Quote::CHECKOUT_METHOD_GUEST);
-                $cart->getQuote()->setCustomerFirstname($result['Customer']['Billing']['firstname']);
-                $cart->getQuote()->setCustomerLastname($result['Customer']['Billing']['lastname']);
             }
             else {
                 $cart->getQuote()->getBillingAddress()->setCustomerId($customer->getId());
                 $cart->getQuote()->getShippingAddress()->setCustomerId($customer->getId());
             }
+            $cart->getQuote()->setCustomerFirstname($result['Customer']['Billing']['firstname']);
+            $cart->getQuote()->setCustomerLastname($result['Customer']['Billing']['lastname']);
             $billingAddress->setFirstname($result['Customer']['Billing']['firstname']);
             $billingAddress->setLastname($result['Customer']['Billing']['lastname']);
             $billingAddress->setEmail($result['Customer']['Billing']['email']);
