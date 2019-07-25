@@ -64,8 +64,6 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
-ddd
-
 ### 3.2.6 (2019-07-22)
 * Fix - Billmate Checkout customer name is sent on the order confirmation, even if the customer has previously a registered account in the store.
 
