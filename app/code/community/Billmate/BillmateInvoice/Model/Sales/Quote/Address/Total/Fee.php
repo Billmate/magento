@@ -30,7 +30,6 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
         }catch(Mage_Core_Exception $e){
             return $this;
         }
-
         if ($method->getCode() != 'billmateinvoice') {
             return $this;
         }
@@ -69,7 +68,7 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
 		$rate          = $calc->getRate($addressTaxRequest);
 		$taxAmount     = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
 		$baseTaxAmount = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
-		$address->setPaymentTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,MAge::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+		$address->setPaymentTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
 		$address->setBasePaymentTaxAmount($baseTaxAmount);
 //
 		$address->setTaxAmount($address->getTaxAmount() + $taxAmount);
@@ -77,18 +76,18 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
 		/* clime: tax calculation end */
 		
 		
-		$address->setFeeAmount(Mage::helper('directory')->currencyConvert($baseInvoiceFee,MAge::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+		$address->setFeeAmount(Mage::helper('directory')->currencyConvert($baseInvoiceFee,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
 		$address->setBaseFeeAmount($baseInvoiceFee);
-	    $address->setFeeTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,MAge::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+	    $address->setFeeTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
 	    $address->setBaseFeeTaxAmount($baseTaxAmount);
 
 	    $totInv = $baseInvoiceFee+$taxAmount;
 
 
 
-        $quote->setFeeAmount(Mage::helper('directory')->currencyConvert($baseInvoiceFee,MAge::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+        $quote->setFeeAmount(Mage::helper('directory')->currencyConvert($baseInvoiceFee,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
         $quote->setBaseFeeAmount($baseInvoiceFee);
-        $quote->setFeeTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,MAge::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+        $quote->setFeeTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
         $quote->setBaseFeeTaxAmount($baseTaxAmount);
 
         $address->setGrandTotal($address->getGrandTotal() + $address->getFeeAmount() );

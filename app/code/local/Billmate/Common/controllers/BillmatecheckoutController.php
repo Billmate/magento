@@ -300,13 +300,78 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
             throw new Exception($codeMessage);
         }
 
+        if ($verifiedData['PaymentData']['method'] == '1'){
+            $invoiceFee = $baseInvoiceFee = Mage::helper('billmateinvoice')
+                ->replaceSeparator(
+                    Mage::getStoreConfig('payment/billmatecheckout/billmate_fee')
+                );
+
+            $quote = $this->_getQuote();
+            $address = $quote->getShippingAddress();
+            $exist_amount = $quote->getFeeAmount();
+
+
+            if(Mage::getStoreConfig('payment/billmatecheckout/tax_class')){
+                $data = Mage::helper('billmateinvoice')->getInvoiceFeeArray($invoiceFee, $address, $quote->getCustomerTaxClassId());
+                $invoiceFee = $data['base_incl'];
+            }
+
+            $this->_calculator  = Mage::getSingleton('tax/calculation');
+            $calc               = $this->_calculator;
+            $store              = $address->getQuote()->getStore();
+            $addressTaxRequest  = $calc->getRateRequest(
+                $address->getQuote()->getShippingAddress(),
+                $address->getQuote()->getBillingAddress(),
+                $address->getQuote()->getCustomerTaxClassId(),
+                $store
+            );
+
+            $paymentTaxClass = Mage::getStoreConfig('payment/billmateinvoice/tax_class');
+            $addressTaxRequest->setProductClassId($paymentTaxClass);
+
+            $rate          = $calc->getRate($addressTaxRequest);
+            $taxAmount     = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
+            $baseTaxAmount = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
+            $address->setPaymentTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+            $address->setBasePaymentTaxAmount($baseTaxAmount);
+//
+            $address->setTaxAmount($address->getTaxAmount() + $taxAmount);
+            $address->setBaseTaxAmount($address->getBaseTaxAmount() + $baseTaxAmount);
+
+
+            $address->setFeeAmount(Mage::helper('directory')->currencyConvert($baseInvoiceFee,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+            $address->setBaseFeeAmount($baseInvoiceFee);
+            $address->setFeeTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+            $address->setBaseFeeTaxAmount($baseTaxAmount);
+
+            $totInv = $baseInvoiceFee+$taxAmount;
+
+
+
+            $quote->setFeeAmount(Mage::helper('directory')->currencyConvert($baseInvoiceFee,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+            $quote->setBaseFeeAmount($baseInvoiceFee);
+            $quote->setFeeTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+            $quote->setBaseFeeTaxAmount($baseTaxAmount);
+
+            $address->setGrandTotal($address->getGrandTotal() + $address->getFeeAmount() );
+            $address->setBaseGrandTotal($address->getBaseGrandTotal() + $address->getBaseFeeAmount() );
+        }
+
         $this->registerBmComplete();
         $checkoutOrderModel = $this->getCheckoutOrderModel()
             ->setQuote($this->_getQuote())
             ->setBmRequestData($verifiedData);
 
+
+
+
+
+
+
+
         $status = $this->getHelper()->getAdaptedStatus($bmRequestData['data']['status']);
         $paymentMethodStatus = $this->getHelper()->getBillmateCheckoutOrderStatus();
+        $order = null;
         switch ($status) {
             case 'pending':
                 $order = $checkoutOrderModel->place();
@@ -352,6 +417,14 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                     __('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.')
                 );
                 break;
+        }
+        if ($order != null) {
+            if ($verifiedData['PaymentData']['method'] == '1') {
+                $order->setFeeAmount(Mage::helper('directory')->currencyConvert($baseInvoiceFee,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+                $order->setBaseFeeAmount($baseInvoiceFee);
+                $order->setFeeTaxAmount(Mage::helper('directory')->currencyConvert($baseTaxAmount,Mage::app()->getStore()->getBaseCurrencyCode(),Mage::app()->getStore()->getCurrentCurrencyCode()));
+                $order->setBaseFeeTaxAmount($baseTaxAmount);
+            }
         }
     }
 
