@@ -36,8 +36,9 @@ class Billmate_BillmateInvoice_Model_Observer extends Mage_Core_Model_Abstract
     public function salesOrderPaymentPlaceEnd(Varien_Event_Observer $observer)
     {
 
+        $session = Mage::getSingleton('checkout/session');
         $payment = $observer->getPayment();
-        if ($payment->getMethodInstance()->getCode() != 'billmateinvoice') {
+        if ($payment->getMethodInstance()->getCode() != 'billmateinvoice' && $session->getUseFee() != 1) {
             return;
         }
 

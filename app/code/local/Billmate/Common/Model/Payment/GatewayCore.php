@@ -138,7 +138,6 @@ class Billmate_Common_Model_Payment_GatewayCore extends Varien_Object
      */
     protected function getShippingHandData()
     {
-        file_put_contents("var/log/bmdev.log", "getshippinghanddata 1\n", FILE_APPEND);
         $shippingCostData = [];
         $invoiceFee = Mage::getStoreConfig( 'payment/billmateinvoice/billmate_fee' );
         $invoiceFee = Mage::helper( 'billmateinvoice' )->replaceSeparator( $invoiceFee );

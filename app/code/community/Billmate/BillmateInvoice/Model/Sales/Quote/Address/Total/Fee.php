@@ -21,7 +21,7 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
         {
             return $this;
         }
-
+        $session = Mage::getSingleton('checkout/session');
         $quote = $address->getQuote();
         $payment = $quote->getPayment();
 		
@@ -30,28 +30,41 @@ class Billmate_BillmateInvoice_Model_Sales_Quote_Address_Total_Fee extends Mage_
         }catch(Mage_Core_Exception $e){
             return $this;
         }
-        if ($method->getCode() != 'billmateinvoice') {
+        if ($method->getCode() != 'billmateinvoice' && $session->getUseFee() != 1) {
             return $this;
         }
         $items = $this->_getAddressItems($address);
         if (!count($items)) {
             return $this; //this makes only address type shipping to come through
         }
- 
-        $invoiceFee = $baseInvoiceFee = Mage::helper('billmateinvoice')
-			->replaceSeparator( 
-				Mage::getStoreConfig('payment/billmateinvoice/billmate_fee') 
-			);
-		
+        if ($session->getUseFee() != 1) {
+            $invoiceFee = $baseInvoiceFee = Mage::helper('billmateinvoice')
+                ->replaceSeparator(
+                    Mage::getStoreConfig('payment/billmateinvoice/billmate_fee')
+                );
+        }
+        else {
+            $invoiceFee = $baseInvoiceFee = Mage::helper('billmateinvoice')
+                ->replaceSeparator(
+                    Mage::getStoreConfig('payment/billmatecheckout/billmate_fee')
+                );
+        }
 
         $exist_amount = $quote->getFeeAmount();
 
-		
-		if(Mage::getStoreConfig('payment/billmateinvoice/tax_class')){
-			$data = Mage::helper('billmateinvoice')->getInvoiceFeeArray($invoiceFee, $address, $quote->getCustomerTaxClassId());
-			$invoiceFee = $data['base_incl'];
-		}
-		
+
+        if ($session->getUseFee() != 1) {
+            if (Mage::getStoreConfig('payment/billmateinvoice/tax_class')) {
+                $data = Mage::helper('billmateinvoice')->getInvoiceFeeArray($invoiceFee, $address, $quote->getCustomerTaxClassId());
+                $invoiceFee = $data['base_incl'];
+            }
+        }
+        else {
+            if (Mage::getStoreConfig('payment/billmatecheckout/tax_class')) {
+                $data = Mage::helper('billmateinvoice')->getInvoiceFeeArray($invoiceFee, $address, $quote->getCustomerTaxClassId(), false);
+                $invoiceFee = $data['base_incl'];
+            }
+        }
 		$this->_calculator  = Mage::getSingleton('tax/calculation');
 		$calc               = $this->_calculator;
 		$store              = $address->getQuote()->getStore();
