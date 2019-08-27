@@ -127,13 +127,15 @@ class Billmate_Common_Model_Checkout extends Billmate_Common_Model_Payment_Gatew
         }
 
         $shippingHandData = $this->getShippingHandData();
+        $feetotal = 0;
         if ($shippingHandData) {
             $orderValues['Cart']['Handling'] = $shippingHandData;
             $totalValue += $shippingHandData['withouttax'];
             $totalTax += ($shippingHandData['withouttax']) * ($shippingHandData['taxrate'] / 100);
+            $feetotal = $shippingHandData['withouttax'] * (1+$shippingHandData['taxrate']/100);
         }
 
-        $round = round($quote->getGrandTotal() * 100) - round($totalValue +  $totalTax);
+        $round = round($quote->getGrandTotal() * 100+$feetotal) - round($totalValue +  $totalTax);
 
         $orderValues['Cart']['Total'] = array(
             'withouttax' => round($totalValue),
