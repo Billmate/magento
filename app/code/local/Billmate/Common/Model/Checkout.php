@@ -187,7 +187,7 @@ class Billmate_Common_Model_Checkout extends Billmate_Common_Model_Payment_Gatew
         $shippingAddress = $this->getShippingAddress();
 
         $feeinfo = Mage::helper( 'billmateinvoice' )
-            ->getInvoiceFeeArray( $invoiceFee, $shippingAddress, $this->getQuote()->getCustomerTaxClassId() );
+            ->getInvoiceFeeArray( $invoiceFee, $shippingAddress, $this->getQuote()->getCustomerTaxClassId(), false );
         if ((!empty( $invoiceFee ) && $invoiceFee > 0)) {
             $shippingCostData = array(
                 'withouttax' => round($invoiceFee * 100),
