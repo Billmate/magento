@@ -277,12 +277,15 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                     $this->getHelper()->__('You have no items in your shopping cart.')
                 );
             }
+            $session = Mage::getSingleton('checkout/session');
             if ($bmPaymentData['PaymentData']['method'] == "1"){
-                $session = Mage::getSingleton('checkout/session');
                 $session->setData('use_fee', 1);
             }
+            else {
+                $session->setData('use_fee', 0);
+            }
             $bmRequestData['data'] = $bmPaymentData['PaymentData']['order'];
-            $this->runCallbackProcess($bmRequestData);
+            $this->runCallbackProcess($bmRequestData, $bmPaymentData['PaymentData']['method']);
             $response['url'] = Mage::getUrl('checkout/onepage/success', array('_secure' => true));
         } catch (Exception $e) {
             Mage::getSingleton('core/session')->addError($e->getMessage());
@@ -296,7 +299,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
      *
      * @throws Exception
      */
-    protected function runCallbackProcess($bmRequestData)
+    protected function runCallbackProcess($bmRequestData, $method)
     {
         $session = Mage::getSingleton('checkout/session');
         $verifiedData = $this->getBmPaymentData($bmRequestData);
@@ -332,7 +335,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                             $verifiedData['data']['number']
                         ]));
                     $order->setState('new', 'pending_payment', '', false);
-                    if ($session->getUseFee() == 1){
+                    if ($method == '1'){
+                        $session->setData('use_fee', 0);
                         $baseInvoiceFee = Mage::helper('billmateinvoice')
                             ->replaceSeparator(
                                 Mage::getStoreConfig('payment/billmatecheckout/billmate_fee')
@@ -367,7 +371,8 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                         __('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.')
                     );
                 }
-                if ($session->getUseFee() == 1){
+                if ($method == '1'){
+                    $session->setData('use_fee', 0);
                     $baseInvoiceFee = Mage::helper('billmateinvoice')
                         ->replaceSeparator(
                             Mage::getStoreConfig('payment/billmatecheckout/billmate_fee')
