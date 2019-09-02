@@ -147,7 +147,7 @@ class Billmate_Common_Model_Payment_GatewayCore extends Varien_Object
             ->getInvoiceFeeArray( $invoiceFee, $shippingAddress, $this->getQuote()->getCustomerTaxClassId() );
         if ((!empty( $invoiceFee ) && $invoiceFee > 0)) {
             $shippingCostData = array(
-                'withouttax' => round($shippingAddress->getFeeAmount() * 100),
+                'withouttax' => round($invoiceFee * 100),
                 'taxrate'    => $feeinfo['rate']
             );
         }

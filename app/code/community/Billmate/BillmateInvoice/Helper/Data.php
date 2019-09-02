@@ -67,7 +67,7 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return array
      */
-    public function getInvoiceFeeArray($base, $address, $taxClassId)
+    public function getInvoiceFeeArray($base, $address, $taxClassId, $useInvoice = true)
     {
         //Get the correct rate to use
         $store = Mage::app()->getStore();
@@ -75,7 +75,12 @@ class Billmate_BillmateInvoice_Helper_Data extends Mage_Core_Helper_Abstract
         $rateRequest = $calc->getRateRequest(
             $address, $address, $taxClassId, $store
         );
-        $taxClass = (int) Mage::getStoreConfig('payment/billmateinvoice/tax_class');;
+        if ($useInvoice) {
+            $taxClass = (int)Mage::getStoreConfig('payment/billmateinvoice/tax_class');;
+        }
+        else {
+            $taxClass = (int)Mage::getStoreConfig('payment/billmatecheckout/tax_class');;
+        }
         $rateRequest->setProductClassId($taxClass);
         $rate = $calc->getRate($rateRequest);
         //Get the vat display options for products from Magento tax settings

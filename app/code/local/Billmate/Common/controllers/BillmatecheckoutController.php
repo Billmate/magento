@@ -267,6 +267,7 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
     public function createorderAction()
     {
         /** @var  $quote Mage_Sales_Model_Quote */
+        $quote = $this->_getQuote();
         $bmPaymentData = $this->getHelper()->getBillmate()
             ->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
 
@@ -276,8 +277,15 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                     $this->getHelper()->__('You have no items in your shopping cart.')
                 );
             }
+            $session = Mage::getSingleton('checkout/session');
+            if ($bmPaymentData['PaymentData']['method'] == "1"){
+                $session->setData('use_fee', 1);
+            }
+            else {
+                $session->setData('use_fee', 0);
+            }
             $bmRequestData['data'] = $bmPaymentData['PaymentData']['order'];
-            $this->runCallbackProcess($bmRequestData);
+            $this->runCallbackProcess($bmRequestData, $bmPaymentData['PaymentData']['method']);
             $response['url'] = Mage::getUrl('checkout/onepage/success', array('_secure' => true));
         } catch (Exception $e) {
             Mage::getSingleton('core/session')->addError($e->getMessage());
@@ -291,8 +299,9 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
      *
      * @throws Exception
      */
-    protected function runCallbackProcess($bmRequestData)
+    protected function runCallbackProcess($bmRequestData, $method)
     {
+        $session = Mage::getSingleton('checkout/session');
         $verifiedData = $this->getBmPaymentData($bmRequestData);
         if (isset($verifiedData['code'])) {
             $codeMessage = $this->getHelper()->__('Unfortunately your payment was not processed correctly.
@@ -304,9 +313,9 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $checkoutOrderModel = $this->getCheckoutOrderModel()
             ->setQuote($this->_getQuote())
             ->setBmRequestData($verifiedData);
-
         $status = $this->getHelper()->getAdaptedStatus($bmRequestData['data']['status']);
         $paymentMethodStatus = $this->getHelper()->getBillmateCheckoutOrderStatus();
+        $order = null;
         switch ($status) {
             case 'pending':
                 $order = $checkoutOrderModel->place();
@@ -326,6 +335,30 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                             $verifiedData['data']['number']
                         ]));
                     $order->setState('new', 'pending_payment', '', false);
+                    if ($method == '1'){
+                        $session->setData('use_fee', 0);
+                        $baseInvoiceFee = Mage::helper('billmateinvoice')
+                            ->replaceSeparator(
+                                Mage::getStoreConfig('payment/billmatecheckout/billmate_fee')
+                            );
+                        $store              = $order->getStore();
+                        $calc = Mage::getSingleton('tax/calculation');
+                        $addressTaxRequest  = $calc->getRateRequest(
+                            $order->getShippingAddress(),
+                            $order->getBillingAddress(),
+                            $order->getCustomerTaxClassId(),
+                            $store
+                        );
+                        $paymentTaxClass = Mage::getStoreConfig('payment/billmatecheckout/tax_class');
+                        $addressTaxRequest->setProductClassId($paymentTaxClass);
+                        $rate          = $calc->getRate($addressTaxRequest);
+                        $taxAmount     = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
+                        $order->setGrandTotal($order->getGrandTotal()+$taxAmount);
+                        $order->setBaseGrandTotal($order->getBaseGrandTotal()+$taxAmount);
+                        $order->setTaxAmount($order->getTaxAmount()+$taxAmount);
+                        $order->setBaseTaxAmount($order->getBaseTaxAmount()+$taxAmount);
+                        $order->save();
+                    }
                     $order->save();
                 }
                 break;
@@ -337,6 +370,30 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
                         $this->getHelper()->
                         __('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.')
                     );
+                }
+                if ($method == '1'){
+                    $session->setData('use_fee', 0);
+                    $baseInvoiceFee = Mage::helper('billmateinvoice')
+                        ->replaceSeparator(
+                            Mage::getStoreConfig('payment/billmatecheckout/billmate_fee')
+                        );
+                    $store              = $order->getStore();
+                    $calc = Mage::getSingleton('tax/calculation');
+                    $addressTaxRequest  = $calc->getRateRequest(
+                        $order->getShippingAddress(),
+                        $order->getBillingAddress(),
+                        $order->getCustomerTaxClassId(),
+                        $store
+                    );
+                    $paymentTaxClass = Mage::getStoreConfig('payment/billmatecheckout/tax_class');
+                    $addressTaxRequest->setProductClassId($paymentTaxClass);
+                    $rate          = $calc->getRate($addressTaxRequest);
+                    $taxAmount     = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
+                    $order->setGrandTotal($order->getGrandTotal()+$taxAmount);
+                    $order->setBaseGrandTotal($order->getBaseGrandTotal()+$taxAmount);
+                    $order->setTaxAmount($order->getTaxAmount()+$taxAmount);
+                    $order->setBaseTaxAmount($order->getBaseTaxAmount()+$taxAmount);
+                    $order->save();
                 }
                 $checkoutOrderModel->updateOrder($paymentMethodStatus, $bmRequestData['data']);
                 break;

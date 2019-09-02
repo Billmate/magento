@@ -10,7 +10,7 @@ class Billmate_BillmateInvoice_Block_Adminhtml_Sales_Order_Totals extends Mage_A
 
         $order = $this->getOrder();
         $payment = $order->getPayment();
-        if ($payment->getMethod() != "billmateinvoice") {
+        if ($payment->getMethod() != "billmateinvoice" && $payment->getMethod() != "billmatecheckout") {
             return $this;
         }
         $info = $order->getPayment()->getMethodInstance()->getInfoInstance();
