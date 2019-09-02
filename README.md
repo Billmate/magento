@@ -64,8 +64,8 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
-### 3.2.7 (2019-08-30)
-* Billmate Checkout invoice fee has improved support for handling VAT rate.
+### 3.2.7 (2019-08-31)
+* Enhancement Billmate Checkout invoice fee has improved support for handling VAT rate.
 
 ### 3.2.6 (2019-07-22)
 * Fix - Billmate Checkout customer name is sent on the order confirmation, even if the customer has previously a registered account in the store.
