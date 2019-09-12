@@ -80,6 +80,9 @@ if (($_shippingRateGroups = $this->getEstimateRates())): ?>
                         b_iframe.update();
                         b_iframe.unlock();
                     }
+                    else {
+                        b_iframe.unlock();
+                    }
                 }
             }
         });
