@@ -318,3 +318,54 @@
         margin-top: 10px !important
     }
 }
+
+.billmatecommon-billmatecheckout-index .main {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: space-around;
+    max-width: 1450px;
+    margin: 0px auto;
+}
+
+.billmatecommon-billmatecheckout-index.billmate-cart-right .col-main, .billmatecommon-billmatecheckout-index.billmate-cart-left .col-left.sidebar {
+    order: 0;
+    -ms-flex-order: 0;
+    -webkit-order: 0;
+    display: block;
+}
+
+.billmatecommon-billmatecheckout-index.billmate-cart-right .col-right.sidebar, .billmatecommon-billmatecheckout-index.billmate-cart-left .col-main {
+    order: 1;
+    -ms-flex-order: 1;
+    -webkit-order: 1;
+    display: block;
+}
+
+.col-right.sidebar {
+    float: right;
+}
+
+@media(max-width:767px) {
+    .billmatecommon-billmatecheckout-index.billmate-cart-right .main, .billmatecommon-billmatecheckout-index.billmate-cart-left .main {
+        padding: 10px;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+
+    .billmatecommon-billmatecheckout-index.billmate-cart-right .col-main, .billmatecommon-billmatecheckout-index.billmate-cart-left .col-main {
+        order: 1;
+        -ms-flex-order: 1;
+        -webkit-order: 1;
+    }
+
+    .billmatecommon-billmatecheckout-index.billmate-cart-right .col-right.sidebar, .billmatecommon-billmatecheckout-index.billmate-cart-left .col-left.sidebar {
+        order: 0;
+        -ms-flex-order: 0;
+        -webkit-order: 0;
+    }
+}
