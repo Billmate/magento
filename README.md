@@ -65,7 +65,7 @@ Copy the code below for the size that fits your needs.
 ## Changelog
 
 ### 3.2.8 (2019-09-12)
-* Enhancement - Billmate Checkout styling for custom theme. 
+* Enhancement - Billmate Checkout styling for custom themes. 
 * Feature - Added support for MatrixRate shipping.
 
 ### 3.2.7 (2019-08-31)
