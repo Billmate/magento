@@ -64,6 +64,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.2.9 (2019-09-18)
+* Enhancement - Billmate plugin version nr appears in Billmate settings 
+
 ### 3.2.8 (2019-09-12)
 * Enhancement - Billmate Checkout styling for custom themes. 
 * Feature - Added support for MatrixRate shipping.
