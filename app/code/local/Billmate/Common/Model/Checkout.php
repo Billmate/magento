@@ -27,6 +27,11 @@ class Billmate_Common_Model_Checkout extends Billmate_Common_Model_Payment_Gatew
             $orderValues['CheckoutData']['privacyPolicy'] = $privacyPolicyUrl;
         }
 
+        $checkoutMode = $this->helper->getCheckoutMode();
+        if ($checkoutMode == "business"){
+            $orderValues['CheckoutData']['companyView'] = "true";
+        }
+
         if (!$quote->getReservedOrderId()) {
             $quote->reserveOrderId();
         }
@@ -68,7 +73,7 @@ class Billmate_Common_Model_Checkout extends Billmate_Common_Model_Payment_Gatew
         );
 
         $billmateConnection = $this->getBMConnection();
-        $result = $billmateConnection->initCheckout($orderValues);
+        $result = $billmateConnection-> initCheckout($orderValues);
 
         if (!isset($result['code'])) {
             $url = $result['url'];
