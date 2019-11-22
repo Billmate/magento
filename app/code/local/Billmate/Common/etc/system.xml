@@ -209,7 +209,7 @@
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                         </cart_right>
                         <billmate_checkout_mode translate="label" module="billmatecommon">
-                            <label>Checkout MODE</label>
+                            <label>Checkout mode</label>
                             <sort_order>7</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
