@@ -249,6 +249,10 @@ class  Billmate_Common_Helper_Data extends Mage_Core_Helper_Abstract
         return $privacyPolicyPageUrl;
     }
 
+    public function getCheckoutMode(){
+        return Mage::getStoreConfig('billmate/checkout/billmate_checkout_mode');
+    }
+
     /**
      *
      * @return string

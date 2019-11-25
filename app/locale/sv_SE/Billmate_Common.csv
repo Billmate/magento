@@ -86,3 +86,7 @@
 "Hourly","Timvis"
 "Add any custom statuses you are using. payment_review and pending_payment are automatically checked against.","Lägg till alla specialstatusar ni använder. payment_review och pending_payment kontrolleras automatiskt"
 "Rowtotal","Summa"
+"Consumer","Privatperson"
+"Company","Företag"
+"Checkout mode","Kassaläge"
+"Choose whether you want to emphasize shopping as a company or consumer first in Billmate Checkout.","Välj om du vill framhäva handla som företag eller privatperson först i Billmate Checkout."
