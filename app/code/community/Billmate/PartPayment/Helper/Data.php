@@ -136,6 +136,7 @@ class Billmate_PartPayment_Helper_Data extends Mage_Core_Helper_Abstract
 	        "currency"=>$currency,//SEK
 	        "country"=>strtolower($countrycode),//Sweden
 	        "language"=>$lang,//Swedish
+            "totalwithtax"=> "550000",
         );
 
         $eid = (int)Mage::getStoreConfig('billmate/credentials/eid');
