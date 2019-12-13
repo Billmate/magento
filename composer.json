@@ -8,5 +8,6 @@
       "name": "Billmate AB",
       "email": "support@billmate.se"
     }
-  ]
+  ],
+  "minimum-stability": "dev"
 }
