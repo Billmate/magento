@@ -44,27 +44,23 @@ Billmate Gateway is a plugin that extends Magento, allowing your customers to ge
 ##How to place Billmate logo on your site.
 Copy the code below for the size that fits your needs.
 
-###Large
+### Large
+<a href="https://billmate.se"><img src="https://www.billmate.se/wp-content/uploads/2019/09/L.png" alt="Billmate Payment Gateway" /></a>
 
-<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_l.png" alt="Billmate Payment Gateway" /></a>
+`<a href="https://billmate.se"><img src="https://www.billmate.se/wp-content/uploads/2019/09/L.png" alt="Billmate Payment Gateway" /></a>`
 
-`<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_l.png" alt="Billmate Payment Gateway" /></a>`
+### Medium
+<a href="https://billmate.se"><img src="https://www.billmate.se/wp-content/uploads/2019/09/M.png" alt="Billmate Payment Gateway" /></a>
 
-###Medium
+`<a href="https://billmate.se"><img src="https://www.billmate.se/wp-content/uploads/2019/09/M.png" alt="Billmate Payment Gateway" /</a>`
+### Small
+<a href="https://billmate.se"><img src="https://www.billmate.se/wp-content/uploads/2019/09/S.png" alt="Billmate Payment Gateway" /></a>
 
-<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_m.png" alt="Billmate Payment Gateway" /></a>
-
-`<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_m.png" alt="Billmate Payment Gateway" /></a>`
-
-###Small
-
-<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_s.png" alt="Billmate Payment Gateway" /></a>
-
-`<a href="http://billmate.se"><img src="https://billmate.se/billmate/logos/billmate_cloud_s.png" alt="Billmate Payment Gateway" /></a>`
+`<a href="https://billmate.se"><img src="https://www.billmate.se/wp-content/uploads/2019/09/S.png" alt="Billmate Payment Gateway" /></a>`
 
 ## Changelog
 
-### 3.3.0 (2019-11-22)
+### 3.3.0 (2019-11-25)
 *  Feature - Support for choosing Billmate Checkout to act as a company or individual to prompt first
 
 ### 3.2.9 (2019-09-18)

@@ -1,0 +1,13 @@
+{
+  "name": "billmate/billmate-gateway",
+  "description": "Billmate Payment Gateway for Magento 1",
+  "type": "magento-module",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Billmate AB",
+      "email": "support@billmate.se"
+    }
+  ],
+  "minimum-stability": "dev"
+}
