@@ -25,16 +25,27 @@ Billmate Gateway is a plugin that extends Magento, allowing your customers to ge
 
 ## Installation
 
-1. Download the latest release zip file.
-2. Extract the zip file.
-3. Upload the zip files contents into the Magento root.
-4. Go To "System" -> "Cache Management" -> "Clear All Caches".
-5. Configure the general settings under "System" --> "Configuration" --> "Billmate general settings". 
-6. If you get 404 error when heading to the general settings. Log out of admin and log in again.
-7. Configure payment method specific settings under "System" --> "Configuration" --> "Payment Methods".
-8. Make a test purchase for every payment method to verify that you have made the correct settings.
+# Code Package
+1: Download the latest release zip file. 
+2: In the root directory of your Magento installation, create the following sub-directory path:
+app/code/Billmate/ BillmateCheckout
+3: Upload the zip files content into the newly created directory. 
+4: Run these bash commands in the root Magento installation 
+php bin/magento setup:upgrade 
+php bin/magento setup:static-content:deploy 
+5: Configure the Billmate Credentials under ”Stores” –> ”Configuration” –> ”Sales” –> ”Payment Methods” –> ”Billmate Checkout” –> ”Credentials” 
+6: Configure the General under ”Stores” –> ”Configuration” –> ”Sales” –> ”Payment Methods” –> ”Billmate Checkout” –> ”General” 
+7: Make a test purchase for every payment method to verify that you have made the correct settings.  
 
-[Link to our Configuration Manual](https://billmate.se/plugins/manual/Installation_Manual_Magento_Billmate.pdf)
+# Composer 
+To install the Billmate plugin using Composer the following steps needs to be done. 
+1: Add the following key to the composer.json “billmate/magento2-checkout” 
+2: Run the command “composer install” to get the new package. 
+
+# Update from Code Package to Composer
+1: Uninstall Billmate Checkout.
+2: Delete the app / code / Billmate folder.
+3: Install via composer according to instructions in 1.2.
 
 ## Known issues
 * Magento version 1.6 does not support different VAT rates on product the correct way and therefor Billmate Payment Gateway does not support it.
