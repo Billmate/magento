@@ -25,7 +25,7 @@ Billmate Gateway is a plugin that extends Magento, allowing your customers to ge
 
 ## Installation
 
-# Code Package
+### Code Package
 1. Download the latest release zip file. 
 2. In the root directory of your Magento installation, create the following sub-directory path:
 app/code/Billmate/ BillmateCheckout
@@ -37,12 +37,12 @@ php bin/magento setup:static-content:deploy
 6. Configure the General under ”Stores” –> ”Configuration” –> ”Sales” –> ”Payment Methods” –> ”Billmate Checkout” –> ”General” 
 7. Make a test purchase for every payment method to verify that you have made the correct settings.  
 
-# Composer 
+### Composer 
 To install the Billmate plugin using Composer the following steps needs to be done. 
 1. Add the following key to the composer.json “billmate/magento2-checkout” 
 2. Run the command “composer install” to get the new package. 
 
-# Update from Code Package to Composer
+### Update from Code Package to Composer
 1. Uninstall Billmate Checkout.
 2. Delete the app / code / Billmate folder.
 3. Install via composer according to instructions in 1.2.
