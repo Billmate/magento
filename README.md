@@ -60,6 +60,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.3.1 (2019-12-18)
+* Enhancement - Added extra logging to callback controller
+
 ### 3.3.0 (2019-11-25)
 *  Feature - Support for choosing Billmate Checkout to act as a company or individual to prompt first
 

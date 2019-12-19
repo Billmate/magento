@@ -24,9 +24,11 @@ class Billmate_Common_CallbackController extends Billmate_Common_Billmatecheckou
         try{
             $this->runCallbackProcess($bmRequestData);
         } catch (Exception $e) {
-             Mage::getSingleton('core/session')->addError($e->getMessage());
-             $this->getResponse()->setRedirect(Mage::helper('billmatecommon/url')->getCheckoutUrl());
-             return;
+            Mage::getSingleton('core/session')->addError($e->getMessage());
+            $this->getResponse()->setRedirect(Mage::helper('billmatecommon/url')->getCheckoutUrl());
+            Mage::log("Order Creation Error: " . $e->getMessage(),0,'billmate.log',true);
+            Mage::log($e->getTraceAsString(),0,'billmate.log',true);
+            return;
         }
 
         $this->_redirect('checkout/onepage/success',array('_secure' => true));
