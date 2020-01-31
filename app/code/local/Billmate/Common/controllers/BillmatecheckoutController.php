@@ -305,8 +305,10 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         $verifiedData = $this->getBmPaymentData($bmRequestData);
 
         if (isset($verifiedData['code'])) {
-            $codeMessage = $this->getHelper()->__('Unfortunately your payment was not processed correctly.
-                 Please try again or choose another payment method.');
+            $codeMessage = $this->getHelper()->__('Unfortunately your payment was not processed correctly. Please try again or choose another payment method.');
+            ob_start();
+            var_dump($verifiedData);
+            Mage::log(ob_get_clean(), 0, 'billmate.log', true);
             throw new Exception($codeMessage);
         }
         $isOrderValid = $this->validateOrder($verifiedData, $this->_getQuote());
