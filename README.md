@@ -60,7 +60,7 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
-### 3.4.0 (2019-12-18)
+### 3.4.0 (2020-02-17)
 * Enhancement - Order creation/callback handling for Billmate Checkout
 
 ### 3.3.1 (2019-12-18)
