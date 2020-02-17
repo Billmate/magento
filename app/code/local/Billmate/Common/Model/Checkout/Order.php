@@ -32,7 +32,7 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
      *
      * @return bool|false|Mage_Sales_Model_Order
      */
-    public function place($quote = null)
+    public function place($verifiedData, $isOrderValid, $status, $method, $quote = null)
     {
         if (is_null($quote)) {
             $quote = $this->getActualQuote();
@@ -47,25 +47,77 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
             return $orderModel;
         }
         $quote->collectTotals();
-        $service = Mage::getModel('sales/service_quote',$quote);
+        $service = Mage::getModel('sales/service_quote', $quote);
         $service->submitAll();
         Mage::getSingleton('checkout/session')->setLastQuoteId($quote->getId())
             ->setLastSuccessQuoteId($quote->getId())
             ->clearHelperData();
         $order = $service->getOrder();
-        if($order){
+        if ($order) {
             Mage::getSingleton('checkout/session')->setLastOrderId($order->getId())
                 ->setLastRealOrderId($order->getIncrementId());
 
         }
         $order->queueNewOrderEmail();
         $quote->setIsActive(false)->save();
+        $paymentMethodStatus = $this->getHelper()->getBillmateCheckoutOrderStatus();
+        $session = Mage::getSingleton('checkout/session');
         if ($order) {
             $this->_quote = $quote;
             $this->_order = $order;
+            $order->addStatusHistoryComment(
+                $this->getHelper()->__('Order processing completed' .
+                    '<br/>Billmate status: %s  
+                                <br/>' . 'Transaction ID: %s', [
+                    $verifiedData['data']['status'],
+                    $verifiedData['data']['number']
+                ]));
+            if ($status == 'pending') {
+                $order->setState('new', 'pending_payment', '', false);
+            } else if ($status = 'created' || $status == 'paid') {
+                $order->setState('new', $paymentMethodStatus, '', false);
+            } else if ($status = 'cancelled') {
+                $order->setState('canceled', 'canceled', '', false);
+            } else if ($status = 'failed') {
+                $order->setState('canceled', 'canceled', '', false);
+            }
+            if (!$isOrderValid) {
+                $order->addStatusHistoryComment($this->getHelper()->__('Order missmatch between Magento and Billmate'));
+            }
+            if ($method == '1') {
+                $session->setData('use_fee', 0);
+                $baseInvoiceFee = Mage::helper('billmateinvoice')
+                    ->replaceSeparator(
+                        Mage::getStoreConfig('payment/billmatecheckout/billmate_fee')
+                    );
+                $store = $order->getStore();
+                $calc = Mage::getSingleton('tax/calculation');
+                $addressTaxRequest = $calc->getRateRequest(
+                    $order->getShippingAddress(),
+                    $order->getBillingAddress(),
+                    $order->getCustomerTaxClassId(),
+                    $store
+                );
+                $paymentTaxClass = Mage::getStoreConfig('payment/billmatecheckout/tax_class');
+                $addressTaxRequest->setProductClassId($paymentTaxClass);
+                $rate = $calc->getRate($addressTaxRequest);
+                $taxAmount = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
+                $order->setGrandTotal($order->getGrandTotal() + $taxAmount);
+                $order->setBaseGrandTotal($order->getBaseGrandTotal() + $taxAmount);
+                $order->setTaxAmount($order->getTaxAmount() + $taxAmount);
+                $order->setBaseTaxAmount($order->getBaseTaxAmount() + $taxAmount);
+                $order->save();
+            }
+            $order->save();
             return $order;
         }
+
         return false;
+    }
+
+    protected function getHelper()
+    {
+        return Mage::helper('billmatecommon');
     }
 
     /**

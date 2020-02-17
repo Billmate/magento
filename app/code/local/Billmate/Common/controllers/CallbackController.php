@@ -7,15 +7,19 @@ class Billmate_Common_CallbackController extends Billmate_Common_Billmatecheckou
     {
         /** @var  $quote Mage_Sales_Model_Quote */
         $bmRequestData = $this->getBmRequestData();
-        $response['has_error'] = false;
-        $response['message'] = $this->getHelper()->__('The order was successfully updated');
         try {
             $this->runCallbackProcess($bmRequestData);
+            $response['has_error'] = false;
+            $response['message'] = $this->getHelper()->__('The order was successfully updated');
+            $statusCode = 200;
         } catch (Exception $e) {
             $response['has_error'] = true;
             $response['message'] = $e->getMessage();
+            $statusCode = 500;
+            Mage::log("Callback Order Creation Error: " . $e->getMessage(),0,'billmate.log',true);
+            Mage::log($e->getTraceAsString(),0,'billmate.log',true);
         }
-        $this->getResponse()->setBody(json_encode($response));
+        $this->getResponse()->clearHeaders()->setHeader('HTTP/1.0', $statusCode, true)->setHeader('Content-Type', 'text/json')->setBody(json_encode($response));
     }
 
     public function acceptAction()
@@ -26,11 +30,10 @@ class Billmate_Common_CallbackController extends Billmate_Common_Billmatecheckou
         } catch (Exception $e) {
             Mage::getSingleton('core/session')->addError($e->getMessage());
             $this->getResponse()->setRedirect(Mage::helper('billmatecommon/url')->getCheckoutUrl());
-            Mage::log("Order Creation Error: " . $e->getMessage(),0,'billmate.log',true);
+            Mage::log("Accept URL Order Creation Error: " . $e->getMessage(),0,'billmate.log',true);
             Mage::log($e->getTraceAsString(),0,'billmate.log',true);
             return;
         }
-
         $this->_redirect('checkout/onepage/success',array('_secure' => true));
     }
 

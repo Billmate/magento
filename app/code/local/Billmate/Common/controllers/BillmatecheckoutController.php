@@ -266,12 +266,10 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
 
     public function createorderAction()
     {
-        /** @var  $quote Mage_Sales_Model_Quote */
-        $quote = $this->_getQuote();
-        $bmPaymentData = $this->getHelper()->getBillmate()
-            ->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
 
         try {
+            $bmPaymentData = $this->getHelper()->getBillmate()
+                ->getCheckout(array('PaymentData' => array('hash' => Mage::getSingleton('checkout/session')->getBillmateHash())));
             if (!$this->isAvailableToProcess()) {
                 throw new Exception(
                     $this->getHelper()->__('You have no items in your shopping cart.')
@@ -290,126 +288,65 @@ class Billmate_Common_BillmatecheckoutController extends Mage_Core_Controller_Fr
         } catch (Exception $e) {
             Mage::getSingleton('core/session')->addError($e->getMessage());
             $response['url'] = $this->getRedirectUrl();
+            Mage::log("Javascript Event Order Creation Error: " . $e->getMessage(),0,'billmate.log',true);
+            Mage::log($e->getTraceAsString(),0,'billmate.log',true);
         }
         $this->getResponse()->setBody(json_encode($response));
     }
 
     /**
      * @param $bmRequestData
+     * @param $method
      *
      * @throws Exception
      */
-    protected function runCallbackProcess($bmRequestData, $method)
+    protected function runCallbackProcess($bmRequestData, $method = '')
     {
-        $session = Mage::getSingleton('checkout/session');
         $verifiedData = $this->getBmPaymentData($bmRequestData);
+
         if (isset($verifiedData['code'])) {
-            $codeMessage = $this->getHelper()->__('Unfortunately your payment was not processed correctly.
-                 Please try again or choose another payment method.');
+            $codeMessage = $this->getHelper()->__('Unfortunately your payment was not processed correctly. Please try again or choose another payment method.');
+            ob_start();
+            var_dump($verifiedData);
+            Mage::log(ob_get_clean(), 0, 'billmate.log', true);
             throw new Exception($codeMessage);
         }
-
+        $isOrderValid = $this->validateOrder($verifiedData, $this->_getQuote());
+        if ($method == ''){
+            $method = $verifiedData['PaymentData']['method'];
+        }
+        $exOrder = Mage::getModel('sales/order')->loadByIncrementId($this->_getQuote()->getReservedOrderId());
+        if ($exOrder->getId()){
+            return;
+        }
         $this->registerBmComplete();
         $checkoutOrderModel = $this->getCheckoutOrderModel()
             ->setQuote($this->_getQuote())
             ->setBmRequestData($verifiedData);
         $status = $this->getHelper()->getAdaptedStatus($bmRequestData['data']['status']);
-        $paymentMethodStatus = $this->getHelper()->getBillmateCheckoutOrderStatus();
         $order = null;
-        switch ($status) {
-            case 'pending':
-                $order = $checkoutOrderModel->place();
-                if (!$order || !$order->getStatus()) {
-                    throw new Exception(
-                        $this->getHelper()->
-                        __('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.')
-                    );
-                }
-
-                if ($order->getStatus() != $paymentMethodStatus) {
-                    $order->addStatusHistoryComment(
-                        $this->getHelper()->__('Order processing completed' .
-                            '<br/>Billmate status: %s  
-                                <br/>' . 'Transaction ID: %s',[
-                            $verifiedData['data']['status'],
-                            $verifiedData['data']['number']
-                        ]));
-                    $order->setState('new', 'pending_payment', '', false);
-                    if ($method == '1'){
-                        $session->setData('use_fee', 0);
-                        $baseInvoiceFee = Mage::helper('billmateinvoice')
-                            ->replaceSeparator(
-                                Mage::getStoreConfig('payment/billmatecheckout/billmate_fee')
-                            );
-                        $store              = $order->getStore();
-                        $calc = Mage::getSingleton('tax/calculation');
-                        $addressTaxRequest  = $calc->getRateRequest(
-                            $order->getShippingAddress(),
-                            $order->getBillingAddress(),
-                            $order->getCustomerTaxClassId(),
-                            $store
-                        );
-                        $paymentTaxClass = Mage::getStoreConfig('payment/billmatecheckout/tax_class');
-                        $addressTaxRequest->setProductClassId($paymentTaxClass);
-                        $rate          = $calc->getRate($addressTaxRequest);
-                        $taxAmount     = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
-                        $order->setGrandTotal($order->getGrandTotal()+$taxAmount);
-                        $order->setBaseGrandTotal($order->getBaseGrandTotal()+$taxAmount);
-                        $order->setTaxAmount($order->getTaxAmount()+$taxAmount);
-                        $order->setBaseTaxAmount($order->getBaseTaxAmount()+$taxAmount);
-                        $order->save();
-                    }
-                    $order->save();
-                }
-                break;
-            case 'created':
-            case 'paid':
-                $order = $checkoutOrderModel->place();
-                if (!$order) {
-                    throw new Exception(
-                        $this->getHelper()->
-                        __('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.')
-                    );
-                }
-                if ($method == '1'){
-                    $session->setData('use_fee', 0);
-                    $baseInvoiceFee = Mage::helper('billmateinvoice')
-                        ->replaceSeparator(
-                            Mage::getStoreConfig('payment/billmatecheckout/billmate_fee')
-                        );
-                    $store              = $order->getStore();
-                    $calc = Mage::getSingleton('tax/calculation');
-                    $addressTaxRequest  = $calc->getRateRequest(
-                        $order->getShippingAddress(),
-                        $order->getBillingAddress(),
-                        $order->getCustomerTaxClassId(),
-                        $store
-                    );
-                    $paymentTaxClass = Mage::getStoreConfig('payment/billmatecheckout/tax_class');
-                    $addressTaxRequest->setProductClassId($paymentTaxClass);
-                    $rate          = $calc->getRate($addressTaxRequest);
-                    $taxAmount     = $calc->calcTaxAmount($baseInvoiceFee, $rate, false, true);
-                    $order->setGrandTotal($order->getGrandTotal()+$taxAmount);
-                    $order->setBaseGrandTotal($order->getBaseGrandTotal()+$taxAmount);
-                    $order->setTaxAmount($order->getTaxAmount()+$taxAmount);
-                    $order->setBaseTaxAmount($order->getBaseTaxAmount()+$taxAmount);
-                    $order->save();
-                }
-                $checkoutOrderModel->updateOrder($paymentMethodStatus, $bmRequestData['data']);
-                break;
-            case 'cancelled':
-                throw new Exception(
-                    $this->getHelper()->
-                    __('The bank payment has been canceled. Please try again or choose a different payment method.')
-                );
-                break;
-            case 'failed':
-                throw new Exception(
-                    $this->getHelper()->
-                    __('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.')
-                );
-                break;
+        $order = $checkoutOrderModel->place($verifiedData, $isOrderValid, $status, $method);
+        if (!$order || !$order->getStatus()) {
+            throw new Exception(
+                $this->getHelper()->
+                __('Unfortunately your bank payment was not processed with the provided bank details. Please try again or choose another payment method.')
+            );
         }
+    }
+
+    /**
+     * @param array $billmateData
+     * @param Mage_Sales_Model_Quote $quote
+     *
+     * @return boolean
+     */
+    protected function validateOrder($billmateData, $quote){
+        $billmateTotal = ($billmateData['Cart']['Total']['withtax'])/100;
+        $billmateFee = ($billmateData['Cart']['Handling']['withouttax']*(1+($billmateData['Cart']['Handling']['taxrate']/100)))/100;
+        if ($billmateTotal-$billmateFee == $quote->getGrandTotal()){
+            return true;
+        }
+        return false;
     }
 
     /**
