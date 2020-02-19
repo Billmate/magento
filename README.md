@@ -60,6 +60,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.4.1 (2020-02-19)
+* Enhancement - Added check to see if shipping address is set correctly
+
 ### 3.4.0 (2020-02-17)
 * Enhancement - Order creation/callback handling for Billmate Checkout
 
