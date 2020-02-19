@@ -46,6 +46,26 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
             $this->_order = $orderModel;
             return $orderModel;
         }
+
+        if ($quote->getShippingAddress()->getFirstName() == null){
+            if (array_key_exists('Customer', $verifiedData['data'])) {
+                if (array_key_exists('Shipping', $verifiedData['data']['Customer'])) {
+                    $quote->getShippingAddress()->setFirstName($verifiedData['data']['Customer']['Shipping']['firstname']);
+                    $quote->getShippingAddress()->setLastName($verifiedData['data']['Customer']['Shipping']['lastname']);
+                    $quote->getShippingAddress()->setStreet($verifiedData['data']['Customer']['Shipping']['street']);
+                    $quote->getShippingAddress()->setCity($verifiedData['data']['Customer']['Shipping']['city']);
+                    $quote->getShippingAddress()->setTelephone($verifiedData['data']['Customer']['Shipping']['phone']);
+                }
+                elseif (array_key_exists('Billing', $verifiedData['data']['Customer'])) {
+                    $quote->getShippingAddress()->setFirstName($verifiedData['data']['Customer']['Billing']['firstname']);
+                    $quote->getShippingAddress()->setLastName($verifiedData['data']['Customer']['Billing']['lastname']);
+                    $quote->getShippingAddress()->setStreet($verifiedData['data']['Customer']['Billing']['street']);
+                    $quote->getShippingAddress()->setCity($verifiedData['data']['Customer']['Billing']['city']);
+                    $quote->getShippingAddress()->setTelephone($verifiedData['data']['Customer']['Billing']['phone']);
+                }
+            }
+        }
+
         $quote->collectTotals();
         $service = Mage::getModel('sales/service_quote', $quote);
         $service->submitAll();
@@ -74,11 +94,11 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
                 ]));
             if ($status == 'pending') {
                 $order->setState('new', 'pending_payment', '', false);
-            } else if ($status = 'created' || $status == 'paid') {
+            } else if ($status == 'created' || $status == 'paid') {
                 $order->setState('new', $paymentMethodStatus, '', false);
-            } else if ($status = 'cancelled') {
+            } else if ($status == 'cancelled') {
                 $order->setState('canceled', 'canceled', '', false);
-            } else if ($status = 'failed') {
+            } else if ($status == 'failed') {
                 $order->setState('canceled', 'canceled', '', false);
             }
             if (!$isOrderValid) {
