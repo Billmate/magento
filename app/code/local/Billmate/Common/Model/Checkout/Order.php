@@ -63,6 +63,8 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
                     $quote->getShippingAddress()->setCity($verifiedData['data']['Customer']['Billing']['city']);
                     $quote->getShippingAddress()->setTelephone($verifiedData['data']['Customer']['Billing']['phone']);
                 }
+                $quote->getShippingAddress()->save();
+                $quote->save();
             }
         }
 
