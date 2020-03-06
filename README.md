@@ -59,6 +59,8 @@ Copy the code below for the size that fits your needs.
 `<a href="https://billmate.se"><img src="https://www.billmate.se/wp-content/uploads/2019/09/S.png" alt="Billmate Payment Gateway" /></a>`
 
 ## Changelog
+### 3.4.2 (2020-03-06)
+* Fix save routines to backup address handling
 
 ### 3.4.1 (2020-02-19)
 * Enhancement - Added check to see if shipping address is set correctly
