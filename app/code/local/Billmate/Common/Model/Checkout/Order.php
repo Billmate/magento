@@ -47,24 +47,56 @@ class Billmate_Common_Model_Checkout_Order extends Varien_Object
             return $orderModel;
         }
 
-        if ($quote->getShippingAddress()->getFirstName() == null){
-            if (array_key_exists('Customer', $verifiedData['data'])) {
-                if (array_key_exists('Shipping', $verifiedData['data']['Customer'])) {
-                    $quote->getShippingAddress()->setFirstName($verifiedData['data']['Customer']['Shipping']['firstname']);
-                    $quote->getShippingAddress()->setLastName($verifiedData['data']['Customer']['Shipping']['lastname']);
-                    $quote->getShippingAddress()->setStreet($verifiedData['data']['Customer']['Shipping']['street']);
-                    $quote->getShippingAddress()->setCity($verifiedData['data']['Customer']['Shipping']['city']);
-                    $quote->getShippingAddress()->setTelephone($verifiedData['data']['Customer']['Shipping']['phone']);
+        if ($quote->getShippingAddress()->getFirstname() == null ||
+            $quote->getShippingAddress()->getLastname() == null ||
+            $quote->getShippingAddress()->getStreet() == null ||
+            $quote->getShippingAddress()->getCity() == null ||
+            $quote->getShippingAddress()->getTelephone == null
+        ){
+            if (array_key_exists('Customer', $verifiedData)) {
+                if (array_key_exists('Shipping', $verifiedData['Customer'])) {
+                    $quote->getShippingAddress()->setFirstname($verifiedData['Customer']['Shipping']['firstname']);
+                    $quote->getShippingAddress()->setLastname($verifiedData['Customer']['Shipping']['lastname']);
+                    $quote->getShippingAddress()->setStreet($verifiedData['Customer']['Shipping']['street']);
+                    $quote->getShippingAddress()->setCity($verifiedData['Customer']['Shipping']['city']);
+                    $quote->getShippingAddress()->setTelephone($verifiedData['Customer']['Shipping']['phone']);
                 }
-                elseif (array_key_exists('Billing', $verifiedData['data']['Customer'])) {
-                    $quote->getShippingAddress()->setFirstName($verifiedData['data']['Customer']['Billing']['firstname']);
-                    $quote->getShippingAddress()->setLastName($verifiedData['data']['Customer']['Billing']['lastname']);
-                    $quote->getShippingAddress()->setStreet($verifiedData['data']['Customer']['Billing']['street']);
-                    $quote->getShippingAddress()->setCity($verifiedData['data']['Customer']['Billing']['city']);
-                    $quote->getShippingAddress()->setTelephone($verifiedData['data']['Customer']['Billing']['phone']);
+                elseif (array_key_exists('Billing', $verifiedData['Customer'])) {
+                    $quote->getShippingAddress()->setFirstname($verifiedData['Customer']['Billing']['firstname']);
+                    $quote->getShippingAddress()->setLastname($verifiedData['Customer']['Billing']['lastname']);
+                    $quote->getShippingAddress()->setStreet($verifiedData['Customer']['Billing']['street']);
+                    $quote->getShippingAddress()->setCity($verifiedData['Customer']['Billing']['city']);
+                    $quote->getShippingAddress()->setTelephone($verifiedData['Customer']['Billing']['phone']);
                 }
-                $quote->getShippingAddress()->save();
-                $quote->save();
+            }
+        }
+        if ($quote->getBillingAddress()->getFirstname() == null ||
+            $quote->getBillingAddress()->getLastname() == null ||
+            $quote->getBillingAddress()->getStreet() == null ||
+            $quote->getBillingAddress()->getCity() == null ||
+            $quote->getBillingAddress()->getTelephone() == null ||
+            $quote->getBillingAddress()->getCountryId() == null ||
+            $quote->getBillingAddress()->getPostcode() == null
+        ){
+            if (array_key_exists('Customer', $verifiedData)) {
+                if (array_key_exists('Billing', $verifiedData['Customer'])) {
+                    $quote->getBillingAddress()->setFirstname($verifiedData['Customer']['Billing']['firstname']);
+                    $quote->getBillingAddress()->setLastname($verifiedData['Customer']['Billing']['lastname']);
+                    $quote->getBillingAddress()->setStreet($verifiedData['Customer']['Billing']['street']);
+                    $quote->getBillingAddress()->setCity($verifiedData['Customer']['Billing']['city']);
+                    $quote->getBillingAddress()->setTelephone($verifiedData['Customer']['Billing']['phone']);
+                    $quote->getBillingAddress()->setPostcode($verifiedData['Customer']['Billing']['zip']);
+                    $quote->getBillingAddress()->setCountryId($verifiedData['Customer']['Billing']['country']);
+                }
+                elseif (array_key_exists('Shipping', $verifiedData['Customer'])) {
+                    $quote->getBillingAddress()->setFirstname($verifiedData['Customer']['Shipping']['firstname']);
+                    $quote->getBillingAddress()->setLastname($verifiedData['Customer']['Shipping']['lastname']);
+                    $quote->getBillingAddress()->setStreet($verifiedData['Customer']['Shipping']['street']);
+                    $quote->getBillingAddress()->setCity($verifiedData['Customer']['Shipping']['city']);
+                    $quote->getBillingAddress()->setTelephone($verifiedData['Customer']['Shipping']['phone']);
+                    $quote->getBillingAddress()->setPostcode($verifiedData['Customer']['Shipping']['zip']);
+                    $quote->getBillingAddress()->setCountryId($verifiedData['Customer']['Shipping']['country']);
+                }
             }
         }
 
