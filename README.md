@@ -18,7 +18,7 @@ Billmate Gateway is a plugin that extends Magento, allowing your customers to ge
 1.7 - 1.9.3
 
 # Supported Checkouts
-* Templates Master Firecheckout. 
+* Templates Master Firecheckout.
 * Streamcheckout.
 * Idev - One step checkout.
 * Standard multi and onestepcheckout.
@@ -29,7 +29,7 @@ Billmate Gateway is a plugin that extends Magento, allowing your customers to ge
 2. Extract the zip file.
 3. Upload the zip files contents into the Magento root.
 4. Go To "System" -> "Cache Management" -> "Clear All Caches".
-5. Configure the general settings under "System" --> "Configuration" --> "Billmate general settings". 
+5. Configure the general settings under "System" --> "Configuration" --> "Billmate general settings".
 6. If you get 404 error when heading to the general settings. Log out of admin and log in again.
 7. Configure payment method specific settings under "System" --> "Configuration" --> "Payment Methods".
 8. Make a test purchase for every payment method to verify that you have made the correct settings.
@@ -60,6 +60,9 @@ Copy the code below for the size that fits your needs.
 
 ## Changelog
 
+### 3.4.4 (2021-10-12)
+* Update PEM certificate
+
 ### 3.4.3 (2020-03-16)
 * Enhancement - callback address handling
 
@@ -79,10 +82,10 @@ Copy the code below for the size that fits your needs.
 *  Feature - Support for choosing Billmate Checkout to act as a company or individual to prompt first
 
 ### 3.2.9 (2019-09-18)
-* Enhancement - Billmate plugin version nr appears in Billmate settings 
+* Enhancement - Billmate plugin version nr appears in Billmate settings
 
 ### 3.2.8 (2019-09-12)
-* Enhancement - Billmate Checkout styling for custom themes. 
+* Enhancement - Billmate Checkout styling for custom themes.
 * Feature - Added support for MatrixRate shipping.
 
 ### 3.2.7 (2019-08-31)
@@ -130,7 +133,7 @@ Fix - Solved high rounding when adding two discounts on a order.
 * Fix - Sometimes orderstatus gets blank.
 
 ### 3.0.6 (2017-07-20)
-* Fix - Escape quotation chars. 
+* Fix - Escape quotation chars.
 * Fix - Change the behaviour with shipping discounts.
 * Fix - Tax calculation when prices are set including tax.
 * Fix - Coupon Code validation messages.
@@ -144,7 +147,7 @@ Fix - Solved high rounding when adding two discounts on a order.
 * Enhancemnet - Improved scrollfocus.
 
 ### 3.0.3 (2017-03-20)
-* Fixes for better checkout flow. 
+* Fixes for better checkout flow.
 
 ### 3.0.2 (2017-02-13)
 * Fix - Javascript on Postmessage fix.
@@ -160,15 +163,15 @@ Fix - Solved high rounding when adding two discounts on a order.
 * Enhancement - Added possibility to add other statuses to check against Billmate.
 
 ### 2.2.2(2016-12-06)
-* Enhancement - Improved addressvalidation. 
+* Enhancement - Improved addressvalidation.
 * Enhancement - Improved status handling by cron to fetch statuses from Billmate.
 
 ### 2.2.1(2016-11-23)
-* Fix - Bundle product calculation. 
+* Fix - Bundle product calculation.
 * Enhancement - Option to choose if invoice fee should be shown incl tax in checkout/cart or not.
 
 ### 2.2(2016-07-14)
-* Enhancement - Improved card and bank logic for creating order after valid/pending payment. 
+* Enhancement - Improved card and bank logic for creating order after valid/pending payment.
 * Compatibility - Enterprise version.
 
 
@@ -177,7 +180,7 @@ Fix - Solved high rounding when adding two discounts on a order.
 * Fix - Multistore settings fixed.
 
 ### 2.1.8 (2016-01-29)
-* Fix - Multiple order mails. 
+* Fix - Multiple order mails.
 * Fix - Observer for Cancel order.
 
 ### 2.1.7 (2016-01-08)
@@ -195,15 +198,15 @@ Fix - Solved high rounding when adding two discounts on a order.
 * Enhancement - Cleaned up logging.
 
 ### 2.1.3
-* Fix - Company that is logged in. 
+* Fix - Company that is logged in.
 
 
 ### 2.1.2 (2015-11-16)
 
-* Fix - Multiple order emails. 
+* Fix - Multiple order emails.
 
 ### 2.1.1 (2015-11-13)
-* Fix - No redirect in callback process. 
+* Fix - No redirect in callback process.
 
 ### 2.1 (2015-10-07)
 * Fix - Canceled order issue.
